@@ -14,7 +14,7 @@ import time
 
 url = "https://vendors.planetbids.com/portal/14058/bo/bo-search"
 
-def scroll_table_container(container, driver,scroll_pause_time=2):
+def scroll_table_container(container, driver,scroll_pause_time=1):
     
     last_height = driver.execute_script("return arguments[0].scrollHeight", container)
     
@@ -33,6 +33,9 @@ def scroll_table_container(container, driver,scroll_pause_time=2):
             break
         last_height = new_height
 
+    result_message = "Round Completed"
+    return result_message
+
 def extraction(url,number):
     # Make sure the csv file ins't emtpy, if it is, set beacon to 0 as that is your starting point
     beacon = 0
@@ -47,14 +50,15 @@ def extraction(url,number):
     total_bids = driver.find_element(By.CLASS_NAME,"bids-table-filter-message")
     total_bids_text_splitted = total_bids.text.split(" ")
     really_total_bids = int(total_bids_text_splitted[1])
-    print(really_total_bids)
+    print(f"Found {really_total_bids} bids")
 
     # Table container with all bids in the municipality's planetbids portal
     current_bids = driver.find_element(By.CLASS_NAME,"table-overflow-container")
     driver.implicitly_wait(25)
 
     # Scroll through the table container
-    scroll_table_container(current_bids,driver)
+    resul_croll = scroll_table_container(current_bids,driver)
+    print(resul_croll)
     driver.implicitly_wait(400)
 
     # After scrolling, we put all bids in the webpage into a list; n bids
@@ -62,6 +66,7 @@ def extraction(url,number):
     bids = current_bids.find_elements(By.TAG_NAME,"tr")
     while len(bids) < really_total_bids:
         print(f"measurement {failing_count}")
+        break
         failing_count += 1
         current_bids = driver.find_element(By.CLASS_NAME,"table-overflow-container")
         scroll_table_container(current_bids,driver)
@@ -785,7 +790,7 @@ def delete_ds_store_files(directory):
 
 
 
-count = 455
+count = 836
 while count != 977:
 	print(count)
 	current_file_location_1 = os.getcwd()
