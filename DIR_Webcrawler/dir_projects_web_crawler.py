@@ -169,10 +169,13 @@ if __name__ == '__main__':
 	initial_tabulation = pd.read_csv(csv_file)
 	positional_location = round(len(initial_tabulation) / 20) + 1
 
-	# A list containing the 20 <tr> elements from a single page instance
-	extraction = dir_project_extraction(positional_location) 
-	df_acquired = pd.DataFrame(extraction)
-	df_acquired.to_csv(csv_file,index=False,header=False,mode='a')
+	while positional_location != 26981:
+
+		# A list containing the 20 <tr> elements from a single page instance
+		extraction = dir_project_extraction(positional_location) 
+		df_acquired = pd.DataFrame(extraction)
+		df_acquired.to_csv(csv_file,index=False,header=False,mode='a')
+		positional_location += 1
 
 
 
