@@ -66,7 +66,7 @@ def dir_project_extraction(positional_awareness_storage):
 			)
 			driver.execute_script("arguments[0].scrollIntoView();", entity_located)
 			entity_located.click()
-			time.sleep(1)
+			time.sleep(2)
 
 			# Iterate through each of the extractable attributes of the entity, which are listed below
 			entity_extractable_attributes = [
@@ -166,8 +166,8 @@ if __name__ == '__main__':
 
 	# Location of storage and math associated with it
 	csv_file = 'dir_projects.csv'
-	initial_tabulation = pd.read_csv(csv_file)
-	positional_location = round(len(initial_tabulation) / 20) + 1
+	initial_tabulation = pd.read_csv(csv_file,low_memory=False)
+	positional_location = 3884
 
 	while positional_location != 26981:
 
@@ -176,6 +176,7 @@ if __name__ == '__main__':
 		df_acquired = pd.DataFrame(extraction)
 		df_acquired.to_csv(csv_file,index=False,header=False,mode='a')
 		positional_location += 1
+		print(f"Current Page {positional_location}")
 
 
 
