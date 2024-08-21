@@ -171,7 +171,14 @@ def subcontractor_categorization(csv_in_question):
 	filtered_cslb_csv.to_csv(new_csv_fileted_cslb_file,index=False)
 
 
+'''
+This will be the most arduous function so far, in here we will categorize the
+Google results and try to look for the email in any of them.
+'''
 def searching_needed_subs(bid_needed_csv_file):
+
+	# Emails extracted list after all operations below
+	emails_extracted = []
 
 	# Read the csv in question
 	df_bid_cslb_subs = pd.read_csv(bid_needed_csv_file)
@@ -184,6 +191,71 @@ def searching_needed_subs(bid_needed_csv_file):
 	driver = webdriver.Chrome()
 	driver.get("https://google.co.in/search?q=" + name_in_question)
 	driver.implicitly_wait(5)
+
+	'''
+	I. Try to see if the google result has a RHS (Right Hand Side)
+	'''
+	try:
+		rhs_found = WebDriverWait(driver,10).until(
+			EC.presence_of_element_located((By.ID,"rhs"))
+		)
+
+		# If there is, let's check if there is an available website. First let's find the buttons available in the RHS
+		try:
+			rhs_buttons = driver.find_elements(By.TAG_NAME,"button")
+			# If there are, search for the one that says "Website"
+			website_button = []
+			for rhs_button in rhs_buttons:
+				if rhs_button.text == "Website":
+					website_button.append(rhs_button)
+				else:
+					pass
+
+			# Click the button
+			website_button[0].click()
+
+			# Now, once in, try to look for the mailto: element that includes an email
+			try:
+				mailto_element = driver.find_elements(By.XPATH,'//a[contains(@href,"mailto")]')
+				for emails in mailto_element:
+					emails_extracted.append(emails.text)
+			except Exception as exe:
+				print("No Email found")
+				print(exe)
+
+			# Furthermore, you can look through every tab within the website and look for any "mailto:"" elements
+			try:
+				# Where the links will be stored
+				nav_links = []
+
+				# First, let's look for any <nav> elements, following by a search of <a href> within them
+				nav_elements_in_website = driver.find_elements(By.TAG_NAME,"nav")
+
+				# For every navigation element, find the link associated within it
+				for nav_element in nav_elements_in_website:
+					a_element = nav_element.find_elements(By.TAG_NAME,"a")
+					nav_links.append(a_element)
+
+				# Iterate through each link
+				
+
+
+			except Exception as exe:
+				print("No <nav> elements")
+				print(exe)
+
+		except Exception as exe:
+			print("No RHS Buttons.")
+			print(exe)
+
+	except Exception as exe:
+		print(exe)
+		print("No RHS side.")
+
+
+	return emails_extracted
+
+
 
 
 	
@@ -208,7 +280,7 @@ if __name__ == '__main__':
 
 	# Step 4: Search subcontractor in the newly extracted list and search their email on the web
 	bid_needed_subs_csv_file = "bid_subcontractors.csv"
-	searching_needed_subs(bid_needed_subs_csv_file)
+	print(searching_needed_subs(bid_needed_subs_csv_file))
 
 
 
