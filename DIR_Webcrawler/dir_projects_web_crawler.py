@@ -40,6 +40,7 @@ def dir_project_extraction(positional_awareness_storage):
 
 	# Total Entities tabulated per webpage (used in the future to iterate through each)
 	entity_targets = trbody_tag.find_elements(By.TAG_NAME,"tr") # Shall be 20 as 20 is the amount of contractors showed per page
+	number_of_projects_showing = len(entity_targets)
 
 	# Entity Attributes
 	entity_attributes = []
@@ -167,14 +168,14 @@ if __name__ == '__main__':
 	# Location of storage and math associated with it
 	csv_file = 'dir_projects.csv'
 	initial_tabulation = pd.read_csv(csv_file,low_memory=False)
-	positional_location = 4887
+	positional_location = 5195	
 
 	while positional_location != 12500:
 
 		# A list containing the 20 <tr> elements from a single page instance
 		extraction = dir_project_extraction(positional_location) 
 		df_acquired = pd.DataFrame(extraction)
-		if len(df_acquired) == 20:
+		if len(df_acquired) > 15:
 			df_acquired.to_csv(csv_file,index=False,header=False,mode='a')
 			positional_location += 1
 			print(f"Current Page {positional_location}")
@@ -188,6 +189,21 @@ if __name__ == '__main__':
 
 
 	
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
