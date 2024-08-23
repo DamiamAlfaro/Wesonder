@@ -275,6 +275,9 @@ def searching_needed_subs(bid_needed_csv_file):
 						driver.back()
 						time.sleep(1)
 
+				# Go back to the Google Search result
+				driver.back()
+
 				# Let it breathe mate
 				time.sleep(3)
 
@@ -298,11 +301,13 @@ def searching_needed_subs(bid_needed_csv_file):
 	Look, I know we want to build for each website, but it is too diverse, and what's worse: not all
 	websites have an available "mailto:", I'd say that we need to enter the top 10 websites on the
 	Google search, search for "mailto:", and extract it. If the email does not belong to the respective 
-	subcontractor, we can still do a DIR and Planetbids (both, results and prospective bidders) search.
-
+	subcontractor, we can still do a DIR and Planetbids (both, results and prospective bidders).
 	'''
 	try:
-		print("testing 2")
+		# The first step is to get the top 8 websites that appear in the google search, first locate the element containing all links
+		google_results = WebDriverWait(driver,10).until(
+			EC.presence_of_element_located((By.ID,)))
+
 	except:
 		print("No Website nor RHS")
 
