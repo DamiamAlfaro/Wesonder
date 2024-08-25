@@ -384,8 +384,9 @@ def searching_needed_subs(bid_needed_csv_file):
 			print("UNEXPECTED")
 			print(exe)
 
-	except:
+	except Exception as exe:
 		print("No Website nor RHS")
+		print(exe)
 
 
 	# Returns a list of emails without duplicates
@@ -415,23 +416,51 @@ if __name__ == '__main__':
 			driver_1 = webdriver.Chrome()
 			driver_1.get(url)
 
+
 			# Create a function that takes the email (i.e. "mailto:" element) from the website specified in the url
 			try:
-				# Pinpoint the element we are looking for
-				mailto_new_element = WebDriverWait(driver_1,10).until(
-					EC.presence_of_all_elements_located((By.XPATH,'//a[contains(@href,"mailto")]'))
-					)
+				if "www.facebook.com/" in url:
+					# Pinpoint the close button
+					close_button = WebDriverWait(driver_1,10).until(
+						EC.presence_of_element_located((By.XPATH, '//*[@aria-label="Close"]'))
+						)
 
-				# Acquire the emails from the "mailto:" element
-				for new_email in mailto_new_element:
-					new_emails_extracted.append(new_email.text)
+					# Close the Sign In Meny
+					close_button.click()
 
-				# Return the result
-				result_queue.put([url,new_emails_extracted])
+					# Pinpoint the Intro Header from the Facebook page
+					facebook_intro_list = driver_1.find_elements(By.TAG_NAME,"ul")
+
+					# Split the text of the intro
+					facebook_email_possible_location = facebook_intro_list[0].text.split("\n")
+
+					# Search for the email item from the splited text
+					for possible_email in facebook_email_possible_location:
+						# Identify the first 'www' and the last 'com'
+						if possible_email[:3].lower() != "www" and possible_email[-3:].lower() == "com":
+							new_emails_extracted.append(possible_email)
+						else:
+							continue
+					print(new_emails_extracted)
+					result_queue.put([url,new_emails_extracted])
+
+
+				else:
+					# Pinpoint the element we are looking for
+					mailto_new_element = WebDriverWait(driver_1,10).until(
+						EC.presence_of_all_elements_located((By.XPATH,'//a[contains(@href,"mailto")]'))
+						)
+
+					# Acquire the emails from the "mailto:" element
+					for new_email in mailto_new_element:
+						new_emails_extracted.append(new_email.text)
+
+					# Return the result
+					print(new_emails_extracted)
+					result_queue.put([url,new_emails_extracted])
 
 			# No emails found in the Google Search link
 			except TimeoutException:
-				print("No Emails")
 				result_queue.put([url,["No Emails"]])
 
 		# The result is still a list
@@ -441,14 +470,6 @@ if __name__ == '__main__':
 		# Exit the Google instance
 		finally:
 			driver_1.quit()
-
-	# We need to remove the annoying Sign In pop up from Facebook which impedes us from extracting the email address
-	def facebook_result():
-		pass
-
-	# Similar to Facebook, Yelp is also unique in that it offers a website from the entity, sometimes being the only reference to the official website if the official website isn't in google
-	def yelp_further_search():
-		pass
 
 
 	# Step 1: Update the CSLB license
