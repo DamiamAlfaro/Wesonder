@@ -2,9 +2,11 @@ import sys
 import pandas as pd
 import os
 import re
+import threading
 import glob
 import csv
 import numpy as np
+from queue import Queue
 from pandas.errors import EmptyDataError
 from selenium import webdriver
 from selenium.webdriver.common.by import By
@@ -183,6 +185,8 @@ This will be the most arduous function so far, in here we will categorize the
 Google results and try to look for the email in any of them.
 '''
 def searching_needed_subs(bid_needed_csv_file):
+	# Websites in which the entity can be found
+	entity_location_websites = []
 
 	# Emails extracted list after all operations below
 	emails_extracted = []
@@ -235,6 +239,9 @@ def searching_needed_subs(bid_needed_csv_file):
 				# Sometimes the "Home" link is there, so we need to make sure we avoid it since we begin in it
 				home_url = driver.current_url
 
+				# First website where the entity could be found, i.e. the first Google search result
+				entity_location_websites.append(home_url)
+
 				# First, let's look for any <nav> elements, following by a search of <a href> within them
 				nav_elements_in_website = WebDriverWait(driver,10).until(
 					EC.presence_of_element_located((By.TAG_NAME,"nav"))
@@ -282,7 +289,6 @@ def searching_needed_subs(bid_needed_csv_file):
 				time.sleep(3)
 
 
-
 			except Exception as exe:
 				print("No <nav> elements")
 				print(exe)
@@ -291,12 +297,15 @@ def searching_needed_subs(bid_needed_csv_file):
 			print("No RHS Buttons.")
 			print(exe)
 
+
 	except Exception as exe:
 		print(exe)
 		print("No RHS side.")
 
 	'''
-	II. The sub has a website and but doesn't have a RHS (Right Hand Side) in the Google search
+	II. The sub has a website and but doesn't have a RHS (Right Hand Side) in the Google search.
+	Or perhaps it does include a RHS, but we still want to iterate through other websites to increase
+	the likelyhood of finding email addresses and additional information.
 	
 	Look, I know we want to build for each website, but it is too diverse, and what's worse: not all
 	websites have an available "mailto:", I'd say that we need to enter the top 10 websites on the
@@ -304,14 +313,79 @@ def searching_needed_subs(bid_needed_csv_file):
 	subcontractor, we can still do a DIR and Planetbids (both, results and prospective bidders).
 	'''
 	try:
-		# The first step is to get the top 8 websites that appear in the google search, first locate the element containing all links
+		# The first step is to get the top 8 websites that appear in the Google search, first locate the element containing all links
 		google_results = WebDriverWait(driver,10).until(
-			EC.presence_of_element_located((By.ID,)))
+			EC.presence_of_element_located((By.ID,"search")))
+
+		# Acquire the elements containing the links
+		google_results_links = google_results.find_elements(By.TAG_NAME,"a")
+
+		# Extract the actual urls from the links
+		individual_links = [individual_link.get_attribute("href") for individual_link in google_results_links]
+
+		# Before proceeding with entering every single Google search website, let's remove the first website we entered above from the list
+		for website in individual_links:
+
+			# Adding websites
+			if entity_location_websites[0] not in website:
+				entity_location_websites.append(website)
+
+			# Removing the already visited website
+			else:
+				pass
+
+		# Remove any duplicates that might've appeared
+		entity_location_websites = list(set(entity_location_websites))
+
+		# Where all the threads will be located
+		linking_threads = []
+
+		# Now, let's build something to iterate through each newly acquired website, while skipping the one we already visited
+		try:
+
+			# Allocate the Queue
+			result_queue = Queue()
+
+			# Iterate through each website from the Google search results and extract the "mailto:" element using multithrearding()
+			for url_attempt in entity_location_websites:
+
+				# Apply the multithrearding() function
+				thread = threading.Thread(target=multithrearding,args=(url_attempt,result_queue))
+				linking_threads.append(thread)
+				thread.start()
+
+			# Iterate
+			for thread_link in linking_threads:
+				thread_link.join()
+
+			# Usable item
+			resultings = []
+
+			# Put the results into the usable list
+			while not result_queue.empty():
+				resultings.append(result_queue.get())
+
+			# Extract the emails newly acquired from multithrearding()
+			for email_acquired in resultings:
+				if email_acquired[1][0] == "No Emails":
+					pass
+				else:
+					emails_extracted.append(email_acquired[1][0])
+
+			# Remove duplicates again
+			emails_extracted = list(set(emails_extracted))
+
+			# Remove debris
+			emails_extracted = [item for item in emails_extracted if item]
+
+
+		# Something happened
+		except Exception as exe:
+			print("UNEXPECTED")
+			print(exe)
 
 	except:
 		print("No Website nor RHS")
-
-
 
 
 	# Returns a list of emails without duplicates
@@ -330,6 +404,53 @@ def searching_needed_subs(bid_needed_csv_file):
 
 
 if __name__ == '__main__':
+	# Function for multithreading
+	def multithrearding(url,result_queue):		
+
+		try:
+			# Emails extracted
+			new_emails_extracted = []
+
+			# Open each webdriver session
+			driver_1 = webdriver.Chrome()
+			driver_1.get(url)
+
+			# Create a function that takes the email (i.e. "mailto:" element) from the website specified in the url
+			try:
+				# Pinpoint the element we are looking for
+				mailto_new_element = WebDriverWait(driver_1,10).until(
+					EC.presence_of_all_elements_located((By.XPATH,'//a[contains(@href,"mailto")]'))
+					)
+
+				# Acquire the emails from the "mailto:" element
+				for new_email in mailto_new_element:
+					new_emails_extracted.append(new_email.text)
+
+				# Return the result
+				result_queue.put([url,new_emails_extracted])
+
+			# No emails found in the Google Search link
+			except TimeoutException:
+				print("No Emails")
+				result_queue.put([url,["No Emails"]])
+
+		# The result is still a list
+		except Exception as exe:
+			result_queue.put([url,[str(exe)]])
+
+		# Exit the Google instance
+		finally:
+			driver_1.quit()
+
+	# We need to remove the annoying Sign In pop up from Facebook which impedes us from extracting the email address
+	def facebook_result():
+		pass
+
+	# Similar to Facebook, Yelp is also unique in that it offers a website from the entity, sometimes being the only reference to the official website if the official website isn't in google
+	def yelp_further_search():
+		pass
+
+
 	# Step 1: Update the CSLB license
 	#updating_cslb_subcontractors()
 
@@ -342,7 +463,6 @@ if __name__ == '__main__':
 
 	# Step 4: Check if the subcontractors are in the existing DIR and DVE data bases
 	#existing_database_search()
-
 
 	# Step 5: Search subcontractor in the newly extracted list and search their email on the web
 	bid_needed_subs_csv_file = "bid_subcontractors.csv"
