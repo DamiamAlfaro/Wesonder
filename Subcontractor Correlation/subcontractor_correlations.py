@@ -7,6 +7,7 @@ import glob
 import csv
 import numpy as np
 from queue import Queue
+from itertools import permutations, combinations
 from pandas.errors import EmptyDataError
 from selenium import webdriver
 from selenium.webdriver.common.by import By
@@ -174,10 +175,174 @@ def subcontractor_categorization(csv_in_question):
 
 
 '''
+We will utilize this function several times in order to look for the specified array of values
+within the DIR Database. The reason why we are making it a function is because it is being utilized more
+than once in the same functionality instance.
+'''
+def existing_database_search_dir_iteration(array_of_values,df_dir_tabulation): # The input is a list of company names
+
+	# Index list containing all indexes where the subs can be found
+	index_list_subs_needed = []
+
+	# Names found
+	sub_names_found = []
+
+	# Iterate through the list of subs that we need
+	for subcontractor_in_question in array_of_values:
+
+		# Iterate through the DIR database to find the subs we need
+		for possible_subcontractor_instance in df_dir_tabulation["EntityName"]:
+
+			# If the sub we need is found, extract the index to print further information
+			if subcontractor_in_question in possible_subcontractor_instance:
+
+				# Retrieve the index
+				sub_name_index = df_dir_tabulation.index[df_dir_tabulation["EntityName"].str.contains(subcontractor_in_question)].tolist()
+				for index_in_question in sub_name_index:
+					index_list_subs_needed.append(index_in_question) # Might be multiple indexes
+
+					# Allocate the newly found sub name to the sub names found list for further analysis
+					if subcontractor_in_question not in sub_names_found:
+						sub_names_found.append(subcontractor_in_question)
+
+	# Subs not found
+	subs_not_found = [sub for sub in array_of_values if sub not in sub_names_found]
+
+	# Returns an Array of indexes fo subscontractors, the subcontractors found (their index in the first return value), and the subs not found
+	return index_list_subs_needed, sub_names_found, subs_not_found
+
+
+
+'''
 Here we will look for the emails and any related information in the data bases we already possess.
 '''
-def existing_database_search(bid_needed_csv_file):
-	pass
+def existing_database_search(bid_needed_csv_file,dir_database):
+	# Define the Bid Needed Subs DataFrame
+	df_dir_correlation = pd.read_csv(bid_needed_csv_file)
+
+	# Define the DIR Tabulation database
+	df_dir_tabulation = pd.read_csv(dir_database)
+
+	# Convert the names column's values into Uppercase letters
+	df_dir_tabulation["EntityName"] = df_dir_tabulation["EntityName"].str.upper()
+
+	# Convert the names column's values into strings
+	df_dir_tabulation["EntityName"] = df_dir_tabulation["EntityName"].astype(str)
+
+	# Acquire the first four subs from the needed sub list for the bid in question
+	testing_subs_needed = df_dir_correlation["BusinessName"][:4]
+
+	search_dir_result_1 = existing_database_search_dir_iteration(testing_subs_needed,df_dir_tabulation)
+
+	index_list_subs_needed = search_dir_result_1[0] # Row indexes of subs found
+
+	sub_names_found = search_dir_result_1[1] # Subs found
+
+	subs_not_found = search_dir_result_1[2] # Subs not found
+
+	# See which of the names were not found
+	print(f"Search 1 Found: {len(sub_names_found)} {sub_names_found}")
+
+	# Subs not found
+	print(f"Search 1 Not Found: {len(subs_not_found)} {subs_not_found}")
+
+	# Undesired company words: avoid duplicating searches with these words
+	undesired_company_words = ["CO","CORPORATION", "INC", "INCORPORATED", "LLC", 
+	"COMPANY", "MANUFACTURE", "LTD", "MFG", "ASSOCIATES", "ASSOC", "CORP"]
+
+	# Now that we know which were not found, we need to build the combination iteration
+	sub_names_splited = []
+
+	# Iterate through each not-found name and split it
+	for sub_notfound_name in subs_not_found:
+		sub_names_splited.append(sub_notfound_name.split(" "))
+
+	# A list of all possible individual sub name permutations
+	possible_subs_name_permutations = []
+
+	# Iterate through each splited name and pinpoint the possible permutations
+	for sub_splited_name in sub_names_splited:
+		sub_name_permutation = combinations(sub_splited_name,2) # two word combinations
+
+		# Extract the individual permutation
+		for permutation in sub_name_permutation:
+
+			# Unwanted words? "False" so far...
+			unwanted_words_status = False
+
+			# Check each individual words
+			for permutation_word in permutation:
+
+				# Determine if the permutation contains unwanted words
+				if permutation_word in undesired_company_words:
+
+					# Flip the switch
+					unwanted_words_status = True
+				else:
+					continue
+
+			# If the permutation does not contains unwanted, append it to desired list
+			if unwanted_words_status == False:
+
+				# Convert the set into a list
+				new_search_combination = list(permutation)
+
+				# Convert the list into a joined string separated by a space
+				new_search_word = " ".join(new_search_combination)
+
+				# Append the newly string into the desired list
+				possible_subs_name_permutations.append(new_search_word)
+
+			# Continue basically
+			else:
+				pass
+
+
+	# Apply the searching function again with the new names to be searched
+	search_dir_result_2 = existing_database_search_dir_iteration(possible_subs_name_permutations,df_dir_tabulation)
+
+	# Second search: Array of indexes
+	index_list_subs_needed_2 = search_dir_result_2[0]
+
+	# Second search: Subs found 
+	sub_names_found_2 = search_dir_result_2[1]
+	print(f"Search 2 Found: {len(sub_names_found_2)} {sub_names_found_2}")
+
+	# Second search: Subs not found
+	subs_not_found_2 = search_dir_result_2[2]
+	print(f"Search 2 Not Found: {len(subs_not_found_2)} {subs_not_found_2}")
+
+	# Appending the new indexes to the existing index lists
+	for index_2 in index_list_subs_needed_2:
+		index_list_subs_needed.append(index_2)
+
+
+	# Remove duplicates from the index list
+	index_list_subs_needed = list(set(index_list_subs_needed))
+
+	# The new output containing the subcontractors' name with their email
+	sub_information_output = pd.DataFrame()
+
+	# Lists for the new data frame
+	sub_names = []
+	sub_emails = []
+
+	# Allocate parameters into a list for future dataframe
+	for index in index_list_subs_needed:
+		sub_names.append(df_dir_tabulation.iloc[:,0][index]) # Name
+		sub_emails.append(df_dir_tabulation.iloc[:,2][index]) # Email
+
+	# Append the list and make them the columns of the new dataframe
+	sub_information_output["SubNames"] = sub_names
+	sub_information_output["SubEmails"] = sub_emails
+
+	# Drop any duplicates
+	sub_information_output.drop_duplicates(inplace=True)
+
+	# Voila
+	print(sub_information_output)
+
+
 
 
 '''
@@ -441,7 +606,6 @@ if __name__ == '__main__':
 							new_emails_extracted.append(possible_email)
 						else:
 							continue
-					print(new_emails_extracted)
 					result_queue.put([url,new_emails_extracted])
 
 
@@ -456,7 +620,6 @@ if __name__ == '__main__':
 						new_emails_extracted.append(new_email.text)
 
 					# Return the result
-					print(new_emails_extracted)
 					result_queue.put([url,new_emails_extracted])
 
 			# No emails found in the Google Search link
@@ -483,11 +646,13 @@ if __name__ == '__main__':
 	#print(subcontractor_categorization(new_csv_cslb_file))
 
 	# Step 4: Check if the subcontractors are in the existing DIR and DVE data bases
-	#existing_database_search()
+	bid_needed_subs_csv_file = "bid_subcontractors.csv"
+	dir_database_file = "dir_entities.csv"
+	existing_database_search(bid_needed_subs_csv_file,dir_database_file)
+
 
 	# Step 5: Search subcontractor in the newly extracted list and search their email on the web
-	bid_needed_subs_csv_file = "bid_subcontractors.csv"
-	print(searching_needed_subs(bid_needed_subs_csv_file))
+	#print(searching_needed_subs(bid_needed_subs_csv_file))
 
 
 
