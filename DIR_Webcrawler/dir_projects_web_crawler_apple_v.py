@@ -168,7 +168,7 @@ if __name__ == '__main__':
 	# Location of storage and math associated with it
 	csv_file = 'dir_projects.csv'
 	initial_tabulation = pd.read_csv(csv_file,low_memory=False)
-	positional_location = 5195	
+	positional_location = 5960	
 
 	while positional_location != 12500:
 
@@ -181,7 +181,6 @@ if __name__ == '__main__':
 			print(f"Current Page {positional_location}")
 		else:
 			pass
-
 
 
 
