@@ -535,6 +535,7 @@ def searching_needed_subs(list_with_remaining_sub_names):
 					# Allocate the Queue
 					output_queue = Queue()
 
+					# Multithreading <nav> hrefs instance
 					for href_element in range(len(href_attribute_acquired)):
 						t = threading.Thread(name="Executing: {}".format(href_attribute_acquired[href_element]),
 							target=a_tags_in_nav_tags,args=(href_attribute_acquired[href_element],output_queue))
@@ -562,91 +563,95 @@ def searching_needed_subs(list_with_remaining_sub_names):
 			print(exe)
 			print("No RHS side.")
 
-		# '''
-		# II. The sub has a website and but doesn't have a RHS (Right Hand Side) in the Google search.
-		# Or perhaps it does include a RHS, but we still want to iterate through other websites to increase
-		# the likelyhood of finding email addresses and additional information.
+		driver.back()
+
+		'''
+		II. The sub has a website and but doesn't have a RHS (Right Hand Side) in the Google search.
+		Or perhaps it does include a RHS, but we still want to iterate through other websites to increase
+		the likelyhood of finding email addresses and additional information.
 		
-		# Look, I know we want to build for each website, but it is too diverse, and what's worse: not all
-		# websites have an available "mailto:", I'd say that we need to enter the top 10 websites on the
-		# Google search, search for "mailto:", and extract it. If the email does not belong to the respective 
-		# subcontractor, we can still do a DIR and Planetbids (both, results and prospective bidders).
-		# '''
-		# try:
-		# 	# The first step is to get the top 8 websites that appear in the Google search, first locate the element containing all links
-		# 	google_results = WebDriverWait(driver,10).until(
-		# 		EC.presence_of_element_located((By.ID,"search")))
+		Look, I know we want to build for each website, but it is too diverse, and what's worse: not all
+		websites have an available "mailto:", I'd say that we need to enter the top 10 websites on the
+		Google search, search for "mailto:", and extract it. If the email does not belong to the respective 
+		subcontractor, we can still do a DIR and Planetbids (both, results and prospective bidders).
+		'''
+		try:
 
-		# 	# Acquire the elements containing the links
-		# 	google_results_links = google_results.find_elements(By.TAG_NAME,"a")
+			print(driver.current_url)
+			# The first step is to get the top 8 websites that appear in the Google search, first locate the element containing all links
+			google_results = WebDriverWait(driver,10).until(
+				EC.presence_of_element_located((By.ID,"search")))
 
-		# 	# Extract the actual urls from the links
-		# 	individual_links = [individual_link.get_attribute("href") for individual_link in google_results_links]
+			# Acquire the elements containing the links
+			google_results_links = google_results.find_elements(By.TAG_NAME,"a")
 
-		# 	# Before proceeding with entering every single Google search website, let's remove the first website we entered above from the list
-		# 	for website in individual_links:
+			# Extract the actual urls from the links
+			individual_links = [individual_link.get_attribute("href") for individual_link in google_results_links]
 
-		# 		# Adding websites
-		# 		if entity_location_websites[0] not in website:
-		# 			entity_location_websites.append(website)
+			# Before proceeding with entering every single Google search website, let's remove the first website we entered above from the list
+			for website in individual_links:
 
-		# 		# Removing the already visited website
-		# 		else:
-		# 			pass
+				# Adding websites
+				if entity_location_websites[0] not in website:
+					entity_location_websites.append(website)
 
-		# 	# Remove any duplicates that might've appeared
-		# 	entity_location_websites = list(set(entity_location_websites))
+				# Removing the already visited website
+				else:
+					pass
 
-		# 	# Where all the threads will be located
-		# 	linking_threads = []
+			# Remove any duplicates that might've appeared
+			entity_location_websites = list(set(entity_location_websites))
 
-		# 	# Now, let's build something to iterate through each newly acquired website, while skipping the one we already visited
-		# 	try:
+			# Where all the threads will be located
+			linking_threads = []
 
-		# 		# Allocate the Queue
-		# 		result_queue = Queue()
+			# Now, let's build something to iterate through each newly acquired website, while skipping the one we already visited
+			try:
 
-		# 		# Iterate through each website from the Google search results and extract the "mailto:" element using multithrearding()
-		# 		for url_attempt in entity_location_websites:
+				# Allocate the Queue
+				result_queue = Queue()
 
-		# 			# Apply the multithrearding() function
-		# 			thread = threading.Thread(target=multithrearding,args=(url_attempt,result_queue))
-		# 			linking_threads.append(thread)
-		# 			thread.start()
+				# Iterate through each website from the Google search results and extract the "mailto:" element using multithrearding()
+				for url_attempt in entity_location_websites:
 
-		# 		# Iterate
-		# 		for thread_link in linking_threads:
-		# 			thread_link.join()
+					# Apply the multithrearding() function
+					thread = threading.Thread(target=multithrearding,args=(url_attempt,result_queue))
+					linking_threads.append(thread)
+					thread.start()
 
-		# 		# Usable item
-		# 		resultings = []
+				# Iterate
+				for thread_link in linking_threads:
+					thread_link.join()
 
-		# 		# Put the results into the usable list
-		# 		while not result_queue.empty():
-		# 			resultings.append(result_queue.get())
+				# Usable item
+				resultings = []
 
-		# 		# Extract the emails newly acquired from multithrearding()
-		# 		for email_acquired in resultings:
-		# 			if email_acquired[1][0] == "No Emails":
-		# 				pass
-		# 			else:
-		# 				emails_extracted.append(email_acquired[1][0])
+				# Put the results into the usable list
+				while not result_queue.empty():
+					resultings.append(result_queue.get())
 
-		# 		# Remove duplicates again
-		# 		emails_extracted = list(set(emails_extracted))
+				# Extract the emails newly acquired from multithrearding()
+				for email_acquired in resultings:
+					if email_acquired[1][0] == "No Emails":
+						pass
+					else:
+						emails_extracted.append(email_acquired[1][0])
 
-		# 		# Remove debris
-		# 		emails_extracted = [item for item in emails_extracted if item]
+				# Remove duplicates again
+				emails_extracted = list(set(emails_extracted))
+
+				# Remove debris
+				emails_extracted = [item for item in emails_extracted if item]
 
 
-		# 	# Something happened
-		# 	except Exception as exe:
-		# 		print("UNEXPECTED")
-		# 		print(exe)
+			# Something happened
+			except Exception as exe:
+				print("UNEXPECTED")
+				print(exe)
 
-		# except Exception as exe:
-		# 	print("No Website nor RHS")
-		# 	print(exe)
+		except Exception as exe:
+			print("No Website nor RHS")
+			print(exe)
 
 
 	# Returns a list of emails without duplicates
