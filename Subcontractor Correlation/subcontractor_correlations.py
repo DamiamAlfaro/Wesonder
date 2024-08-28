@@ -483,20 +483,19 @@ def searching_needed_subs(list_with_remaining_sub_names):
 					print("No Email found")
 					print(exe)
 
+				# Sometimes the "Home" link is there, so we need to make sure we avoid it since we begin in it
+				home_url = driver.current_url
+
+				# First website where the entity could be found, i.e. the first Google search result
+				entity_location_websites.append(home_url)
+
+				# List of actual url links
+				href_attribute_acquired = []
+
 				# Furthermore, you can look through every tab of the navigation bar (a standard in websites) within the website and look for any "mailto:"
 				try:
-					# Sometimes the "Home" link is there, so we need to make sure we avoid it since we begin in it
-					home_url = driver.current_url
-
-					# First website where the entity could be found, i.e. the first Google search result
-					entity_location_websites.append(home_url)
-
 					# First, let's look for any <nav> tag, following by a search of <a href> within them
 					nav_elements_in_website = driver.find_element(By.TAG_NAME,"nav") # list, need the first element of it always (top most nav)
-
-					# List of actual url links
-					href_attribute_acquired = []
-					output_queue = Queue()
 
 					# For every navigation tag, find the link associated within it
 					a_tags_nav = nav_elements_in_website.find_elements(By.TAG_NAME,"a")
@@ -509,18 +508,32 @@ def searching_needed_subs(list_with_remaining_sub_names):
 
 				except Exception as exe:
 					print("No <nav> tags")
-					print(exe)
+					#print(exe)
 
 				# Do the same but for the <footer>, find all <a> tags in it and the "mailto:" within them
 				try:
-					pass
-				except:
-					print("No <footer>")
+					# Let's pinpoint the footer
+					footer_tag_element = driver.find_element(By.TAG_NAME,"footer")
 
+					# Find the <a> within <footer>
+					a_tags_footer = footer_tag_element.find_elements(By.TAG_NAME,"a")
+
+					# Append the 'href' attributes to the href list
+					for a_tag_footer in a_tags_footer:
+						if len(a_tag_footer.text) > 0:
+							href_attribute_footer = a_tag_footer.get_attribute("href")
+							href_attribute_acquired.append(href_attribute_footer)
+
+				except Exception as exe:
+					print("No <footer>")
+					#print(exe)
 
 				try:
 					# Iterate through the new list of links
 					thread_list = list()
+
+					# Allocate the Queue
+					output_queue = Queue()
 
 					for href_element in range(len(href_attribute_acquired)):
 						t = threading.Thread(name="Executing: {}".format(href_attribute_acquired[href_element]),
