@@ -413,7 +413,7 @@ def multithrearding(url,result_queue):
 '''
 A function to iterate through every <a> in the <nav> of a website
 '''
-def a_tags_in_nav_tags(url_in_question):
+def a_tags_in_nav_tags(url_in_question,output_queue):
 
 	# Extracted emails
 	extracted_emails_a_tag_nav = []
@@ -429,7 +429,7 @@ def a_tags_in_nav_tags(url_in_question):
 	except:
 		print("No Emails")
 
-	return extracted_emails_a_tag_nav
+	output_queue.put(extracted_emails_a_tag_nav)
 
 
 '''
@@ -496,46 +496,48 @@ def searching_needed_subs(list_with_remaining_sub_names):
 
 					# List of actual url links
 					href_attribute_acquired = []
+					output_queue = Queue()
 
 					# For every navigation tag, find the link associated within it
 					a_tags_nav = nav_elements_in_website.find_elements(By.TAG_NAME,"a")
 
-					thread_list = list()
-
-					# Extract the href attributes and append them to a list
-					for a_tag_nav in range(len(a_tags_nav)):
-
-						threading_instance_2 = threading.Thread(name=f"URL {a_tags_nav[a_tag_nav].get_attribute('href')}",target=a_tags_in_nav_tags,args=a_tags_nav[a_tag_nav].get_attribute("href"))
-
-						threading_instance_2.start()
-
-						time.sleep(2)
-
-						thread_list.append(t)
-
-					for threaddd in thread_list:
-						threaddd.join()
-
-					print("is working")
-
-						# emails_instance_extracted = a_tags_in_nav_tags(a_tag_nav.get_attribute("href"))
-						# for email_extracted_instance in emails_instance_extracted:
-						# 	emails_extracted.append(email_extracted_instance)
-
-
-					
-
+					# Only get the ones that contain text because they are usually the valid links
+					for a_tag_nav in a_tags_nav:
+						if len(a_tag_nav.text) > 0:
+							href_attribute = a_tag_nav.get_attribute("href")
+							href_attribute_acquired.append(href_attribute)
 
 				except Exception as exe:
-					print("No <nav> elements")
+					print("No <nav> tags")
 					print(exe)
 
-
-				# Do the same but for the <footer>
+				# Do the same but for the <footer>, find all <a> tags in it and the "mailto:" within them
 				try:
-					print("you")
+					pass
 				except:
 					print("No <footer>")
+
+
+				try:
+					# Iterate through the new list of links
+					thread_list = list()
+
+					for href_element in range(len(href_attribute_acquired)):
+						t = threading.Thread(name="Executing: {}".format(href_attribute_acquired[href_element]),
+							target=a_tags_in_nav_tags,args=(href_attribute_acquired[href_element],output_queue))
+						t.start()
+						time.sleep(1)
+						thread_list.append(t)
+
+					for thread in thread_list:
+						thread.join()
+
+					while not output_queue.empty():
+						emails_extracted.extend(output_queue.get())
+
+				except Exception as exe:
+					print("No <nav> multithrearding")
+					print(exe)
 
 
 			except Exception as exe:
