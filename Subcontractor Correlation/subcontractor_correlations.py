@@ -262,7 +262,7 @@ def existing_database_search(bid_needed_csv_file,dir_database):
 		sub_names_splited.append(spliting_name)
 		sub_names_not_found_first_word.append(spliting_name[0])
 
-	# List of lists of permutations, i.e. the number of permutations per each of the Not Found 1
+	# List of lists of valid permutations, i.e. the number of permutations per each of the Not Found 1 without undesired words
 	permutations_inquiry = []
 
 	# A list of all possible individual sub name permutations
@@ -314,44 +314,19 @@ def existing_database_search(bid_needed_csv_file,dir_database):
 	# The list of names that have to be searched in google; desired output
 	subs_not_found_search_need = []
 
-	# We will use this to refence the original name if search is needed for it
-	#subs_not_found_index = [index for index in range(len(subs_not_found))]
+	# Indexes pertaining to the "permutations_inquiry" list that tell the items with the first word in them
+	first_word_instance_indexes = []
+	
+	# Classifying the indexes and words of each permutation
+	for permutation_set in permutations_inquiry:
+		word_appearances = []
+		for permutation_word_instance in permutation_set:
+			for first_word in sub_names_not_found_first_word:
+				if first_word in permutation_word_instance:
+					index_appearance = permutation_set.index(permutation_word_instance)
+					word_appearances.append(index_appearance)
 
-	# Reference only
-	list_of_traitors = []
-
-	for permutations_list,original_first_word in zip(permutations_inquiry,sub_names_not_found_first_word):
-
-		traitor_identified = []
-		
-		for permutation_in_question in permutations_list:
-
-			if original_first_word in permutation_in_question:
-				pass
-			else:
-				index_of_no_name = permutations_list.index(permutation_in_question)
-				permutation_no_name = permutation_in_question
-				traitor_identified.append(permutation_no_name)
-				traitor_identified.append(index_of_no_name)
-
-		list_of_traitors.append(traitor_identified)
-
-	#print(subs_not_found_index)
-	for not_found_1_index, permutation_set in enumerate(permutations_inquiry):
-		print("----------------")
-		print(f"{not_found_1_index}: {permutation_set}")
-
-	print("----------------")
-	print(f"Not searchable: {list_of_traitors}")
-	print("----------------")
-	print(f"Original First words: {sub_names_not_found_first_word}")
-	print("----------------")
-	print(f"Round 2 Search: {possible_subs_name_permutations}")
-	print("----------------")
-	print(f"Desired output: {subs_not_found_search_need}")
-	print("----------------")
-
-
+		first_word_instance_indexes.append(word_appearances)
 
 	# Apply the searching function again with the new names to be searched
 	search_dir_result_2 = existing_database_search_dir_iteration(possible_subs_name_permutations,df_dir_tabulation)
@@ -365,9 +340,32 @@ def existing_database_search(bid_needed_csv_file,dir_database):
 
 	# Second search: Subs not found
 	subs_not_found_2 = search_dir_result_2[2]
-	print("----------------")
 	print(f"Search 2 Not Found: {len(subs_not_found_2)} {subs_not_found_2}")
-	print("----------------")
+
+	# Length of lists that contain the items that contain the first word
+	length_counts = []
+
+	for first_word_instance in first_word_instance_indexes:
+		count = 0
+		permutation_inquiry_set_index = first_word_instance_indexes.index(first_word_instance)
+		for first_word_index_instance in first_word_instance:
+			if permutations_inquiry[permutation_inquiry_set_index][first_word_index_instance] in subs_not_found_2:
+				count += 1
+			else:
+				pass
+		length_counts.append(count)
+
+
+	# Acknowledging which original Not Found 1 were missed
+	for length_of_instance_index in length_counts:
+		total_length_index = length_counts.index(length_of_instance_index)
+		if len(first_word_instance_indexes[total_length_index]) == length_of_instance_index:
+			subs_not_found_search_need.append(subs_not_found[total_length_index])
+		else:
+			pass
+
+	print(f"Will search: {subs_not_found_search_need}")
+
 
 	# Appending the new indexes to the existing index lists
 	for index_2 in index_list_subs_needed_2:
