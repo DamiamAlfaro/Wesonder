@@ -189,6 +189,7 @@ def existing_database_search_dir_iteration(array_of_values,df_dir_tabulation): #
 
 	# Iterate through the list of subs that we need
 	for subcontractor_in_question in array_of_values:
+		print(subcontractor_in_question)
 
 		# Iterate through the DIR database to find the subs we need
 		for possible_subcontractor_instance in df_dir_tabulation["EntityName"]:
@@ -230,7 +231,7 @@ def existing_database_search(bid_needed_csv_file,dir_database):
 	df_dir_tabulation["EntityName"] = df_dir_tabulation["EntityName"].astype(str)
 
 	# Acquire the first four subs from the needed sub list for the bid in question
-	testing_subs_needed = df_dir_correlation["BusinessName"][:4]
+	testing_subs_needed = df_dir_correlation["BusinessName"][:6]
 
 	search_dir_result_1 = existing_database_search_dir_iteration(testing_subs_needed,df_dir_tabulation)
 
@@ -241,7 +242,7 @@ def existing_database_search(bid_needed_csv_file,dir_database):
 	subs_not_found = search_dir_result_1[2] # Subs not found
 
 	# See which of the names were not found
-	print(f"Search 1 Found: {len(sub_names_found)} {sub_names_found}")
+	print(f"Search 1 Found: {len(sub_names_found)} {sub_names_found}") # What has to be searched in google if not found in the second
 
 	# Subs not found
 	print(f"Search 1 Not Found: {len(subs_not_found)} {subs_not_found}")
@@ -250,12 +251,20 @@ def existing_database_search(bid_needed_csv_file,dir_database):
 	undesired_company_words = ["CO","CORPORATION", "INC", "INCORPORATED", "LLC", 
 	"COMPANY", "MANUFACTURE", "LTD", "MFG", "ASSOCIATES", "ASSOC", "CORP"]
 
+	# Names not found First Word
+	sub_names_not_found_first_word = []
+
 	# Now that we know which were not found, we need to build the combination iteration
 	sub_names_splited = []
 
 	# Iterate through each not-found name and split it
 	for sub_notfound_name in subs_not_found:
-		sub_names_splited.append(sub_notfound_name.split(" "))
+		spliting_name = sub_notfound_name.split(" ")
+		sub_names_splited.append(spliting_name)
+		sub_names_not_found_first_word.append(spliting_name[0])
+
+	# Possible permutations and their count
+	possible_sub_name_permutations_and_count = []
 
 	# A list of all possible individual sub name permutations
 	possible_subs_name_permutations = []
@@ -263,6 +272,9 @@ def existing_database_search(bid_needed_csv_file,dir_database):
 	# Iterate through each splited name and pinpoint the possible permutations
 	for sub_splited_name in sub_names_splited:
 		sub_name_permutation = combinations(sub_splited_name,2) # two word combinations
+
+		# Amount of possible names
+		possible_names_count = 0
 
 		# Extract the individual permutation
 		for permutation in sub_name_permutation:
@@ -283,6 +295,8 @@ def existing_database_search(bid_needed_csv_file,dir_database):
 
 			# If the permutation does not contains unwanted, append it to desired list
 			if unwanted_words_status == False:
+
+				possible_names_count += 1
 
 				# Convert the set into a list
 				new_search_combination = list(permutation)
@@ -549,9 +563,12 @@ def searching_needed_subs(list_with_remaining_sub_names):
 					while not output_queue.empty():
 						emails_extracted.extend(output_queue.get())
 
+
 				except Exception as exe:
 					print("No <nav> multithrearding")
 					print(exe)
+
+				driver.back()
 
 
 			except Exception as exe:
@@ -562,8 +579,6 @@ def searching_needed_subs(list_with_remaining_sub_names):
 		except Exception as exe:
 			print(exe)
 			print("No RHS side.")
-
-		driver.back()
 
 		'''
 		II. The sub has a website and but doesn't have a RHS (Right Hand Side) in the Google search.
@@ -682,18 +697,20 @@ if __name__ == '__main__':
 	'''
 	Step 4: Check if the subcontractors are in the existing DIR and DVE data bases.
 	'''
-	#bid_needed_subs_csv_file = "bid_subcontractors.csv"
-	#dir_database_file = "dir_entities.csv"
-	#dir_search_results = existing_database_search(bid_needed_subs_csv_file,dir_database_file)
 
-	# The extracted data frame (intended to be allocated in a new excel)
-	#dataframe_with_results = dir_search_results[0]
+	dir_database_file = "/Users/damiamalfaro/Desktop/testing_wesonder/Database_connections/dir_entities.csv"
+	bid_needed_subs_csv_file = "/Users/damiamalfaro/Desktop/testing_wesonder/Database_connections/bid_subcontractors.csv"
+	dir_search_results = existing_database_search(bid_needed_subs_csv_file,dir_database_file)
 
-	# Need to search for the following remaining subs
-	#subs_still_needed = dir_search_results[1]
+	# # The extracted data frame (intended to be allocated in a new excel)
+	dataframe_with_results = dir_search_results[0]
+	print(dataframe_with_results)
+
+	# # Need to search for the following remaining subs
+	subs_still_needed = dir_search_results[1] # Apply google search
 
 	'''
-	Step 5: Search subcontractor in the newly extracted list and search their email on the web.
+	Step 5: Search subcontractor from the newly extracted list and search their email on the web.
 	'''
 
 	# Transcribed from the result of existing_database_search()
@@ -701,8 +718,8 @@ if __name__ == '__main__':
 	#print(len(subs_to_be_searched_in_google))
 
 	# Search for the remaining names
-	testing_list = ["CACY ELECTRIC","RAMONA METAL WORKS"]
-	print(searching_needed_subs(testing_list)) # Input: list()
+	# testing_list = ["CACY ELECTRIC","RAMONA METAL WORKS"]
+	# print(searching_needed_subs(testing_list)) # Input: list()
 
 	'''
 	Step 6: Connect the google function the DIR data base does not contain the word we are looking for.
