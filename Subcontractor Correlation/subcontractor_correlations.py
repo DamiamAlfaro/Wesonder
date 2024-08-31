@@ -3,6 +3,7 @@ import pandas as pd
 import os
 import re
 import threading
+import traceback
 import glob
 import csv
 import numpy as np
@@ -364,7 +365,7 @@ def existing_database_search(bid_needed_csv_file,dir_database):
 		else:
 			pass
 
-	print(f"Will search: {subs_not_found_search_need}")
+	#print(f"Will search: {subs_not_found_search_need}")
 
 
 	# Appending the new indexes to the existing index lists
@@ -492,134 +493,23 @@ This will be the most arduous function so far, in here we will categorize the
 Google results and try to look for the email in any of them.
 '''
 def searching_needed_subs(list_with_remaining_sub_names):
-	# Websites in which the entity can be found
-	entity_location_websites = []
 
 	# Emails extracted list after all operations below
 	emails_extracted = []
 
 	# Allocate the names (and other attributes) that will help you find the entitiy in the web
 	for remaining_name in list_with_remaining_sub_names:
-		print(remaining_name)
+
+		# Entity google searchg instance emails
+		entity_google_search_emails = []
+
+		# Websites in which the entity can be found
+		entity_location_websites = []
 
 		# Search it in the web
 		driver = webdriver.Chrome()
 		driver.get("https://google.co.in/search?q=" + remaining_name)
 		time.sleep(4)
-
-		'''
-		I. The sub has a website and a RHS (Right Hand Side) in the Google search
-		'''
-		try:
-			rhs_found = WebDriverWait(driver,10).until(
-				EC.presence_of_element_located((By.ID,"rhs"))
-			)
-
-			# If there is, let's check if there is an available website. First let's find the buttons available in the RHS
-			try:
-				rhs_buttons = driver.find_elements(By.TAG_NAME,"button")
-				# If there are, search for the one that says "Website"
-				website_button = []
-				for rhs_button in rhs_buttons:
-					if rhs_button.text == "Website":
-						website_button.append(rhs_button)
-					else:
-						pass
-
-				# Click the button
-				website_button[0].click()
-
-				# Now, once in, try to look for the mailto: element that includes an email
-				try:
-					mailto_element = driver.find_elements(By.XPATH,'//a[contains(@href,"mailto")]')
-					for emails in mailto_element:
-						emails_extracted.append(emails.text)
-				except Exception as exe:
-					print("No Email found")
-					print(exe)
-
-				# Sometimes the "Home" link is there, so we need to make sure we avoid it since we begin in it
-				home_url = driver.current_url
-
-				# First website where the entity could be found, i.e. the first Google search result
-				entity_location_websites.append(home_url)
-
-				# List of actual url links
-				href_attribute_acquired = []
-
-				# Furthermore, you can look through every tab of the navigation bar (a standard in websites) within the website and look for any "mailto:"
-				try:
-					# First, let's look for any <nav> tag, following by a search of <a href> within them
-					nav_elements_in_website = driver.find_element(By.TAG_NAME,"nav") # list, need the first element of it always (top most nav)
-
-					# For every navigation tag, find the link associated within it
-					a_tags_nav = nav_elements_in_website.find_elements(By.TAG_NAME,"a")
-
-					# Only get the ones that contain text because they are usually the valid links
-					for a_tag_nav in a_tags_nav:
-						if len(a_tag_nav.text) > 0:
-							href_attribute = a_tag_nav.get_attribute("href")
-							href_attribute_acquired.append(href_attribute)
-
-				except Exception as exe:
-					print("No <nav> tags")
-					#print(exe)
-
-				# Do the same but for the <footer>, find all <a> tags in it and the "mailto:" within them
-				try:
-					# Let's pinpoint the footer
-					footer_tag_element = driver.find_element(By.TAG_NAME,"footer")
-
-					# Find the <a> within <footer>
-					a_tags_footer = footer_tag_element.find_elements(By.TAG_NAME,"a")
-
-					# Append the 'href' attributes to the href list
-					for a_tag_footer in a_tags_footer:
-						if len(a_tag_footer.text) > 0:
-							href_attribute_footer = a_tag_footer.get_attribute("href")
-							href_attribute_acquired.append(href_attribute_footer)
-
-				except Exception as exe:
-					print("No <footer>")
-					#print(exe)
-
-				try:
-					# Iterate through the new list of links
-					thread_list = list()
-
-					# Allocate the Queue
-					output_queue = Queue()
-
-					# Multithreading <nav> hrefs instance
-					for href_element in range(len(href_attribute_acquired)):
-						t = threading.Thread(name="Executing: {}".format(href_attribute_acquired[href_element]),
-							target=a_tags_in_nav_tags,args=(href_attribute_acquired[href_element],output_queue))
-						t.start()
-						time.sleep(1)
-						thread_list.append(t)
-
-					for thread in thread_list:
-						thread.join()
-
-					while not output_queue.empty():
-						emails_extracted.extend(output_queue.get())
-
-
-				except Exception as exe:
-					print("No <nav> multithrearding")
-					print(exe)
-
-				driver.back()
-
-
-			except Exception as exe:
-				print("No RHS Buttons.")
-				print(exe)
-
-
-		except Exception as exe:
-			print(exe)
-			print("No RHS side.")
 
 		'''
 		II. The sub has a website and but doesn't have a RHS (Right Hand Side) in the Google search.
@@ -633,10 +523,9 @@ def searching_needed_subs(list_with_remaining_sub_names):
 		'''
 		try:
 
-			print(driver.current_url)
 			# The first step is to get the top 8 websites that appear in the Google search, first locate the element containing all links
 			google_results = WebDriverWait(driver,10).until(
-				EC.presence_of_element_located((By.ID,"search")))
+				EC.presence_of_element_located((By.ID,"res")))
 
 			# Acquire the elements containing the links
 			google_results_links = google_results.find_elements(By.TAG_NAME,"a")
@@ -646,72 +535,87 @@ def searching_needed_subs(list_with_remaining_sub_names):
 
 			# Before proceeding with entering every single Google search website, let's remove the first website we entered above from the list
 			for website in individual_links:
-
 				# Adding websites
-				if entity_location_websites[0] not in website:
-					entity_location_websites.append(website)
+				entity_location_websites.append(website)
 
-				# Removing the already visited website
-				else:
-					pass
-
-			# Remove any duplicates that might've appeared
+			# Remove any duplicated websites that might've appeared
 			entity_location_websites = list(set(entity_location_websites))
 
 			# Where all the threads will be located
 			linking_threads = []
 
 			# Now, let's build something to iterate through each newly acquired website, while skipping the one we already visited
-			try:
+			result_queue = Queue()
 
-				# Allocate the Queue
-				result_queue = Queue()
+			# Iterate through each website from the Google search results and extract the "mailto:" element using multithrearding()
+			for url_attempt in entity_location_websites:
 
-				# Iterate through each website from the Google search results and extract the "mailto:" element using multithrearding()
-				for url_attempt in entity_location_websites:
+				# Apply the multithrearding() function
+				thread = threading.Thread(target=multithrearding,args=(url_attempt,result_queue))
+				linking_threads.append(thread)
+				thread.start()
 
-					# Apply the multithrearding() function
-					thread = threading.Thread(target=multithrearding,args=(url_attempt,result_queue))
-					linking_threads.append(thread)
-					thread.start()
+			# Iterate
+			for thread_link in linking_threads:
+				thread_link.join()
 
-				# Iterate
-				for thread_link in linking_threads:
-					thread_link.join()
+			# Usable item
+			resultings = []
 
-				# Usable item
-				resultings = []
+			# Put the results into the usable list
+			while not result_queue.empty():
+				resultings.append(result_queue.get())
 
-				# Put the results into the usable list
-				while not result_queue.empty():
-					resultings.append(result_queue.get())
-
-				# Extract the emails newly acquired from multithrearding()
-				for email_acquired in resultings:
-					if email_acquired[1][0] == "No Emails":
-						pass
-					else:
-						emails_extracted.append(email_acquired[1][0])
-
-				# Remove duplicates again
-				emails_extracted = list(set(emails_extracted))
-
-				# Remove debris
-				emails_extracted = [item for item in emails_extracted if item]
+			# We allocate into the emails extracted list only the actual emails, not other elements
+			for i in resultings:
+				for j in i:
+					if isinstance(j,list):
+						for k in j:
+							if "@" in k:
+								entity_google_search_emails.append(k.lower())
 
 
-			# Something happened
-			except Exception as exe:
-				print("UNEXPECTED")
-				print(exe)
+			# Remove duplicates again
+			entity_google_search_emails = list(set(entity_google_search_emails))
 
-		except Exception as exe:
-			print("No Website nor RHS")
-			print(exe)
+			# Remove debris
+			entity_google_search_emails = [item for item in entity_google_search_emails if item]
+
+			# Append the subset into the main set of emails 
+			emails_extracted.append([remaining_name,entity_google_search_emails])
+
+		except Exception as exc:
+			raise RuntimeError("Top Google Searches problem") from exc 
 
 
-	# Returns a list of emails without duplicates
-	return list(set(emails_extracted))
+	'''
+	Allocate the results into a pandas DataFrame using the same structure of the DIR Results data frame for
+	future combination of both.
+	'''
+	returnable_dataframe = pd.DataFrame()
+
+	# Lists for data frame above
+	sub_names_google_result = []
+	sub_emails_google_result = []
+
+	# EntityName column
+	for entity_search_result in emails_extracted:
+		sub_names_google_result.append(entity_search_result[0])
+		sub_emails_google_result.append('; '.join(entity_search_result[1]))
+
+	# Allocate the lists into the dataframe
+	returnable_dataframe["SubNames"] = sub_names_google_result
+	returnable_dataframe["SubEmails"] = sub_emails_google_result
+
+	'''
+	Beautiful Result
+	'''
+	return returnable_dataframe
+
+def combining_dataframes_and_outputing(list_of_dataframes):
+	main_dataframe = pd.concat(list_of_dataframes)
+	return main_dataframe
+
 
 
 
@@ -749,23 +653,33 @@ if __name__ == '__main__':
 
 	# # Need to search for the following remaining subs
 	subs_still_needed = dir_search_results[1] # Apply google search
+	print(f"\nSearching for: \n{subs_still_needed}")
 
 	'''
 	Step 5: Search subcontractor from the newly extracted list and search their email on the web.
 	'''
 
 	# Transcribed from the result of existing_database_search()
-	#subs_to_be_searched_in_google = subs_still_needed
-	#print(len(subs_to_be_searched_in_google))
+	#print(len(subs_still_needed))
 
 	# Search for the remaining names
-	# testing_list = ["CACY ELECTRIC","RAMONA METAL WORKS"]
-	# print(searching_needed_subs(testing_list)) # Input: list()
+	google_search_results = searching_needed_subs(subs_still_needed) # Input: list()
+
+	# Search for the needed entities
+	if len(google_search_results) == 0:
+		print("No Google Search Results")
+	else:
+		print(google_search_results)
+		google_search_df = google_search_results
 
 	'''
-	Step 6: Connect the google function the DIR data base does not contain the word we are looking for.
+	Combine dataframes and output them
 	'''
-
+	list_of_dataframes = [
+	dataframe_with_results,
+	google_search_df
+	]
+	print(combining_dataframes_and_outputing(list_of_dataframes))
 
 
 
