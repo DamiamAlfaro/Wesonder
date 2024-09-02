@@ -213,7 +213,6 @@ def existing_database_search_dir_iteration(array_of_values,df_dir_tabulation): #
 	# Returns an Array of indexes fo subscontractors, the subcontractors found (their index in the first return value), and the subs not found
 	return index_list_subs_needed, sub_names_found, subs_not_found
 
-
 '''
 Classifying permutations and outputing the ones including the first word of the company. For further explanation check the 
 WeSonder notes [September 1, 2024, a]
@@ -277,6 +276,45 @@ def single_character_permutation_refinement(original_permutations_set,first_two_
 
 
 '''
+Identify which are the subs that were not found and get their original (from the first array of values)
+names in order to search for them in google.
+'''
+def subs_not_found_now_search(subs_not_found_list_2,permutation_list_1,subs_not_found_1):
+
+	# Indexes of entities not found in proportion to the Not Found 1 List
+	search_indexes = []
+
+	# permutation_not_found: a permutated string that was not found -> "WORD ARRANGEMENT"
+	for permutation_not_found in subs_not_found_list_2:
+
+		# possible_permutations: a list containing the possible permutations of from the Not Found 1 list -> ["WORD ARRANGEMENT"]
+		for possible_permutations in permutation_list_1:
+
+			# Get the index of the location of such permutation to output its location in proportion to the original Not Found 1 List
+			entity_not_found_index = permutation_list_1.index(possible_permutations)
+
+			# permutation_word: the actual string in the possible_permutations list -> "WORD ARRANGEMENT"
+			for permutation_word in possible_permutations:
+
+				# Check if permutation_not_found (not found permutated string) is the same as permutation_word 
+				if permutation_not_found == permutation_word:
+
+					# Append the found index
+					search_indexes.append(entity_not_found_index)
+
+				else:
+					pass
+
+	# Remove duplicates
+	search_indexes = list(set(search_indexes))
+
+	# List the entities in need of a google search
+	entities_to_search = [subs_not_found_1[i] for i in search_indexes]		
+
+	return entities_to_search
+
+
+'''
 Here we will look for the emails and any related information in the data bases we already possess.
 '''
 def existing_database_search(bid_needed_csv_file,dir_database):
@@ -293,7 +331,7 @@ def existing_database_search(bid_needed_csv_file,dir_database):
 	df_dir_tabulation["EntityName"] = df_dir_tabulation["EntityName"].astype(str)
 
 	# Acquire the first four subs from the needed sub list for the bid in question
-	testing_subs_needed = df_dir_correlation["BusinessName"][:20]
+	testing_subs_needed = df_dir_correlation["BusinessName"][:10]
 
 	search_dir_result_1 = existing_database_search_dir_iteration(testing_subs_needed,df_dir_tabulation)
 
@@ -389,24 +427,6 @@ def existing_database_search(bid_needed_csv_file,dir_database):
 	refined_original_permutations = refined_new_set_of_permutations_to_search[0]
 	refined_possible_subs_names = refined_new_set_of_permutations_to_search[1]
 
-	# The list of names that have to be searched in google; desired output
-	subs_not_found_search_need = []
-
-	# Indexes pertaining to the "permutations_inquiry" list that tell the items with the first word in them
-	first_word_instance_indexes = []
-	
-	# Classifying the indexes and words of each permutation
-	for permutation_set in permutations_inquiry:
-		word_appearances = []
-		for permutation_word_instance in permutation_set:
-			for first_word in sub_names_not_found_first_word:
-				if first_word in permutation_word_instance:
-					index_appearance = permutation_set.index(permutation_word_instance)
-					word_appearances.append(index_appearance)
-
-		first_word_instance_indexes.append(word_appearances)
-
-
 	# Apply the searching function again with the new names to be searched
 	search_dir_result_2 = existing_database_search_dir_iteration(refined_possible_subs_names,df_dir_tabulation)
 
@@ -421,27 +441,13 @@ def existing_database_search(bid_needed_csv_file,dir_database):
 	subs_not_found_2 = search_dir_result_2[2]
 	print(f"Search 2 Not Found: {len(subs_not_found_2)} {subs_not_found_2}")
 
-	# Length of lists that contain the items that contain the first word
-	length_counts = []
-
-	for first_word_instance in first_word_instance_indexes:
-		count = 0
-		permutation_inquiry_set_index = first_word_instance_indexes.index(first_word_instance)
-		for first_word_index_instance in first_word_instance:
-			if permutations_inquiry[permutation_inquiry_set_index][first_word_index_instance] in subs_not_found_2:
-				count += 1
-			else:
-				pass
-		length_counts.append(count)
-
-
-	# Acknowledging which original Not Found 1 were missed
-	for length_of_instance_index in length_counts:
-		total_length_index = length_counts.index(length_of_instance_index)
-		if len(first_word_instance_indexes[total_length_index]) == length_of_instance_index:
-			subs_not_found_search_need.append(subs_not_found[total_length_index])
-		else:
-			pass
+	# Indexes pertaining to the "permutations_inquiry" list that tell the items with the first word in them
+	first_word_instance_indexes = []
+	
+	# Identify which subs were not found based on the original list
+	subs_not_found_search_need = subs_not_found_now_search(subs_not_found_2,
+		refined_original_permutations,
+		subs_not_found)
 
 
 	# Appending the new indexes to the existing index lists
@@ -686,9 +692,7 @@ def searching_needed_subs(list_with_remaining_sub_names):
 	returnable_dataframe["SubNames"] = sub_names_google_result
 	returnable_dataframe["SubEmails"] = sub_emails_google_result
 
-	'''
-	Beautiful Result
-	'''
+	# Beautiful Result
 	return returnable_dataframe
 
 # Combining dataframes (pretty easy, but repetitive, therefore a function)
@@ -698,9 +702,24 @@ def combining_dataframes_and_outputing(list_of_dataframes):
 
 
 
+def append_county_column_to_database(original_database_file,ca_municipalities):
 
+	# Load the csv files
+	original_dir_db = pd.read_csv(original_database_file)
+	ca_municipalities_file = pd.read_csv(ca_municipalities)
 
+	# Counties column from ca_municipalities_file
+	municipalities_counties = ca_municipalities_file["MunicipalityCounty"].str.upper()
+	municipalities_cities = ca_municipalities_file["MunicipalityName"].str.upper()
 
+	# Original Database cities
+	dir_db_cities_column = original_dir_db["EntityCity"].str.upper()
+
+	# New column (Counties) in DIR Data base
+	dir_db_counties_column = []
+
+	
+	
 
 # Onset
 if __name__ == '__main__':
@@ -722,28 +741,35 @@ if __name__ == '__main__':
 	#print(subcontractor_categorization(new_csv_cslb_file))
 
 	'''
+	Step 3.5: Modify the existing DIR Entities data base in order to display the county as a column as well.
+	The current step wasn't supposed to be included, but that is the beauty of practice, it reveals the beauty of phenomena by revealing its
+	nature.
+	'''
+	dir_database_file_original = "/Users/damiamalfaro/Desktop/testing_wesonder/Database_connections/dir_entities.csv"
+	california_municipalities_file = "/Users/damiamalfaro/Desktop/testing_wesonder/Database_connections/CaliforniaMunicipalities.csv"
+	print(append_county_column_to_database(dir_database_file_original,california_municipalities_file))
+
+
+	'''
 	Step 4: Check if the subcontractors are in the existing DIR and DVE data bases.
 	'''
 
-	dir_database_file = "/Users/damiamalfaro/Desktop/testing_wesonder/Database_connections/dir_entities.csv"
-	bid_needed_subs_csv_file = "/Users/damiamalfaro/Desktop/testing_wesonder/Database_connections/bid_subcontractors.csv"
-	dir_search_results = existing_database_search(bid_needed_subs_csv_file,dir_database_file)
+	# dir_database_file = "/Users/damiamalfaro/Desktop/testing_wesonder/Database_connections/dir_entities.csv"
+	# bid_needed_subs_csv_file = "/Users/damiamalfaro/Desktop/testing_wesonder/Database_connections/bid_subcontractors.csv"
+	# dir_search_results = existing_database_search(bid_needed_subs_csv_file,dir_database_file)
 
-	# # The extracted data frame (intended to be allocated in a new excel)
-	dataframe_with_results = dir_search_results[0]
-	print(dataframe_with_results)
+	# # # The extracted data frame (intended to be allocated in a new excel)
+	# dataframe_with_results = dir_search_results[0]
+	# print(dataframe_with_results)
 
-	# # Need to search for the following remaining subs
-	subs_still_needed = dir_search_results[1] # Apply google search
-	subs_still_needed = list(set(subs_still_needed))
-	print(f"\nSearching for: \n{subs_still_needed}")
+	# # # Need to search for the following remaining subs
+	# subs_still_needed = dir_search_results[1] # Apply google search
+	# subs_still_needed = list(set(subs_still_needed))
+	# print(f"\nSearching for: \n{len(subs_still_needed)}: {subs_still_needed}")
 
-	'''
-	Step 5: Search subcontractor from the newly extracted list and search their email on the web.
-	'''
-
-	# Transcribed from the result of existing_database_search()
-	#print(len(subs_still_needed))
+	# '''
+	# Step 5: Search subcontractor from the newly extracted list and search their email on the web.
+	# '''
 
 	# # Search for the remaining names
 	# google_search_results = searching_needed_subs(subs_still_needed) # Input: list()
