@@ -16,6 +16,7 @@ from selenium.webdriver.common.keys import Keys
 from selenium.webdriver.support.ui import WebDriverWait
 from selenium.webdriver.support import expected_conditions as EC
 from selenium.common.exceptions import TimeoutException
+from string import ascii_letters, digits
 import time
 
 
@@ -213,6 +214,67 @@ def existing_database_search_dir_iteration(array_of_values,df_dir_tabulation): #
 	return index_list_subs_needed, sub_names_found, subs_not_found
 
 
+'''
+Classifying permutations and outputing the ones including the first word of the company. For further explanation check the 
+WeSonder notes [September 1, 2024, a]
+'''
+def first_word_appearance_only(permutations_for_each_name,first_word_of_the_names):
+
+	# Iterating through the permutations and extracting the ones with the first word
+	for permutation_set, first_word in zip(permutations_for_each_name,first_word_of_the_names):
+		for permutation_pair in permutation_set:
+			if first_word not in permutation_pair:
+				permutation_set.remove(permutation_pair)
+
+
+	# Return the permutations that will be searched on that include the first word
+	return permutations_for_each_name # list of permutations
+
+
+'''
+Modifying resulting permutations from the function above that have a single-character as part of their name. 
+For further explanation check WeSonder notes [September 1, 2024, a]
+'''
+def single_character_permutation_refinement(original_permutations_set,first_two_words_list):
+
+	# Permutation_individual_set: a list of permutations -> ["WORD AND WORD2","WORD AND WORD2"]
+	for permutation_individual_set in original_permutations_set:
+
+		# Identify the index of the current permutation_individual_set
+		current_permutation_individual_set_index = original_permutations_set.index(permutation_individual_set)
+
+		# New two-character words needed for substitution below
+		two_character_first_word = first_two_words_list[current_permutation_individual_set_index]
+
+
+		# permutation_words: the string words within the permutation list -> "WORD AND WORD2"
+		for permutation_words in permutation_individual_set:
+
+			# Needed for substitution
+			permutation_words_index = permutation_individual_set.index(permutation_words)
+
+			# We actually want to look for the first two words by themselves -> "SINGLE_WORD SECOND_SINGLE_WORD"
+			if permutation_words == two_character_first_word:
+				pass
+
+			# Substitution
+			else:
+				# permutation_words_list -> ["SINGLE_WORD","SECOND_SINGLE_WORD"]
+				permutation_words_list = permutation_words.split(" ")
+
+				# "SECOND_SINGLE_WORD" needed for substition with two_character_first_word
+				second_word_for_substitution = permutation_words_list[1]
+
+				permutation_individual_set[permutation_words_index] = f"{two_character_first_word} {second_word_for_substitution}"
+
+	# Remove any duplicates that might've generated
+	original_permutations_set = [list(set(single_set)) for single_set in original_permutations_set]
+
+	# Single list containing all permutations in a single-layer list
+	single_layer_permutations = [j for i in original_permutations_set for j in i]
+
+	return original_permutations_set, single_layer_permutations
+
 
 '''
 Here we will look for the emails and any related information in the data bases we already possess.
@@ -231,7 +293,7 @@ def existing_database_search(bid_needed_csv_file,dir_database):
 	df_dir_tabulation["EntityName"] = df_dir_tabulation["EntityName"].astype(str)
 
 	# Acquire the first four subs from the needed sub list for the bid in question
-	testing_subs_needed = df_dir_correlation["BusinessName"][:6]
+	testing_subs_needed = df_dir_correlation["BusinessName"][:20]
 
 	search_dir_result_1 = existing_database_search_dir_iteration(testing_subs_needed,df_dir_tabulation)
 
@@ -251,8 +313,14 @@ def existing_database_search(bid_needed_csv_file,dir_database):
 	undesired_company_words = ["CO","CORPORATION", "INC", "INCORPORATED", "LLC", 
 	"COMPANY", "MANUFACTURE", "LTD", "MFG", "ASSOCIATES", "ASSOC", "CORP"]
 
+	# Undesired first common words
+	undesired_first_words = ["THE","ALL"] 
+
 	# Names not found First Word
 	sub_names_not_found_first_word = []
+
+	# Names not found first two words
+	sub_names_first_two_words = []
 
 	# Now that we know which were not found, we need to build the combination iteration
 	sub_names_splited = []
@@ -262,6 +330,7 @@ def existing_database_search(bid_needed_csv_file,dir_database):
 		spliting_name = sub_notfound_name.split(" ")
 		sub_names_splited.append(spliting_name)
 		sub_names_not_found_first_word.append(spliting_name[0])
+		sub_names_first_two_words.append(" ".join([spliting_name[0],spliting_name[1]]))
 
 	# List of lists of valid permutations, i.e. the number of permutations per each of the Not Found 1 without undesired words
 	permutations_inquiry = []
@@ -312,6 +381,14 @@ def existing_database_search(bid_needed_csv_file,dir_database):
 
 		permutations_inquiry.append(list_of_permutations)
 
+	# New function to classify words that will be looked for only if they have the first word of the company
+	new_set_of_permutations_to_search = first_word_appearance_only(permutations_inquiry,sub_names_not_found_first_word)
+
+	# Single character permutations refinement step
+	refined_new_set_of_permutations_to_search = single_character_permutation_refinement(new_set_of_permutations_to_search,sub_names_first_two_words)
+	refined_original_permutations = refined_new_set_of_permutations_to_search[0]
+	refined_possible_subs_names = refined_new_set_of_permutations_to_search[1]
+
 	# The list of names that have to be searched in google; desired output
 	subs_not_found_search_need = []
 
@@ -329,8 +406,9 @@ def existing_database_search(bid_needed_csv_file,dir_database):
 
 		first_word_instance_indexes.append(word_appearances)
 
+
 	# Apply the searching function again with the new names to be searched
-	search_dir_result_2 = existing_database_search_dir_iteration(possible_subs_name_permutations,df_dir_tabulation)
+	search_dir_result_2 = existing_database_search_dir_iteration(refined_possible_subs_names,df_dir_tabulation)
 
 	# Second search: Array of indexes
 	index_list_subs_needed_2 = search_dir_result_2[0]
@@ -365,8 +443,6 @@ def existing_database_search(bid_needed_csv_file,dir_database):
 		else:
 			pass
 
-	#print(f"Will search: {subs_not_found_search_need}")
-
 
 	# Appending the new indexes to the existing index lists
 	for index_2 in index_list_subs_needed_2:
@@ -385,8 +461,11 @@ def existing_database_search(bid_needed_csv_file,dir_database):
 
 	# Allocate parameters into a list for future dataframe
 	for index in index_list_subs_needed:
-		sub_names.append(df_dir_tabulation.iloc[:,0][index]) # Name
-		sub_emails.append(df_dir_tabulation.iloc[:,2][index]) # Email
+		if "Awarding Body" in df_dir_tabulation.iloc[:,1][index]:
+			pass
+		else:
+			sub_names.append(df_dir_tabulation.iloc[:,0][index]) # Name
+			sub_emails.append(df_dir_tabulation.iloc[:,2][index]) # Email
 
 	# Append the list and make them the columns of the new dataframe
 	sub_information_output["SubNames"] = sub_names
@@ -612,6 +691,7 @@ def searching_needed_subs(list_with_remaining_sub_names):
 	'''
 	return returnable_dataframe
 
+# Combining dataframes (pretty easy, but repetitive, therefore a function)
 def combining_dataframes_and_outputing(list_of_dataframes):
 	main_dataframe = pd.concat(list_of_dataframes)
 	return main_dataframe
@@ -621,6 +701,8 @@ def combining_dataframes_and_outputing(list_of_dataframes):
 
 
 
+
+# Onset
 if __name__ == '__main__':
 
 	'''
@@ -653,6 +735,7 @@ if __name__ == '__main__':
 
 	# # Need to search for the following remaining subs
 	subs_still_needed = dir_search_results[1] # Apply google search
+	subs_still_needed = list(set(subs_still_needed))
 	print(f"\nSearching for: \n{subs_still_needed}")
 
 	'''
@@ -662,24 +745,24 @@ if __name__ == '__main__':
 	# Transcribed from the result of existing_database_search()
 	#print(len(subs_still_needed))
 
-	# Search for the remaining names
-	google_search_results = searching_needed_subs(subs_still_needed) # Input: list()
+	# # Search for the remaining names
+	# google_search_results = searching_needed_subs(subs_still_needed) # Input: list()
 
-	# Search for the needed entities
-	if len(google_search_results) == 0:
-		print("No Google Search Results")
-	else:
-		print(google_search_results)
-		google_search_df = google_search_results
+	# # Search for the needed entities
+	# if len(google_search_results) == 0:
+	# 	print("No Google Search Results")
+	# else:
+	# 	print(google_search_results)
+	# 	google_search_df = google_search_results
 
-	'''
-	Combine dataframes and output them
-	'''
-	list_of_dataframes = [
-	dataframe_with_results,
-	google_search_df
-	]
-	print(combining_dataframes_and_outputing(list_of_dataframes))
+	# '''
+	# Combine dataframes and output them
+	# '''
+	# list_of_dataframes = [
+	# dataframe_with_results,
+	# google_search_df
+	# ]
+	# print(combining_dataframes_and_outputing(list_of_dataframes))
 
 
 
