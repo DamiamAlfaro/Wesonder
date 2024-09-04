@@ -635,7 +635,7 @@ def searching_needed_subs(list_with_remaining_sub_names):
 			# Iterate through each website from the Google search results and extract the "mailto:" element using multithrearding()
 			for url_attempt in entity_location_websites:
 
-				# Apply the multithrearding() function
+				# Apply the multithrearding() function: 
 				thread = threading.Thread(target=multithrearding,args=(url_attempt,result_queue))
 				linking_threads.append(thread)
 				thread.start()
@@ -704,21 +704,48 @@ def combining_dataframes_and_outputing(list_of_dataframes):
 
 def append_county_column_to_database(original_database_file,ca_municipalities):
 
-	# Load the csv files
+	# Load the DIR Data base
 	original_dir_db = pd.read_csv(original_database_file)
+	original_dir_db = original_dir_db.fillna("")
+
+	# Load the CA Municipalities file
 	ca_municipalities_file = pd.read_csv(ca_municipalities)
 
-	# Counties column from ca_municipalities_file
-	municipalities_counties = ca_municipalities_file["MunicipalityCounty"].str.upper()
-	municipalities_cities = ca_municipalities_file["MunicipalityName"].str.upper()
+	# Where the real reference is going to be
+	ca_counties = [row.iloc[1].split("County")[0][:-1] for index, row in ca_municipalities_file.iterrows()]
+	ca_counties = list(set(ca_counties))
 
-	# Original Database cities
-	dir_db_cities_column = original_dir_db["EntityCity"].str.upper()
+	counties_municipalities = []
 
-	# New column (Counties) in DIR Data base
-	dir_db_counties_column = []
+	# Create a list that iterates through the ca_municipalities_file and if ca_counties[0] is in iloc[2], it appends it to a list
+	# for index, row in ca_municipalities_file.iterrows():
+	# 	if row.iloc[2] in ca_counties
 
 	
+
+
+
+
+
+	return counties_municipalities, ca_counties[54]
+
+
+
+
+
+
+
+
+	
+			
+
+
+
+
+
+	
+
+
 	
 
 # Onset
@@ -746,7 +773,7 @@ if __name__ == '__main__':
 	nature.
 	'''
 	dir_database_file_original = "/Users/damiamalfaro/Desktop/testing_wesonder/Database_connections/dir_entities.csv"
-	california_municipalities_file = "/Users/damiamalfaro/Desktop/testing_wesonder/Database_connections/CaliforniaMunicipalities.csv"
+	california_municipalities_file = "/Users/damiamalfaro/Desktop/testing_wesonder/Database_connections/California_Incorporated_Cities.csv"
 	print(append_county_column_to_database(dir_database_file_original,california_municipalities_file))
 
 
