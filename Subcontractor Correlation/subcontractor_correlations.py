@@ -707,6 +707,7 @@ def append_county_column_to_database(original_database_file,ca_municipalities):
 	# Load the DIR Data base
 	original_dir_db = pd.read_csv(original_database_file)
 	original_dir_db = original_dir_db.fillna("")
+	print(original_dir_db)
 
 	# Load the CA Municipalities file
 	ca_municipalities_file = pd.read_csv(ca_municipalities)
@@ -763,13 +764,16 @@ def append_county_column_to_database(original_database_file,ca_municipalities):
 
 					# Acquire the city, respective county, and respective index of the match to put it into a data frame
 					location_references.append([city_cell, ca_counties[county_index],index])
+					print(f"{city_cell} {ca_counties[county_index]} {index}")
 
+					# Assign the respective county
+					original_dir_db.loc[index,"EntityCounty"] = ca_counties[county_index]
 	
 
+	original_dir_db.to_csv("dir_entities_refined.csv",index=False)
+	
 
-
-
-	return ca_counties, counties_municipalities, location_references
+	return "Done"
 
 
 
