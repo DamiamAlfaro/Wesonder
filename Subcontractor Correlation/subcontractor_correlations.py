@@ -714,20 +714,62 @@ def append_county_column_to_database(original_database_file,ca_municipalities):
 	# Where the real reference is going to be
 	ca_counties = [row.iloc[1].split("County")[0][:-1] for index, row in ca_municipalities_file.iterrows()]
 	ca_counties = list(set(ca_counties))
+	ca_counties.sort()
 
-	counties_municipalities = []
+	counties_municipalities = [[] for _ in range(len(ca_counties))]
 
 	# Create a list that iterates through the ca_municipalities_file and if ca_counties[0] is in iloc[2], it appends it to a list
-	# for index, row in ca_municipalities_file.iterrows():
-	# 	if row.iloc[2] in ca_counties
+	for index, row in ca_municipalities_file.iterrows():
+
+		# Pinpoint the county and cleanse it
+		county = row.iloc[1].split("County")[0][:-1]
+
+		# if the county is equal to one of the counties in the extracted ca_counties list, get its index from the counties_municipalities list
+		if county in ca_counties:
+
+			# Convert the position into an index
+			index_of_county = ca_counties.index(county)
+
+			# Transcribe the city to the county respective list in counties_municipalities
+			counties_municipalities[index_of_county].append(row.iloc[2])
+
+	# Reference for DIR Database modification
+	location_references = []
+
+	# Now, identify where is the newly county row number going to be based on index
+	for index, row in original_dir_db.iterrows():
+
+		# the city string
+		city_cell = row.iloc[6]
+
+		# Split the cities with a state on them
+		if "," in city_cell:
+			city_cell = city_cell.split(",")[0]
+		
+		# Modify the string in order to match it with other strings
+		city_cell = city_cell.title()
+
+		# city_list: a list containing cities which was extracted previously -> ["City1","City2","City3"]
+		for city_list in counties_municipalities:
+
+			# The respective index of counties_municipalities in order to match it with the respective county index of ca_counties
+			county_index = counties_municipalities.index(city_list)
+
+			# city: the actual city string -> "City1"
+			for city in city_list:
+
+				# if the city is equal to the city_cell, then it is a match
+				if city_cell == city:
+
+					# Acquire the city, respective county, and respective index of the match to put it into a data frame
+					location_references.append([city_cell, ca_counties[county_index],index])
 
 	
 
 
 
 
-
-	return counties_municipalities, ca_counties[54]
+	return ca_counties, counties_municipalities, location_references
 
 
 
