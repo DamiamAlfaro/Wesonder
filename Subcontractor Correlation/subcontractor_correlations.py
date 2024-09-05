@@ -126,7 +126,7 @@ def clearing_newly_downloaded_cslb_subs():
 
 	# Turn the newly downloaded Excel file into a csv file
 	newly_excel_cslb_file = "all_subcontractors.xlsx"
-	df_excel = pd.read_excel(newly_excel_file)
+	df_excel = pd.read_excel(newly_excel_cslb_file)
 	df_excel.to_csv("all_subcontractors.csv",index=False)
 
 
@@ -323,6 +323,7 @@ def existing_database_search(bid_needed_csv_file,dir_database,counties_needed,ci
 
 	# Define the cities
 	cities_needed = cities_needed
+	print(len(df_dir_correlation))
 
 	# Define the DIR Tabulation database
 	df_dir_tabulation = pd.read_csv(dir_database)
@@ -488,6 +489,11 @@ def existing_database_search(bid_needed_csv_file,dir_database,counties_needed,ci
 	# The new output containing the subcontractors' name with their email
 	sub_information_output = pd.DataFrame()
 
+	# An excel visualization of subs not found
+	subs_not_found_df = pd.DataFrame()
+	subs_not_found_total = [i for i in subs_not_found_2]
+	subs_not_found_df["SubNotFound"] = subs_not_found_total
+
 	# Lists for the new data frame
 	sub_names = []
 	sub_emails = []
@@ -527,7 +533,9 @@ def existing_database_search(bid_needed_csv_file,dir_database,counties_needed,ci
 		elif city not in cities_needed and pd.isna(city) == False:
 			sub_information_output.drop(index,inplace=True)
 
-	return sub_information_output, subs_not_found_2 
+
+
+	return sub_information_output, subs_not_found_df 
 
 
 '''
@@ -869,12 +877,12 @@ def generating_california_administrative_divisions(cities, counties, counties_ne
 # Onset
 if __name__ == '__main__':
 	# Identify which counties you need
-	needed_counties = ["San Diego","Los Angeles","San Bernardino","Orange","Riverside","Imperial"]
+	needed_counties = ["San Diego","Los Angeles","San Bernardino","Orange","Riverside"]
 
 	# Identify which licenses you need
-	needed_licenses = ["C13|C-13","C21|C-21","C22|C-22","C12|C-12","C8|C-8",
-	"C32|C-32","D60|D-60","C45|C-45","C27|C-27","C34|C-34",
-	"C10|C-10","C31|C-31"]
+	needed_licenses = ["C5|C-5","C8|C-8","C10|C-10","C12|C-12","C21|C-21",
+	"C23|C-23","C27|C-27","C29|C-29","C34|C-34","C36|C-36",
+	"C45|C-45","C51|C-51"]
 
 	# Census Designated Places in California
 	cdps = "/Users/damiamalfaro/Desktop/testing_wesonder/Wikipedia/census_designated_places_california.csv"
@@ -925,12 +933,13 @@ if __name__ == '__main__':
 
 	# The extracted data frame (intended to be allocated in a new excel)
 	dataframe_with_results = dir_search_results[0]
+	dataframe_with_results.to_csv("found_subs.csv",index=False)
 	print(dataframe_with_results)
 
 	# Need to search for the following remaining subs
-	subs_still_needed = dir_search_results[1] # Apply google search
-	subs_still_needed = list(set(subs_still_needed))
-	print(f"\nSearching for: \n{len(subs_still_needed)}: {subs_still_needed}")
+	subs_still_needed_df = dir_search_results[1] # Apply google search
+	subs_still_needed_df.to_csv("not_found_subs.csv",index=False)
+	print(subs_still_needed_df)
 
 
 	# '''
