@@ -333,8 +333,6 @@ def existing_database_search(bid_needed_csv_file,dir_database,counties_needed,ci
 	# Convert the names column's values into strings
 	df_dir_tabulation["EntityName"] = df_dir_tabulation["EntityName"].astype(str)
 
-	print(len(df_dir_correlation["BusinessName"]))
-
 	# Acquire the first four subs from the needed sub list for the bid in question
 	testing_subs_needed = df_dir_correlation["BusinessName"][:10]
 
@@ -359,101 +357,102 @@ def existing_database_search(bid_needed_csv_file,dir_database,counties_needed,ci
 	'''
 	Approach 1: I would rather look in google, than 
 	'''
-	# attempt_refined = []
+	attempt_refined = []
 
-	# for sub_lost in subs_not_found:
+	for sub_lost in subs_not_found:
 
-	# 	for i in undesired_company_words:
-	# 		if i in sub_lost:
-	# 			print(sub_lost)
+		for undesider_word in undesired_company_words:
+
+			if f" {undesider_word}" in sub_lost:
+				undesired_word_index = sub_lost.index(undesider_word)
+				attempt_refined.append(sub_lost[:undesired_word_index-1])
 
 
+	# '''
+	# Approach 2: This one works
+	# '''
 
-	'''
-	Approach 2: This one works
-	'''
+	# # Names not found First Word
+	# sub_names_not_found_first_word = []
 
-	# Names not found First Word
-	sub_names_not_found_first_word = []
+	# # Names not found first two words
+	# sub_names_first_two_words = []
 
-	# Names not found first two words
-	sub_names_first_two_words = []
+	# # Now that we know which were not found, we need to build the combination iteration
+	# sub_names_splited = []
 
-	# Now that we know which were not found, we need to build the combination iteration
-	sub_names_splited = []
+	# # Iterate through each not-found name and split it
+	# for sub_notfound_name in subs_not_found:
+	# 	spliting_name = sub_notfound_name.split(" ")
+	# 	sub_names_splited.append(spliting_name)
+	# 	sub_names_not_found_first_word.append(spliting_name[0])
+	# 	sub_names_first_two_words.append(" ".join([spliting_name[0],spliting_name[1]]))
 
-	# Iterate through each not-found name and split it
-	for sub_notfound_name in subs_not_found:
-		spliting_name = sub_notfound_name.split(" ")
-		sub_names_splited.append(spliting_name)
-		sub_names_not_found_first_word.append(spliting_name[0])
-		sub_names_first_two_words.append(" ".join([spliting_name[0],spliting_name[1]]))
+	# # List of lists of valid permutations, i.e. the number of permutations per each of the Not Found 1 without undesired words
+	# permutations_inquiry = []
 
-	# List of lists of valid permutations, i.e. the number of permutations per each of the Not Found 1 without undesired words
-	permutations_inquiry = []
+	# # A list of all possible individual sub name permutations
+	# possible_subs_name_permutations = []
 
-	# A list of all possible individual sub name permutations
-	possible_subs_name_permutations = []
+	# # Iterate through each splited name and pinpoint the possible permutations
+	# for sub_splited_name in sub_names_splited:
+	# 	sub_name_permutation = combinations(sub_splited_name,2) # two word combinations
 
-	# Iterate through each splited name and pinpoint the possible permutations
-	for sub_splited_name in sub_names_splited:
-		sub_name_permutation = combinations(sub_splited_name,2) # two word combinations
+	# 	# List of permutations for further list
+	# 	list_of_permutations = []
 
-		# List of permutations for further list
-		list_of_permutations = []
+	# 	# Extract the individual permutation
+	# 	for permutation in sub_name_permutation:
 
-		# Extract the individual permutation
-		for permutation in sub_name_permutation:
+	# 		# Unwanted words? "False" so far...
+	# 		unwanted_words_status = False
 
-			# Unwanted words? "False" so far...
-			unwanted_words_status = False
+	# 		# Check each individual words
+	# 		for permutation_word in permutation:
 
-			# Check each individual words
-			for permutation_word in permutation:
+	# 			# Determine if the permutation contains unwanted words
+	# 			if permutation_word in undesired_company_words:
 
-				# Determine if the permutation contains unwanted words
-				if permutation_word in undesired_company_words:
+	# 				# Flip the switch
+	# 				unwanted_words_status = True
+	# 			else:
+	# 				continue
 
-					# Flip the switch
-					unwanted_words_status = True
-				else:
-					continue
+	# 		# If the permutation does not contains unwanted, append it to desired list
+	# 		if unwanted_words_status == False:
 
-			# If the permutation does not contains unwanted, append it to desired list
-			if unwanted_words_status == False:
+	# 			# Convert the set into a list
+	# 			new_search_combination = list(permutation)
 
-				# Convert the set into a list
-				new_search_combination = list(permutation)
+	# 			# Convert the list into a joined string separated by a space
+	# 			new_search_word = " ".join(new_search_combination)
 
-				# Convert the list into a joined string separated by a space
-				new_search_word = " ".join(new_search_combination)
+	# 			# Append the newly string into the desired list
+	# 			possible_subs_name_permutations.append(new_search_word)
+	# 			list_of_permutations.append(new_search_word)
 
-				# Append the newly string into the desired list
-				possible_subs_name_permutations.append(new_search_word)
-				list_of_permutations.append(new_search_word)
+	# 		# Continue basically
+	# 		else:
+	# 			pass
 
-			# Continue basically
-			else:
-				pass
+	# 	permutations_inquiry.append(list_of_permutations)
 
-		permutations_inquiry.append(list_of_permutations)
+	# # New function to classify words that will be looked for only if they have the first word of the company
+	# new_set_of_permutations_to_search = first_word_appearance_only(permutations_inquiry,sub_names_not_found_first_word)
 
-	# New function to classify words that will be looked for only if they have the first word of the company
-	new_set_of_permutations_to_search = first_word_appearance_only(permutations_inquiry,sub_names_not_found_first_word)
+	# # Single character permutations refinement step
+	# refined_new_set_of_permutations_to_search = single_character_permutation_refinement(new_set_of_permutations_to_search,sub_names_first_two_words)
+	# refined_original_permutations = refined_new_set_of_permutations_to_search[0]
+	# refined_possible_subs_names = refined_new_set_of_permutations_to_search[1]
 
-	# Single character permutations refinement step
-	refined_new_set_of_permutations_to_search = single_character_permutation_refinement(new_set_of_permutations_to_search,sub_names_first_two_words)
-	refined_original_permutations = refined_new_set_of_permutations_to_search[0]
-	refined_possible_subs_names = refined_new_set_of_permutations_to_search[1]
-
-	# Apply the searching function again with the new names to be searched
-	search_dir_result_2 = existing_database_search_dir_iteration(refined_possible_subs_names,df_dir_tabulation)
+	# # Apply the searching function again with the new names to be searched
+	# search_dir_result_2 = existing_database_search_dir_iteration(refined_possible_subs_names,df_dir_tabulation)
 
 
 	'''
 	Approach 1: Result
 	'''
-	#search_dir_result_2 = existing_database_search_dir_iteration(attempt_refined,df_dir_tabulation)
+	search_dir_result_2 = existing_database_search_dir_iteration(attempt_refined,df_dir_tabulation)
 
 
 
@@ -473,9 +472,9 @@ def existing_database_search(bid_needed_csv_file,dir_database,counties_needed,ci
 	first_word_instance_indexes = []
 	
 	# Identify which subs were not found based on the original list
-	subs_not_found_search_need = subs_not_found_now_search(subs_not_found_2,
-		refined_original_permutations,
-		subs_not_found)
+	# subs_not_found_search_need = subs_not_found_now_search(subs_not_found_2,
+	# 	refined_original_permutations,
+	# 	subs_not_found)
 
 
 	# Appending the new indexes to the existing index lists
@@ -528,7 +527,7 @@ def existing_database_search(bid_needed_csv_file,dir_database,counties_needed,ci
 		elif city not in cities_needed and pd.isna(city) == False:
 			sub_information_output.drop(index,inplace=True)
 
-	return sub_information_output, subs_not_found_search_need 
+	return sub_information_output, subs_not_found_2 
 
 
 '''
