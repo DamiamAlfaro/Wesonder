@@ -317,13 +317,14 @@ def subs_not_found_now_search(subs_not_found_list_2,permutation_list_1,subs_not_
 '''
 Here we will look for the emails and any related information in the data bases we already possess.
 '''
-def existing_database_search(bid_needed_csv_file,dir_database,counties_needed,cities_needed):
+def existing_database_search(bid_needed_csv_file,dir_database,counties_needed,cities_needed,count):
 	# Define the Bid Needed Subs DataFrame
 	df_dir_correlation = pd.read_csv(bid_needed_csv_file)
 
+	print(len(df_dir_correlation))
+
 	# Define the cities
 	cities_needed = cities_needed
-	print(len(df_dir_correlation))
 
 	# Define the DIR Tabulation database
 	df_dir_tabulation = pd.read_csv(dir_database)
@@ -335,7 +336,7 @@ def existing_database_search(bid_needed_csv_file,dir_database,counties_needed,ci
 	df_dir_tabulation["EntityName"] = df_dir_tabulation["EntityName"].astype(str)
 
 	# Acquire the first four subs from the needed sub list for the bid in question
-	testing_subs_needed = df_dir_correlation["BusinessName"][:10]
+	testing_subs_needed = df_dir_correlation["BusinessName"][count:count+50]
 
 	search_dir_result_1 = existing_database_search_dir_iteration(testing_subs_needed,df_dir_tabulation)
 
@@ -366,8 +367,11 @@ def existing_database_search(bid_needed_csv_file,dir_database,counties_needed,ci
 
 			if f" {undesider_word}" in sub_lost:
 				undesired_word_index = sub_lost.index(undesider_word)
-				attempt_refined.append(sub_lost[:undesired_word_index-1])
-
+				new_sub = sub_lost[:undesired_word_index-1]
+				if " " not in new_sub:
+					continue
+				else:
+					attempt_refined.append(new_sub)
 
 	# '''
 	# Approach 2: This one works
@@ -524,7 +528,12 @@ def existing_database_search(bid_needed_csv_file,dir_database,counties_needed,ci
 
 	for index, row in sub_information_output.iterrows():
 
-		city = row.iloc[2].title()
+		if pd.isna(row.iloc[2]) == True:
+			city = str(row.iloc[2])
+		
+		else:
+			city = row.iloc[2].title()
+
 		county = row.iloc[3]
 
 		if county not in counties_needed and pd.isna(county) == False:
@@ -861,6 +870,18 @@ def generating_california_administrative_divisions(cities, counties, counties_ne
 
 
 
+def combining_csv_files(directory_with_files):
+	csv_files = glob.glob(directory_with_files+'/*.csv')
+
+	combined_df = pd.DataFrame()
+
+	for csv_file in csv_files:
+		df = pd.read_csv(csv_file)
+		combined_df = pd.concat([combined_df,df],ignore_index=True)
+
+	combined_df.drop_duplicates()
+
+	return combined_df.to_csv(f"{directory_with_files}/subcontractors_ready.csv",index=False)
 
 	
 			
@@ -876,16 +897,16 @@ def generating_california_administrative_divisions(cities, counties, counties_ne
 
 # Onset
 if __name__ == '__main__':
-	# Identify which counties you need
+	# Identify which counties you need/Users/damiamalfaro/Desktop/testing_wesonder/Database_connections/extractions
 	needed_counties = ["San Diego","Los Angeles","San Bernardino","Orange","Riverside"]
 
 	# Identify which licenses you need
-	needed_licenses = ["C5|C-5","C8|C-8","C10|C-10","C12|C-12","C21|C-21",
-	"C23|C-23","C27|C-27","C29|C-29","C34|C-34","C36|C-36",
-	"C45|C-45","C51|C-51"]
+	needed_licenses = ["C13|C-13"]
 
 	# Census Designated Places in California
 	cdps = "/Users/damiamalfaro/Desktop/testing_wesonder/Wikipedia/census_designated_places_california.csv"
+
+	output_location = "/Users/damiamalfaro/Desktop/testing_wesonder/Database_connections/extractions2"
 
 	'''
 	Step 1: Update the CSLB license
@@ -911,35 +932,44 @@ if __name__ == '__main__':
 	The current step wasn't supposed to be included, but that is the beauty of practice, it reveals the beauty of phenomena by revealing its
 	nature.
 	'''
-	dir_database_file_original = "/Users/damiamalfaro/Desktop/testing_wesonder/Database_connections/dir_entities.csv"
-	california_municipalities_file = "/Users/damiamalfaro/Desktop/testing_wesonder/Database_connections/California_Incorporated_Cities.csv"
-	california_administrative_divisions = append_county_column_to_database(dir_database_file_original,california_municipalities_file)
-	cities = california_administrative_divisions[0]
-	counties = california_administrative_divisions[1]
+	# dir_database_file_original = "/Users/damiamalfaro/Desktop/testing_wesonder/Database_connections/dir_entities.csv"
+	# california_municipalities_file = "/Users/damiamalfaro/Desktop/testing_wesonder/Database_connections/California_Incorporated_Cities.csv"
+	# california_administrative_divisions = append_county_column_to_database(dir_database_file_original,california_municipalities_file)
+	# cities = california_administrative_divisions[0]
+	# counties = california_administrative_divisions[1]
 
 
-	'''
-	Sub-step 4: Generate a list of counties and cities needed from step 3.5
-	'''
-	cities_in_question = generating_california_administrative_divisions(cities,counties,needed_counties,cdps)
+	# # '''
+	# # Sub-step 4: Generate a list of counties and cities needed from step 3.5
+	# # '''
+	# cities_in_question = generating_california_administrative_divisions(cities,counties,needed_counties,cdps)
 
 
-	'''
-	Step 4: Check if the subcontractors are in the existing DIR and DVE data bases.
-	'''
-	dir_database_file = "/Users/damiamalfaro/Desktop/testing_wesonder/Database_connections/dir_entities_refined.csv"
-	bid_needed_subs_csv_file = "/Users/damiamalfaro/Desktop/testing_wesonder/Database_connections/bid_subcontractors.csv"
-	dir_search_results = existing_database_search(bid_needed_subs_csv_file,dir_database_file,needed_counties,cities_in_question)
+	# # '''
+	# # Step 4: Check if the subcontractors are in the existing DIR and DVE data bases.
+	# # '''
+	# count = 0
+	# while count != 100:
 
-	# The extracted data frame (intended to be allocated in a new excel)
-	dataframe_with_results = dir_search_results[0]
-	dataframe_with_results.to_csv("found_subs.csv",index=False)
-	print(dataframe_with_results)
+	# 	print(f"\n-------------\nCurrent Count: {count}\n-------------")
 
-	# Need to search for the following remaining subs
-	subs_still_needed_df = dir_search_results[1] # Apply google search
-	subs_still_needed_df.to_csv("not_found_subs.csv",index=False)
-	print(subs_still_needed_df)
+	# 	count_index = int(count // 100)
+
+	# 	dir_database_file = "/Users/damiamalfaro/Desktop/testing_wesonder/Database_connections/dir_entities_refined.csv"
+	# 	bid_needed_subs_csv_file = "/Users/damiamalfaro/Desktop/testing_wesonder/Database_connections/bid_subcontractors.csv"
+	# 	dir_search_results = existing_database_search(bid_needed_subs_csv_file,dir_database_file,needed_counties,cities_in_question,count)
+
+	# 	# The extracted data frame (intended to be allocated in a new excel)
+	# 	dataframe_with_results = dir_search_results[0]
+	# 	dataframe_with_results.to_csv(f"extractions2/found_subs_{count_index}.csv",index=False)
+	# 	print(dataframe_with_results)
+
+	# # Need to search for the following remaining subs
+	# # subs_still_needed_df = dir_search_results[1] # Apply google search
+	# # subs_still_needed_df.to_csv(f"extractions2/not_found_subs_{count_index}.csv",index=False)
+	# # print(subs_still_needed_df)
+
+	# 	count += 100
 
 
 	# '''
@@ -963,6 +993,12 @@ if __name__ == '__main__':
 	# google_search_df
 	# ]
 	# print(combining_dataframes_and_outputing(list_of_dataframes))
+
+	'''
+	Step 6: Put the resulting dataframes from Step 4 into a combined dataframe
+	'''
+	list_of_new_dataframes = os.path.join(os.getcwd(),"extractions2")
+	combining_csv_files(list_of_new_dataframes)
 
 
 
