@@ -23,7 +23,7 @@ def dir_project_extraction(positional_awareness_storage):
 	driver = webdriver.Chrome()
 	driver.get(dir_url)
 	intial_url = driver.current_url
-	print(intial_url)
+	print("TOP")
 	time.sleep(4)
 
 	# Assuring your position within "Contractors"
@@ -164,13 +164,13 @@ def dir_project_extraction(positional_awareness_storage):
 if __name__ == '__main__':
 
 	# Location of storage and math associated with it
-	csv_file = 'dir_projects_reversed.csv'
+	csv_file = 'dir_projects_top.csv'
 	initial_tabulation = pd.read_csv(csv_file,low_memory=False)
 
 	'''
 	Currently, the DIR website shows a total of 540841 projects. The count of a total 27042 is below
 	'''
-	positional_location = 24710 # start count
+	positional_location = 24311 # start count
 
 	while positional_location != 12500:
 

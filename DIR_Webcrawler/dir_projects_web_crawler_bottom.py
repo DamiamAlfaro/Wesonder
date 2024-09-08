@@ -24,7 +24,7 @@ def dir_project_extraction(positional_awareness_storage):
 	driver = webdriver.Chrome()
 	driver.get(dir_url)
 	intial_url = driver.current_url
-	print(intial_url)
+	print("BOTTOM")
 	time.sleep(4)
 
 	# Assuring your position within "Contractors"
@@ -166,9 +166,9 @@ def dir_project_extraction(positional_awareness_storage):
 if __name__ == '__main__':
 
 	# Location of storage and math associated with it
-	csv_file = 'dir_projects.csv'
+	csv_file = 'dir_projects_bottom.csv'
 	initial_tabulation = pd.read_csv(csv_file,low_memory=False)
-	positional_location = 7603 # 
+	positional_location = 8045 # 
 
 	while positional_location != 12500:
 
