@@ -1,0 +1,226 @@
+August 23, 2024
+
+1. We can enter the websites in the first Google Search result for each sub, but we can also create a stnadard function for each of the most common Sites, for example, for Yelp we can create a separate function that understand the structure of a conventional yelp site, and perhaps iterate through more redirecting links within it.
+
+
+August 25, 2024
+
+
+2. We need to build a function that iterates thorugh each of the subcontractors needed for the bid in question, the way we are going to do it is by first, checking the subcontractor name, then search for the name in the existent DIR data base verbatim.
+
+	a. Find the index where each of the neede subs are found in the DIR.
+	b. Retrieve the email only based on the index.
+	c. Tabulate the needed subcontractor, and their respective email address only (2 columns only).
+	d. Figure out how to acquire the emails that were not retreived by trial and error.
+
+3. Develop a way to search for parts of the name, i.e. separating the name by words. 
+
+	a. Calculate the possible search combinations for each subcontractor.
+	b. Number of words = N, desired word arrangement = R.
+	c. Search the possible combinations in the DIR Database.
+	d. Retrieve and tabulate along with the rest of searches.
+	e. There seems to be a few scenarous, when the subcontractor name has less characters than the result in
+	the DIR data base, 2) when the sub name has more characters than the DIR data base, and 3) when the
+	subcontractor has different arrangement of wording than the DIR data base.
+	f. Find another way to get the total permutations with always including the first word. Perhaps there 
+	is no need to do this, we can instead search for all possible permutations that do not include
+	certain words only.
+	g. Perhaps create a list of unwanted repeated words that shall not be included in the databse search
+	such as "CO", "CORPORATION", "INC", "INCORPORATED", "LLC", "COMPANY", "MANUFACTURE", "LTD", "MFG",
+	"ASSOCIATES", "ASSOC", "CORP".
+
+
+August 26, 2024
+
+
+4. Connect the Google search function.
+
+	a. Connect the result of the DIR Data base with the Google Search function.
+	b. Make sure it also works when the results of the DIR Data base function is an empty list.
+
+
+August 27, 2024
+
+
+5. Fix bugs, google search, and database discrepancies. 
+
+	a. Fix the google issue in which the navigatin bar in a website is not perceived.
+	b. We learned that the <nav> and <footer> are html elements that usually are the ones that
+	contain the email or personnel information, the about page, or any other reference to people.
+
+
+August 28, 2024
+
+
+6. Run a test
+
+	a. Create a similar function to the <footer>.
+	b. Make it beautiful.
+	c. Connect the two functions (Google Search) and DIR Database.
+	d. Make sure that if the company was not found in the first permutation session, and neither
+	was found in the second permutation session, the company's name shall be returned as its original
+	name within the Not Found List #2, not as a permutation assigned name.
+		i. Count the possible (not including undesired words) permutations of the names that were
+		not found in the Not Found 1.
+		ii. If the same amount of permutations are found again in the Not Found 2, then we look for
+		the name in google, if at least one was found (i.e. the amount of possible permutations does
+		not has the same lenght as before from the count) then it means that something was found and
+		there is no need to look for it on google.
+		iii. Lastly, if the without the first word is not found, then we still need to look for it as
+		not including the first word will lead to misunderstanding since it is likely that the rest
+		of the words are a standard.
+		iv. Do not complicate yourself, just see if the ones that have the first original name
+		are the same as the ones that were outputed in Not Found 2.
+	e. Redoing the same name function:
+		i. Pinpoint for the amount of permutations containing the first word
+		ii. Improvise and follow your intuition. 
+
+
+August 29, 2024
+
+
+	a. Run a test.
+	b. Fix any bugs that the test produced.
+
+
+August 30, 2024
+
+
+	a. Fixed some bugs in the google search results.
+	b. Was able to extract "mailto:" elements accurately.
+
+
+August 31, 2024
+
+	a. Make the results into a pretty DataFrame.
+		i. I.e. making it into a resulting excel file.
+		ii. Why excel? Because we want to apply a macro to send email invitations to the newly
+		extracted set of emails we looked for.
+	b. Make sure that there are no errors for empty search results.
+	c. Separate the Google Search instances.
+		i. Separate each email per gogle search (i.e. only output the emails corresponding to the
+		respective google search; without mentioning that we need the name of the company searched
+		in google along with their emails). Something like x = [EntityName,[Email1,Email2,Emailn]]. We
+		will use the x[0] as the first column of the dataframe, and combine x[1] with .join().
+		ii. Once separated, create a DataFrame and append both to it. Keep in mind that the dataframe
+		needs to have the name of the company and the emails as specified above.
+		iii. Combine that data frame with the DIR Results data frame
+	d. Fix the repetition of entities.
+	e. Optimize the code.
+		i. Only include permutations that include the first word.
+
+
+September 1, 2024
+
+
+	a. Refine the permutation search
+		i. Only search for permutations that include the first word of the company
+		ii. Disregard the first word if the word is of length 1, and if the word is a conventional 
+		starting word such as "THE". Perhaps "disregard" isn't the proper verb, but "rephrase". 
+		If one of the scenarios above is true, utilize the first two words of the company instead
+		of the very first one.
+		iii. If the first word of the company is a 1 character set e.g. "A B C Electrical", we can
+		treat the "A B C" as a single word and search; i.e. "ABC". To do so, we need to include the
+		actual names from the Not Found 1 List in order to reference them using indexes.
+	b. Make sure that the resulting DIR Data frame with emails does not include awarding bodies
+	c. Remove the data frame results that are not in the specified counties to shorten the resulting
+	dataframe.
+	d. In order to decrease the total amount of resulting rows in the dataframe into a more realistic
+	display of entity information, let's only attach the entity's information that was found from a single
+	permutation instance.
+		i. Basically, we only want to look for an entity until one if its possible permutations
+		has been found; if it is found, then we stop the search.
+		ii. The problem I see with this one is that, for example, if we have a list of two values,
+		"Value1" and "Value2", the function might find the "Value1", however, there will be a chance
+		that "Value2" is closer to the actual value we are looking for.
+	e. I have a better idea for (d). Perhaps we can remove any entities from the dataframe that are not
+	within the desired counties.
+		i. First of all though, I want to know why not all non-found entities are not being searched 
+		for in the web?
+		ii. Now that it has been fixed, remove the entities that are not within the desired boundaries
+		in order to increase accuracy of resulting dataframe because remember that this data base 
+
+ 
+September 3, 2024
+
+	
+	a. Allocate the county to every city from the DIR Database
+	b. Reduce the dataframe outcome using the newly appended column from the DIR Database by removing
+	the entities that might've derived from a different county.
+	c. Something's up with the data base. Let's be a little bit more awake later.
+	
+
+September 4, 2024
+
+
+	a. We've finished the county allocation in the DIR Database, now we need to use it to decrease the 
+	number of rows displayed.
+	b. Refine further by removing the ones that are in a city we don't want to.
+		ii. The way we are going to do this is that we are going to see if the city is in the county
+		of our desire based on the county's list index. 
+	c. We can also remove the searches that include multiple (more than 1) unicharacters.
+
+
+September 5, 2024
+
+
+	a. We fixed some repetition, now we just look for the same words without the undesiderd words, which
+	sure causes a higher amount of google searches, but a minimal amount of redundant permutations.
+	b. We also needed to iterate through the bid_subcontractors.csv accordingly using sets of 100 due to
+	lack of performance of the CPU, and to be honest, due to lack of optimized functions within my code...
+	Hey, what can I say, we were once a begineer in everything at once right?
+	c. Lastly we created a function to concatenate the given files containing each 100 run.
+
+
+September 6, 2024
+
+
+	a. We did our first test; we sent 31100 emails today... Amazing job mon ami.
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
