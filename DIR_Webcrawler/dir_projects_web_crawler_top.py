@@ -170,14 +170,14 @@ if __name__ == '__main__':
 	'''
 	Currently, the DIR website shows a total of 540841 projects. The count of a total 27042 is below
 	'''
-	positional_location = 23874
+	positional_location = 23332
 
 	while positional_location != 12500:
 
 		# A list containing the 20 <tr> elements from a single page instance
 		extraction = dir_project_extraction(positional_location) 
 		df_acquired = pd.DataFrame(extraction)
-		if len(df_acquired) > 15:
+		if len(df_acquired) > 17:
 			df_acquired.to_csv(csv_file,index=False,header=False,mode='a')
 			positional_location -= 1
 			print(f"Current Page {positional_location}")
