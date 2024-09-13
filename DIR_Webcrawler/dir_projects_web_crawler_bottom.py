@@ -24,7 +24,7 @@ def dir_project_extraction(positional_awareness_storage):
 	driver = webdriver.Chrome()
 	driver.get(dir_url)
 	intial_url = driver.current_url
-	print("BOTTOM")
+	print(f"BOTTOM: {positional_awareness_storage}")
 	time.sleep(4)
 
 	# Assuring your position within "Contractors"
@@ -168,14 +168,14 @@ if __name__ == '__main__':
 	# Location of storage and math associated with it
 	csv_file = 'dir_projects_bottom.csv'
 	initial_tabulation = pd.read_csv(csv_file,low_memory=False)
-	positional_location = 8936  
+	positional_location = 9272  
 
 	while positional_location != 12500:
 
 		# A list containing the 20 <tr> elements from a single page instance
 		extraction = dir_project_extraction(positional_location) 
 		df_acquired = pd.DataFrame(extraction)
-		if len(df_acquired) > 17:
+		if len(df_acquired) > 15:
 			df_acquired.to_csv(csv_file,index=False,header=False,mode='a')
 			positional_location += 1
 			print(f"Current Page {positional_location}")
