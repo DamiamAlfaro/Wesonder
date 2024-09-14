@@ -168,14 +168,14 @@ if __name__ == '__main__':
 	# Location of storage and math associated with it
 	csv_file = 'dir_projects_bottom.csv'
 	initial_tabulation = pd.read_csv(csv_file,low_memory=False)
-	positional_location = 9465  
+	positional_location = 9697  
 
 	while positional_location != 12500:
 
 		# A list containing the 20 <tr> elements from a single page instance
 		extraction = dir_project_extraction(positional_location) 
 		df_acquired = pd.DataFrame(extraction)
-		if len(df_acquired) > 15:
+		if len(df_acquired) > 10:
 			df_acquired.to_csv(csv_file,index=False,header=False,mode='a')
 			positional_location += 1
 			print(f"Current Page {positional_location}")
