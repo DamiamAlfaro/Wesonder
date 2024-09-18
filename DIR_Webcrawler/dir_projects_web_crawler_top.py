@@ -164,7 +164,7 @@ def dir_project_extraction(positional_awareness_storage):
 if __name__ == '__main__':
 
 	# Location of storage and math associated with it
-	csv_file = 'dir_projects_top.csv'
+	csv_file = '/Users/damiamalfaro/Desktop/Europe/testing_wesonder/DIR_Monitoring_Unit/dir_projects_top.csv'
 	initial_tabulation = pd.read_csv(csv_file,low_memory=False)
 
 	'''
