@@ -168,9 +168,9 @@ if __name__ == '__main__':
 	# Location of storage and math associated with it
 	csv_file = '/Users/damiamalfaro/Desktop/Europe/testing_wesonder/DIR_Monitoring_Unit/dir_projects_bottom.csv'
 	initial_tabulation = pd.read_csv(csv_file,low_memory=False)
-	positional_location = 12380  
+	positional_location = 12500  
 
-	while positional_location != 12500:
+	while positional_location != 20000:
 
 		# A list containing the 20 <tr> elements from a single page instance
 		extraction = dir_project_extraction(positional_location) 
