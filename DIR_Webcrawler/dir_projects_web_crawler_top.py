@@ -170,7 +170,7 @@ if __name__ == '__main__':
 	'''
 	Currently, the DIR website shows a total of 540841 projects. The count of a total 27042 is below
 	'''
-	positional_location = 20118
+	positional_location = 20063
 
 	while positional_location != 12500:
 
