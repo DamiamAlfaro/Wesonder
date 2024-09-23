@@ -168,7 +168,7 @@ if __name__ == '__main__':
 	# Location of storage and math associated with it
 	csv_file = '/Users/damiamalfaro/Desktop/Europe/testing_wesonder/DIR_Monitoring_Unit/dir_projects_bottom.csv'
 	initial_tabulation = pd.read_csv(csv_file,low_memory=False)
-	positional_location = 13370  
+	positional_location = 13610  
 
 	while positional_location != 20000:
 
