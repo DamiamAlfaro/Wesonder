@@ -178,6 +178,32 @@ September 6, 2024
 	a. We did our first test; we sent 31100 emails today... Amazing job mon ami.
 
 
+September 24, 2024
+
+
+	a. Ladies and Gentleman, now comes the different part...
+	b. Let's start building the WeSonder website:
+		i. Start with the home page, and remember, keep it neat, captivating, and preeminently, mesmerizing to the intendend audience...
+	c. Let's do a case study about the design of multiple prominent websites. Some of the common features are:
+		i. Navbar (sometimes even two).
+			1. What can we include here?
+				a. About us (basically my website).
+				b. 
+		ii. Do not request cookies alert (at least for now, let it grow first).
+		iii. Provide a 8-10 sec gif of what the website does (e.g. mapbox cool design)
+		iv. Provide the pros of using WeSonder (e.g. a matrix/display of a 3x3 good beneficial points like zeemaps).
+		v. Be straight forward, like facebook (you want it, yes or no?), but do not be so static (like mapme), play between the two.
+		vi. Do not include too much text, and the one that you include, make it concise and succinct.
+		vii. Make it futuristic, perhaps well-developed by a young person.
+	d. There has to be four main features for the users to be able to realize that is not only a map web app, it is a service.
+		i. Pin subcontractors (in order to go back), thereby creating an account in the process.
+		ii. Classify by License Type, County, City, Zip Code, Name, License Number.
+			1. And this is not a checkbox, but a text box: the user has to see the map changing in
+			real time.
+		iii. BETA Feature: DIR Projects.
+		iv. 
+
+
 
 
 
