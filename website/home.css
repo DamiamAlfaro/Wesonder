@@ -15,18 +15,12 @@ main {
     flex-flow: 1;
 }
 
-footer {
-    padding: 10px;
-    text-align: center;
-    width: 100%;
-    position: relative;
-    bottom: 0;
-}
 
-hr {
-    width: 100%;
-}
 
+
+/*DIVISION PART
+
+THE CRUST*/
 
 .navbar-main {
     background-color: transparent;
@@ -40,7 +34,6 @@ hr {
     float: left;
     text-align: center;
 }
-
 
 
 .navbar-rightside {
@@ -73,5 +66,58 @@ ul li {
 .navbar-option:hover {
     color: #0f3fb8;
 }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+/*DIVISION PART
+
+THE LITHOSPHERE*/
+
+
+
+/*DIVISION PART
+
+THE MANTLE
+*/
+
+
+/*DIVISION PART
+
+THE CORE*/
+
+footer {
+    padding: 10px;
+    text-align: center;
+    width: 100%;
+    position: relative;
+    bottom: 0;
+}
+
+hr {
+    width: 100%;
+}
+
+
+
+
+
+
+
+
+
 
 
