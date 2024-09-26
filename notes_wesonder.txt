@@ -200,8 +200,32 @@ September 24, 2024
 		ii. Classify by License Type, County, City, Zip Code, Name, License Number.
 			1. And this is not a checkbox, but a text box: the user has to see the map changing in
 			real time.
-		iii. BETA Feature: DIR Projects.
-		iv. 
+		iii.DIR Projects locations.
+		iv. The last feature is going to be the Pinpointing Feature: This feature allows the user to click a part of the map, and:
+			1. Display the subcontractors nearby the clicing point on a default 100 miles range.
+			2. Display the subcontractors nearby the clicking point in the map based on parameters from (d.ii).
+	e. (d.iv) is the breakthrough not only in the construction industry, but also the web design community.
+
+
+
+
+September 25, 2024
+
+
+	a. We want to make the background color of the website some type of gradient white, the logo will most likely be yellow.
+	b. Logo has to be the following color: #0f3fb8
+	c. The home page has to have 4 crucials parts:
+		i. Crust: the first thing the user see once clicking on the website, i.e. the navbar with our logo and the name of the
+		website on the left, and three options on the right (About, Our Goal, Features), as well as a California map with a handful of
+		locations pinpointed by map markers, and one of them standing out displaying the message which is the information about
+		the sub in question, on the right, and on the left a few sentences captivating the audience, something like "Looking for
+		a specific Contractor? Where is your project located? Pinpointed on the map and find the nearest future business partner!".
+		ii. Lithosphere: A longer introduction of how the site works, and what is capable of, with a supporting 10-second gif/video on the right
+		side of this text.
+		iii. Mantle: Everything regarding pricing and setting up an account.
+		iv. Core: Footer with my name embedded in it so they know who created this masterpiece.
+	d. Eventually each of the sides will contain motion, but now let's build the frame and the clothes of the Marionette.
+
 
 
 

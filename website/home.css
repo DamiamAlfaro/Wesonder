@@ -5,7 +5,9 @@ html, body {
     flex-direction: column; /* Make the body a flex container */
     max-width: 100%;
     overflow-x: hidden;
-    background: linear-gradient(111.1deg, rgb(0, 40, 70) -4.8%, rgb(255, 115, 115) 82.7%, rgb(255, 175, 123) 97.2%);
+    background: radial-gradient(#0f3fb8 2%, #ffffff);
+    font-family: system-ui;
+
 
 }
 
@@ -26,5 +28,50 @@ hr {
 }
 
 
+.navbar-main {
+    background-color: transparent;
+    padding: 1px;
+    border: 2px solid;
+    border-color: transparent;
+    display: inline-block;
+}
+
+.navbar-leftside {
+    float: left;
+    text-align: center;
+}
+
+
+
+.navbar-rightside {
+    float: right;
+}
+
+ul {
+  list-style-type: none;
+  margin: 0;
+  padding: 20;
+  display: flex; /* Display list items in a row */
+  align-items: center; /* Center the links vertically */
+}
+
+ul li {
+  margin: 0 20px;
+  list-style: none;
+  display: inline-block;
+}
+
+.navbar-option {
+  display: block;
+  color: black;
+  text-align: center;
+  padding: 14px 16px;
+  text-decoration: none;
+  margin: 0;
+}
+
+.navbar-option:hover {
+    color: #0f3fb8;
+}
 
 
