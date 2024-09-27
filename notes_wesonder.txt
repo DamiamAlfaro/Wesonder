@@ -227,6 +227,22 @@ September 25, 2024
 	d. Eventually each of the sides will contain motion, but now let's build the frame and the clothes of the Marionette.
 
 
+September 26, 2024
+
+
+	a. Focus on the four sections of the website mentioned above.
+	b. CRUST
+		i. The transparent background has to match and be situated adjacently with the nav bar.
+		ii. They have to share backgrounds and perhaps the box. They are an individual section together.
+		iii. On the left side, a mesmerizing marketing-influnced text goes.
+		iv. On the right side, a good-looking picture of the map of California.
+	c. LITHOSPHERE:
+		i. Not transparent anymore, perhaps a little bit darker. 
+		ii. On the left side, the gif/video of the functionality of the site.
+		iii. On the right side, a couple of concise and succinct paragraphs explaining the capabilities of the functionality.
+		iv. Make sure it cover the entire screen of the user, the section above nor the section below has to be seen. Unless further
+		scrolling by the user.
+		
 
 
 

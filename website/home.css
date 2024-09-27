@@ -7,8 +7,6 @@ html, body {
     overflow-x: hidden;
     background: radial-gradient(#0f3fb8 2%, #ffffff);
     font-family: system-ui;
-
-
 }
 
 main {
@@ -18,9 +16,7 @@ main {
 
 
 
-/*DIVISION PART
-
-THE CRUST*/
+/*NAVBAR*/
 
 .navbar-main {
     background-color: transparent;
@@ -34,7 +30,6 @@ THE CRUST*/
     float: left;
     text-align: center;
 }
-
 
 .navbar-rightside {
     float: right;
@@ -70,6 +65,68 @@ ul li {
 
 
 
+/*GENERAL*/
+
+.section {
+    margin-bottom: 5%;
+}
+
+
+
+
+/*CRUST*/
+
+.section .crust {
+   display : flex;
+   flex-direction : row;
+   
+}
+
+.section .crust .crust-side .crust-text {
+    text-align: justify;
+    line-height: 2;
+    padding: 100px;
+    font-size: 1.7em;
+ }
+
+.section .crust .crust-side .crust-image {
+    text-align: justify;
+    width: 500px;
+    height: 600px;
+    padding: 100px;
+}
+
+
+
+
+/*LITHOSPHERE*/
+
+.section .lithosphere {
+   display : flex;
+   flex-direction : row;
+   color: white;
+   background-color: #002244;
+   
+}
+
+.section .lithosphere .lithosphere-side .lithosphere-image {
+    text-align: justify;
+    width: 650px;
+    height: 750px;
+    padding: 100px;
+}
+
+.section .lithosphere .lithosphere-side .lithosphere-text {
+    text-align: justify;
+    line-height: 2;
+    padding: 100px;
+    font-size: 1.2em;
+ }
+
+.lithosphere-text > a {
+    color: white;
+    font-style: italic;
+}
 
 
 
@@ -81,23 +138,12 @@ ul li {
 
 
 
-
-
-/*DIVISION PART
-
-THE LITHOSPHERE*/
+/*MANTLE*/
 
 
 
-/*DIVISION PART
 
-THE MANTLE
-*/
-
-
-/*DIVISION PART
-
-THE CORE*/
+/*CORE*/
 
 footer {
     padding: 10px;
