@@ -131,19 +131,64 @@ ul li {
 
 
 
-
-
-
-
-
-
-
 /*MANTLE*/
+
+.section .mantle {
+   display : flex;
+   flex-direction : row;
+   color: black;
+   background-color: transparent;
+   
+}
+
+.section .mantle .mantle-side .mantle-media {
+    text-align: justify;
+    width: 650px;
+    height: 750px;
+    padding: 100px;
+}
+
+.section .mantle .mantle-side .mantle-text {
+    text-align: justify;
+    line-height: 2;
+    padding: 100px;
+    font-size: 1.2em;
+ }
+
+.mantle-text > a {
+    color: white;
+    font-style: italic;
+}
 
 
 
 
 /*CORE*/
+
+.myown-websitelink {
+    color: white;
+}
+
+.production-owner {
+    font-size: 35px;
+}
+
+.core-logo {
+    display: flex;
+    flex-direction: row;
+}
+
+.logo {
+    width: 50px;
+    height: 50px;
+    margin-left: 45%;
+}
+
+.core-logo .logo-title {
+    margin-left: 1%;
+}
+
+
 
 footer {
     padding: 10px;
@@ -151,12 +196,9 @@ footer {
     width: 100%;
     position: relative;
     bottom: 0;
+    background-color: #002244;
+    color: white;
 }
-
-hr {
-    width: 100%;
-}
-
 
 
 
