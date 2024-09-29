@@ -5,7 +5,7 @@ html, body {
     flex-direction: column; /* Make the body a flex container */
     max-width: 100%;
     overflow-x: hidden;
-    background: radial-gradient(#0f3fb8 2%, #ffffff);
+    background: radial-gradient(#28282B 2%, #ffffff);
     font-family: system-ui;
 }
 
@@ -105,7 +105,7 @@ ul li {
    display : flex;
    flex-direction : row;
    color: white;
-   background-color: #002244;
+   background-color: #28282B;
    
 }
 
@@ -173,20 +173,42 @@ ul li {
     font-size: 35px;
 }
 
+.core {
+    max-width: fit-content;
+    margin-left: auto;
+    margin-right: auto;
+}
+
 .core-logo {
     display: flex;
-    flex-direction: row;
+    max-width: fit-content;
+    margin-left: auto;
+    margin-right: auto;
+    padding: 32px;
 }
+
 
 .logo {
     width: 50px;
     height: 50px;
-    margin-left: 45%;
+
 }
 
-.core-logo .logo-title {
-    margin-left: 1%;
+.logo-title {
+    margin-left: 12%;
 }
+
+.footer-link {
+    text-decoration: none;
+    color: white;
+    padding: 10px;
+}
+
+.footer-link:hover {
+    background-color: #000000;
+}
+
+
 
 
 
@@ -196,7 +218,7 @@ footer {
     width: 100%;
     position: relative;
     bottom: 0;
-    background-color: #002244;
+    background-color: #28282B;
     color: white;
 }
 
