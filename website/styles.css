@@ -28,7 +28,8 @@ main {
 
 .navbar-leftside {
     float: left;
-    text-align: center;
+    text-align: start;
+
 }
 
 .navbar-rightside {
@@ -62,6 +63,41 @@ ul li {
     color: #0f3fb8;
 }
 
+.logotext {
+    color: black;
+    font-size: 24px;
+    margin: 0;
+    font-style: normal;
+    font-weight: 300;
+    font-variant-caps: all-small-caps;
+}
+
+
+
+
+/*INDIVIDUAL SECTIONS*/
+
+.section-name {
+    text-align: center;
+    width: 100%;
+    font-size: 80px;
+}
+
+/*CRUST*/
+
+.section .subsection {
+   display : flex;
+   flex-direction : row;
+   
+}
+
+.section .subsection .subsection-side .subsection-sidetext {
+    text-align: justify;
+    line-height: 2;
+    padding: 100px;
+    font-size: 1.7em;
+ }
+
 
 
 
@@ -74,7 +110,8 @@ ul li {
 
 
 
-/*CRUST*/
+/*CRUST: individualized because its the home page, but above we have the general section display for 
+    the other pages*/
 
 .section .crust {
    display : flex;
@@ -185,6 +222,7 @@ ul li {
     margin-left: auto;
     margin-right: auto;
     padding: 32px;
+    align-items: center;
 }
 
 
@@ -194,7 +232,11 @@ ul li {
 
 }
 
-.logo-title {
+.footer-logotext {
+    color: white;
+    font-size: 24px;
+    font-weight: 300;
+    font-variant-caps: all-small-caps;
     margin-left: 12%;
 }
 
