@@ -264,6 +264,16 @@ September 29, 2024
 	a. The color of the page will be black tones.
 	b. The logo is a minimalistic human, with a formal attire, a harthat, and a Map Marker next to it.
 	c. We really need to create a specialized email for this website.
+	d. Add the slideshow functionality in the about for multiple pictures of yourself.
+	e. For the Objective section, we will have a simple page as well, with only the section of the navbar, the footer, and the explanation of each
+	objective. There will be a total of three objectives, each of them named after a plural noun, with an explanation attached to each.
+	The JS involved here will be three boxess, that contain a picture, and a wrapped text, as soon as the user hovers over the box, the box
+	will increase in size, and display the entirety of the text (which was not displayed before, only a part of it). The same for the other
+	boxes, that will be in the same line.
+		i. Connections: Explain the goal of connecting people and increasing the relations in the industry.
+		ii. Opportunities: Explain how this yields opportunities for business of all sizes.
+		iii. Communication: Explain how communication plays a key role in this business and how it helps to have a healthy
+		friendly industry.	 
 
 
 
