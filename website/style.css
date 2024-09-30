@@ -95,7 +95,7 @@ ul li {
     text-align: justify;
     line-height: 2;
     padding: 80px;
-    font-size: 1.4em;
+    font-size: 1.7em;
  }
 
 
@@ -148,16 +148,9 @@ ul li {
 }
 
 
-    <div style="grid-area: header">The header</div>
-    <div style="grid-area: footer">The footer</div>
-    <div style="grid-area: left">The left panel</div>
-    <div style="grid-area: middle; height: 200px">The main content area</div>
-    <div style="grid-area: right">The right panel</div>
 
 
 /*OBJECTIVE SECTION*/
-
-.objective-subsection
 
 
 
