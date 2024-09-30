@@ -156,6 +156,13 @@ ul li {
 
 /*FEATURES*/
 
+.features-section {
+    display: grid;
+    grid-template-columns: auto auto auto;
+    grid-template-areas: "header header header" "left middle right" "footer footer footer";
+    padding: 30px;
+}
+
 .features-sectionheader {
     grid-area: header;
     padding: 40px;
