@@ -3,10 +3,10 @@
 <head>
     <meta charset="UTF-8">
     <meta name="author" content="Damiam Alfaro"/>
-    <meta name="description" content="About"/>
+    <meta name="description" content="Contact"/>
     <link rel="icon" href="../pictures/potential_favicon_2.png" type="image/x-icon"/>
     <link href="../style.css" rel="stylesheet" type="text/css">
-    <title>About</title>
+    <title>Contact</title>
 </head>
 <body>
 	<nav class="navbar-main">
@@ -17,6 +17,8 @@
                 <li><img src="../pictures/potential_favicon_2.png" class="logo"></li>
                 <li class="logotext">WeSonder</li>
             </ul>
+ <!--            logo
+            name of the website -->
         </div>
 
         <div class="navbar-rightside">
@@ -29,22 +31,43 @@
         </div>
     </nav>
 	<main>
-		<h1 class="section-name">About</h1>
+		<h1 class="section-name">Contact</h1>
 
-		<div class="section">
-			<div class="subsection">
-				<div class="subsection-side">
-					<div class="subsection-sidetext">
-						WESONDER was created by <a href="https://www.linkedin.com/in/damiam-alfaro-3a399626b/" class=sidetext-link>Damiam Alfaro</a>, an Engineer, Computer Scientist, Entrepreneur, and Project Estimator. After college, my goal was to diverge from the conventional path all my peers were undertaking and innovate in a new field. I wanted to endeavor into a different realm and explore the mechanisms of it; circumstances led me to encounter the Construction Industry, where I instantly fell in love with the field. Construction and everyone participating in this field are part of the backbone of society: Academic Institutions, Hospitals, Roads, Restaurants, Parks, and even the architectural structure you are in reading this right now is a product of this industry and its participants, ranging from Laborers, Operators, Subcontractors, Owners, General Constractors, Manufacturers, the list goes on. WESONDER is one of the many brainchildren in this field. I hope you utilize it productively.
-					</div>
-				</div>
-				<div class="subsection-side">
-					<div class="subsection-sideimage">
-						<img width="500px" height="700px" src="../pictures/image_me1.png" style="padding: 100px; margin-right: 14%; margin-top: 3%;">
-					</div>
-				</div>
-			</div>
-		</div>
+        <div class="contact-area">
+            <div class="contact-box">
+                <form action="action_page.php">
+                    <label for="name">
+                        Name:
+                    </label>
+                    <input type="text" id="name" name="name" maxlength="50" size="20" placeholder="Enter your Name">
+                    <label for="email">
+                        Email Address:
+                    </label>
+                    <input type="text" id="email" name="email" maxlength="60" size="20" placeholder="Enter your Email Address">
+                    <label for="phone">
+                        Phone Number:
+                    </label>
+                    <input type="text" id="phone" name="phone" maxlength="18" size="20" placeholder="Enter your Phone Number">
+                    <label for="reason">
+                        Reason:
+                    </label>
+                    <select id="reason" name="reason">
+                        <option value="select">Select</option>
+                        <option value="malfunction">Website Malfunction</option>
+                        <option value="inaccuracy">Inaccurate Information</option>
+                        <option value="rant">Rant and Rave</option>
+                        <option value="other">Other</option>
+                    </select>
+                    <label for="message">
+                        Message:
+                    </label>
+                    <textarea id="message" name="message" placeholder="Message:" style="height: 200px;"></textarea>
+
+                    <input type="submit" value="Submit">
+                </form>
+            </div>
+        </div>
+
 
 
 

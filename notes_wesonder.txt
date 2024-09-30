@@ -204,6 +204,8 @@ September 24, 2024
 		iv. The last feature is going to be the Pinpointing Feature: This feature allows the user to click a part of the map, and:
 			1. Display the subcontractors nearby the clicing point on a default 100 miles range.
 			2. Display the subcontractors nearby the clicking point in the map based on parameters from (d.ii).
+		v. Awarding bodies show
+		vi. Email the entity
 	e. (d.iv) is the breakthrough not only in the construction industry, but also the web design community.
 
 
@@ -274,6 +276,13 @@ September 29, 2024
 		ii. Opportunities: Explain how this yields opportunities for business of all sizes.
 		iii. Communication: Explain how communication plays a key role in this business and how it helps to have a healthy
 		friendly industry.	 
+
+
+September 30, 2024
+
+
+	1. Describing the six features.
+	2. For the Contact Section, do not let the user proceed until he finishes with everything, including the message.
 
 
 
