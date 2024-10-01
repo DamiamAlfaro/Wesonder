@@ -56,27 +56,28 @@ def municipality_bidding_site_dataframe(name_of_city, links_list):
 
     # Check if the links and bidding site are the same length. Why? Because the dataframe requires equal column size.
     length_check = len(bidding_sites) == len(bidding_site_links)
-    print(len(bidding_sites))
     if length_check == True:
 
         # Municipalities Column
         municipality_name = [name_of_city for instances in range(len(bidding_sites))] 
-        print(municipality_name)
         
 
-            
-
-
-
-
-
+    # Check if the Name, Links, and BiddingSites column are the same    
+    length_check_2 = len(bidding_sites) == len(bidding_site_links) == len(municipality_name)
 
 
     '''
     Create the dataframe with City, BiddingSite, and BiddingSiteLink
     '''
-    df = pd.DataFrame()
-    
+    data_to_df = {"AwardingBody": municipality_name,
+                  "BiddingSite":bidding_sites,
+                  "SiteLink":bidding_site_links}
+
+    # Allocate the data into a dataframe
+    df = pd.DataFrame(data_to_df)
+    #df.set_index("AwardingBody",inplace=True)
+
+    return df
 
 
 
@@ -85,7 +86,7 @@ def municipality_bidding_site_dataframe(name_of_city, links_list):
 '''
 This function is only to search, extract, and allocate in file.
 '''
-def municipalities_bidding_platforms_search(df):
+def municipalities_bidding_platforms_search(df,awarding_body_count):
 
     '''
     Focus on the CITY Column only
@@ -95,7 +96,8 @@ def municipalities_bidding_platforms_search(df):
     '''
     Start the Google Session
     '''
-    test = df_cities[0]
+    test = df_cities[awarding_body_count]
+    print(f"Awarding Body: {test}")
     
     # Open the WebDriver
     driver = webdriver.Chrome()
@@ -118,8 +120,24 @@ def municipalities_bidding_platforms_search(df):
         # Extract all links for deconstruction
         google_result_page = google_results.find_elements(By.XPATH,"//a[@jsname='UWckNb']")
 
+        # List storing links
+        google_result_links = []
+        
         # Deconstruct the links and extract their hrefs
-        google_result_links = [a_tag.get_attribute("href") for a_tag in google_result_page]
+        for a_tag in google_result_page:
+
+            # Extract the link itself
+            link_itself = a_tag.get_attribute("href")
+
+
+            # Make sure we don't include pdfs
+            if link_itself.endswith(".pdf"):
+                pass
+
+            # Append to list
+            else:
+                google_result_links.append(link_itself)
+
         
 
     except:
@@ -129,25 +147,39 @@ def municipalities_bidding_platforms_search(df):
     '''
     Create the Bidding Site Dataframe for the respective city
     '''
-    municipality_bidding_site_dataframe(test,google_result_links)
+    enhanced_df = municipality_bidding_site_dataframe(test,google_result_links)
 
 
 
+    return enhanced_df
 
 
-    return "\nexecuted\n"
+'''
+This function properly allocates the dataframes into a csv file
+'''
+def updating_csv_file(df,csv_file):
 
-
-
-
-
-
-
-
-
+    # Combine both
+    df.to_csv(csv_file, mode="a", header=False, index=False)
 
 
 
+'''
+Temporary Function: allocate the awarding bodies to a new file
+'''
+def awarding_bodies_allocation(csv_file):
+
+    # Convert csv file to DataFrame
+    df = pd.read_csv(csv_file)
+
+    # Filter the DataFrame based on Awarding Body
+    df_awarding_bodies = df[df.iloc[:,1].str.contains("Awarding Body")]
+
+    # Return the DataFrame only with the Awarding Body column
+    df_ab_only = df_awarding_bodies.iloc[:,0]
+
+    # Allocate it to csv file
+    df_ab_only.to_csv("awarding_bodies.csv",index=False)
 
 
 
@@ -155,14 +187,31 @@ def municipalities_bidding_platforms_search(df):
 if __name__ == "__main__":
     
     # Retrieve the municipalities file
-    awarding_bodies_file = "../data/dir_entities_refined.csv"
+    awarding_bodies_file = "awarding_bodies.csv"
     df = pd.read_csv(awarding_bodies_file)
 
-    
-    # Search for the Municipality's bidding site
-    print(municipalities_bidding_platforms_search(df))
+    # Retrieve the existing bidding sites file
+    bidding_sites_file = "awarding_bodies_bidding_sites.csv"
 
+    '''
+    Automation
+    '''
+    awarding_body_count = 11
+
+    while awarding_body_count != 8571:
+
+        # Where are we at?
+        print(f"Current Count: {awarding_body_count}")
     
+        # Search for the Municipality's bidding site and convert it to a df
+        bidding_sites_df = municipalities_bidding_platforms_search(df,awarding_body_count)
+
+        # Allocate the newly extracted dataframe and allocate it into the csv file
+        updating_csv_file(bidding_sites_df,bidding_sites_file)
+
+        # Next awarding body
+        awarding_body_count += 1
+        
 
 
 
