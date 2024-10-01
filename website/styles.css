@@ -5,7 +5,7 @@ html, body {
     flex-direction: column; /* Make the body a flex container */
     max-width: 100%;
     overflow-x: hidden;
-    background: radial-gradient(#28282B 2%, #ffffff);
+    background: linear-gradient(#ffffff, #ffffff, #ffffff, #ffffff 85%, #28282B 130%);
     font-family: system-ui;
 }
 
@@ -80,7 +80,8 @@ ul li {
 .section-name {
     text-align: center;
     width: 100%;
-    font-size: 80px;
+    font-size: 70px;
+    margin-bottom: 10%;
 }
 
 /*CRUST*/
@@ -109,6 +110,20 @@ ul li {
 }
 
 
+.illustration-section {
+    width: auto;
+    display: flex;
+    align-items: center;
+    margin: 0;
+}
+
+.illustration-section-image {
+    margin-left: auto;
+    margin-right: auto;
+    max-width: 50%;
+    max-height: 50%;
+}
+
 
 /*GENERAL*/
 
@@ -131,6 +146,8 @@ ul li {
     grid-area: header;
     padding: 40px;
     text-align: center;
+    margin-top: 3%;
+    font-size: 40px;
 }
 
 .objective-sectionfooter {
@@ -141,15 +158,34 @@ ul li {
 
 .objective-sectionleft {
     grid-area: left;
+    text-align: center;
 }
 
 .objective-sectionmiddle {
     grid-area: middle;
+    text-align: center;
 }
 
 .objective-sectionright {
     grid-area: right;
+    text-align: center;
 }
+
+.section-left-title {
+    font-size: 20px;
+    margin: 4%;
+}
+
+.section-middle-title {
+    font-size: 20px;
+    margin: 4%;
+}
+
+.section-right-title {
+    font-size: 20px;
+    margin: 4%;
+}
+
 
 
 
