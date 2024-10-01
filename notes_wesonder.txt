@@ -201,10 +201,16 @@ September 24, 2024
 			1. And this is not a checkbox, but a text box: the user has to see the map changing in
 			real time.
 		iii.DIR Projects locations.
+			1. Based on the DIR Extraction, this will be like a "Past Records".
+			2. Potentially, we will also include federal projects here.
 		iv. The last feature is going to be the Pinpointing Feature: This feature allows the user to click a part of the map, and:
 			1. Display the subcontractors nearby the clicing point on a default 100 miles range.
 			2. Display the subcontractors nearby the clicking point in the map based on parameters from (d.ii).
-		v. Awarding bodies show
+		v. Awarding bodies show. 
+			1. We can also include the bidding sites extracted from potential_bidders_extraction.py, something like: "Awarding body X bids on: Planetbids,
+			Bidnet, or/and Opengov" and provide the respective bids.
+			2. This is an amazing idea. We are going to iterate through each awarding body, and search and extract their BiddingSites, and 
+			display the information as a feature on WeSonder.
 		vi. Email the entity
 	e. (d.iv) is the breakthrough not only in the construction industry, but also the web design community.
 
