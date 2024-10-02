@@ -191,7 +191,7 @@ if __name__ == "__main__":
     df = pd.read_csv(awarding_bodies_file)
 
     # Retrieve the existing bidding sites file
-    bidding_sites_file = "awarding_bodies_bidding_sites.csv"
+    bidding_sites_file = "/Users/damiamalfaro/Desktop/Europe/testing_wesonder/BiddingSitesDB/awarding_bodies_bidding_sites.csv"
 
     '''
     Automation
