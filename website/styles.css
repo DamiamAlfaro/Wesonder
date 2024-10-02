@@ -145,18 +145,23 @@ ul li {
 
 .objective-sectionheader {
     grid-area: header;
-    padding: 40px;
+    padding: 60px;
     text-align: center;
-    margin-top: 3%;
+    margin-top: 6%;
     font-size: 40px;
-    margin-bottom: 12%;
+    margin-bottom: 10%;
     position: relative;
 }
 
 .objective-sectionfooter {
     grid-area: footer;
-    padding: 40px;
+    padding: 60px;
     text-align: center;
+    margin-top: 16%;
+    font-size: 40px;
+    margin-left: 10%;
+    margin-right: 10%;
+    margin-bottom: 18%;
 }
 
 
@@ -164,40 +169,41 @@ ul li {
 .objective-sectionmiddle {
     grid-area: middle;
     text-align: center;
-    position: relative;
 }
 
 .objective-sectionright {
     grid-area: right;
     text-align: center;
-    position: relative;
 }
 
 .objective-sectionleft {
     grid-area: left;
     text-align: center;
-    position: relative;
 }
 
 .section-left-overall-text {
-    overflow: hidden;
+    overflow: visible;
     width: 100%;
     height: 144px;
     transition: height 0.5s;
     -webkit-transition: height 0.5s;
     transition: 1.5s;
     opacity: 0.4;
-    filter: blur(1px);
+    filter: blur(2px);
 }
 
 .section-left-title {
     font-size: 32px;
-    margin: 4%;
+    margin: 6%;
 }
 
 .section-left-text {
     text-wrap: balance;
-    margin: 10%;
+    margin-left: 15%;
+    margin-right: 15%;
+    margin-bottom: 15%;
+    margin-top: 10%;
+    line-height: 150%;
 
 }
 
@@ -206,9 +212,10 @@ ul li {
 }
 
 .section-left-image:hover + .section-left-overall-text {
-    height: 60%;
+    transform: scale(1.2);
     filter: blur(0);
     opacity: 1;
+
 }
 
 .left-image {
@@ -219,24 +226,29 @@ ul li {
 }
 
 .section-middle-overall-text {
-    overflow: hidden;
+    overflow: visible;
     width: 100%;
     height: 144px;
     transition: height 0.5s;
     -webkit-transition: height 0.5s;
     transition: 1.5s;
     opacity: 0.4;
-    filter: blur(1px);
+    filter: blur(2px);
+
 }
 
 .section-middle-title {
     font-size: 32px;
-    margin: 4%;
+    margin: 6%;
 }
 
 .section-middle-text {
     text-wrap: balance;
-    margin: 10%;
+    margin-left: 15%;
+    margin-right: 15%;
+    margin-bottom: 15%;
+    margin-top: 10%;
+    line-height: 150%;
 }
 
 .section-middle-image {
@@ -244,9 +256,10 @@ ul li {
 }
 
 .section-middle-image:hover + .section-middle-overall-text {
-    height: 60%;
+    transform: scale(1.2);
     filter: blur(0);
     opacity: 1;
+
 }
 
 .middle-image {
@@ -257,25 +270,30 @@ ul li {
 }
 
 .section-right-overall-text {
-    overflow: hidden;
+    overflow: visible;
     width: 100%;
     height: 144px;
     transition: height 0.5s;
     -webkit-transition: height 0.5s;
     transition: 1.5s;
     opacity: 0.4;
-    filter: blur(1px);
+    filter: blur(2px);
+
 }
 
 
 .section-right-title {
     font-size: 32px;
-    margin: 4%;
+    margin: 6%;
 }
 
 .section-right-text {
     text-wrap: balance;
-    margin: 10%;
+    margin-left: 15%;
+    margin-right: 15%;
+    margin-bottom: 15%;
+    margin-top: 10%;
+    line-height: 150%;
 }
 
 .section-right-image {
@@ -284,9 +302,10 @@ ul li {
 }
 
 .section-right-image:hover + .section-right-overall-text {
-    height: 60%;
+    transform: scale(1.2);
     filter: blur(0);
     opacity: 1;
+
 }
 
 .right-image {
