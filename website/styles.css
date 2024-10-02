@@ -141,47 +141,90 @@ ul li {
 
 /*ABOUT SECTION*/
 
+.about-section {
+    display: grid;
+    grid-template-columns: 55em 4em auto;
+    grid-template-areas: "header header header" "left middle right" "footer footer footer";
+    padding: 60px;
+    position: relative;
+    align-items: center;
+}
+
+.about-illustration-section {
+    width: auto;
+    display: flex;
+    align-items: center;
+    margin: 0;
+}
+
+.about-illustration-section-image {
+    margin-left: auto;
+    margin-right: auto;
+    max-width: 50%;
+    max-height: 50%;
+}
+
+.about-section-header {
+    grid-area: header;
+    padding: 60px;
+    text-align: center;
+    margin-top: 1%;
+    font-size: 60px;
+    margin-bottom: 4%;
+    position: relative;
+    font-style: italic;
+    font-weight: 500;
+}
+
+.about-section-footer {
+    grid-area: footer;
+    padding: 60px;
+    text-align: center;
+    margin-top: 4%;
+    font-size: 40px;
+    margin-left: 10%;
+    margin-right: 10%;
+    margin-bottom: 1%;
+}
+
+.about-section-left {
+    grid-area: left;
+    text-align: center;
+    line-height: 1.5;
+    font-size: 25px;
+    font-weight: 200;
+    margin-left: 2%;
+}
+
+.about-section-left-beginning {
+    font-weight: 700;
+}
+
+.about-section-middle {
+    grid-area: middle;
+    text-align: center;
+}
+
+.about-section-right {
+    grid-area: right;
+    text-align: center;
+}
+
+.about-section-image {
+    border-radius: 16%;
+}
+
 .about-section-link {
     color: black;
-    padding: 10px;
+    padding: 4px;
     transition: 0s background-color;
 }
 
 .about-section-link:hover {
     background-color: rgba(0, 0, 0, 0.2);
-    border-radius: 14px;
-    transition-duration: 1s;
+    border-radius: 10px;
+    transition: 1s;
 }
-
-.about-section-grid {
-    display: grid;
-    grid-template-columns: 10em 10em;
-    grid-template-areas: "header header" "left right" "footer footer";
-    padding: 70px;
-    position: relative;
-}
-
-.about-section-grid-header {
-    grid-area: header;
-    text-align: center;
-}
-
-.about-section-grid-footer {
-    grid-area: footer;
-}
-
-.about-section-grid-left {
-    grid-area: left;
-}
-
-.about-section-grid-right {
-    grid-area: right;
-}
-
-
-
-
-
 
 
 
