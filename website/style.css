@@ -136,6 +136,7 @@ ul li {
     grid-template-columns: auto auto auto;
     grid-template-areas: "header header header" "left middle right" "footer footer footer";
     padding: 30px;
+    position: relative;
 }
 
 
@@ -148,6 +149,8 @@ ul li {
     text-align: center;
     margin-top: 3%;
     font-size: 40px;
+    margin-bottom: 12%;
+    position: relative;
 }
 
 .objective-sectionfooter {
@@ -159,31 +162,55 @@ ul li {
 .objective-sectionleft {
     grid-area: left;
     text-align: center;
+    position: relative;
 }
 
 .objective-sectionmiddle {
     grid-area: middle;
     text-align: center;
+    position: relative;
 }
 
 .objective-sectionright {
     grid-area: right;
     text-align: center;
+    position: relative;
 }
 
 .section-left-title {
-    font-size: 20px;
+    font-size: 32px;
     margin: 4%;
 }
 
 .section-middle-title {
-    font-size: 20px;
+    font-size: 32px;
     margin: 4%;
 }
 
 .section-right-title {
-    font-size: 20px;
+    font-size: 32px;
     margin: 4%;
+}
+
+.left-image {
+    width: auto;
+    height: auto;
+    max-width: 460px;
+    max-height: 245;
+}
+
+.middle-image {
+    width: auto;
+    height: auto;
+    max-width: 460px;
+    max-height: 245;
+}
+
+.right-image {
+    width: auto;
+    height: auto;
+    max-width: 460px;
+    max-height: 245;
 }
 
 
