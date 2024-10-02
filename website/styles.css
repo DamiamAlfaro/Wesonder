@@ -159,11 +159,7 @@ ul li {
     text-align: center;
 }
 
-.objective-sectionleft {
-    grid-area: left;
-    text-align: center;
-    position: relative;
-}
+
 
 .objective-sectionmiddle {
     grid-area: middle;
@@ -177,19 +173,42 @@ ul li {
     position: relative;
 }
 
+.objective-sectionleft {
+    grid-area: left;
+    text-align: center;
+    position: relative;
+}
+
+.section-left-overall-text {
+    overflow: hidden;
+    width: 100%;
+    height: 144px;
+    transition: height 0.5s;
+    -webkit-transition: height 0.5s;
+    transition: 1.5s;
+    opacity: 0.4;
+    filter: blur(1px);
+}
+
 .section-left-title {
     font-size: 32px;
     margin: 4%;
 }
 
-.section-middle-title {
-    font-size: 32px;
-    margin: 4%;
+.section-left-text {
+    text-wrap: balance;
+    margin: 10%;
+
 }
 
-.section-right-title {
-    font-size: 32px;
-    margin: 4%;
+.section-left-image {
+    cursor: pointer;
+}
+
+.section-left-image:hover + .section-left-overall-text {
+    height: 60%;
+    filter: blur(0);
+    opacity: 1;
 }
 
 .left-image {
@@ -199,11 +218,75 @@ ul li {
     max-height: 245;
 }
 
+.section-middle-overall-text {
+    overflow: hidden;
+    width: 100%;
+    height: 144px;
+    transition: height 0.5s;
+    -webkit-transition: height 0.5s;
+    transition: 1.5s;
+    opacity: 0.4;
+    filter: blur(1px);
+}
+
+.section-middle-title {
+    font-size: 32px;
+    margin: 4%;
+}
+
+.section-middle-text {
+    text-wrap: balance;
+    margin: 10%;
+}
+
+.section-middle-image {
+    cursor: pointer;
+}
+
+.section-middle-image:hover + .section-middle-overall-text {
+    height: 60%;
+    filter: blur(0);
+    opacity: 1;
+}
+
 .middle-image {
     width: auto;
     height: auto;
     max-width: 460px;
     max-height: 245;
+}
+
+.section-right-overall-text {
+    overflow: hidden;
+    width: 100%;
+    height: 144px;
+    transition: height 0.5s;
+    -webkit-transition: height 0.5s;
+    transition: 1.5s;
+    opacity: 0.4;
+    filter: blur(1px);
+}
+
+
+.section-right-title {
+    font-size: 32px;
+    margin: 4%;
+}
+
+.section-right-text {
+    text-wrap: balance;
+    margin: 10%;
+}
+
+.section-right-image {
+    cursor: pointer;
+
+}
+
+.section-right-image:hover + .section-right-overall-text {
+    height: 60%;
+    filter: blur(0);
+    opacity: 1;
 }
 
 .right-image {
@@ -449,13 +532,3 @@ footer {
     background-color: #28282B;
     color: white;
 }
-
-
-
-
-
-
-
-
-
-
