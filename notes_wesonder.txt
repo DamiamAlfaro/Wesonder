@@ -297,6 +297,22 @@ October 1, 2024
 	2. They were right abut illustrations.
 
 
+October 2, 2024
+
+
+	1. Finished the Objective Section
+	2. For the About Section, we want to do the following: We want to have three grid structures vertically, each of them contaitning two panels. The sections are
+	the following: 
+		i. Grid 1: An explanation of who I am (existing already on website), the left panel will have the text, and the right panel will include a 
+		automatic slideshow with two pictures of myself standing and coding.
+		i. Grid 2: An explanation of my experience in the industry, what have I done, and how have I mingled mathematics, programming, and other expertises
+		in this beautiful industry, with also a slideshow (two pictures of me with construction attire and Estimating office), but now on the left panel, and the 
+		explanation on the right.
+		i. Grid 3: An explanation of the goal of the website, with the explanation on the left, and an illustration of the map on the right, and maybe
+		an extra one as well.
+	3. For the Contact Section, we just need to redirect them to my email, and add some illustrations as well.
+		
+
 
 
 

@@ -125,11 +125,76 @@ ul li {
 }
 
 
+
+
+
+
+
 /*GENERAL*/
 
 .section {
     margin-bottom: 5%;
 }
+
+
+
+
+/*ABOUT SECTION*/
+
+.about-section-link {
+    color: black;
+    padding: 10px;
+    transition: 0s background-color;
+}
+
+.about-section-link:hover {
+    background-color: rgba(0, 0, 0, 0.2);
+    border-radius: 14px;
+    transition-duration: 1s;
+}
+
+.about-section-grid {
+    display: grid;
+    grid-template-columns: 10em 10em;
+    grid-template-areas: "header header" "left right" "footer footer";
+    padding: 70px;
+    position: relative;
+}
+
+.about-section-grid-header {
+    grid-area: header;
+    text-align: center;
+}
+
+.about-section-grid-footer {
+    grid-area: footer;
+}
+
+.about-section-grid-left {
+    grid-area: left;
+}
+
+.about-section-grid-right {
+    grid-area: right;
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+/*OBJECTIVE SECTION*/
 
 .objective-section {
     display: grid;
@@ -138,9 +203,6 @@ ul li {
     padding: 30px;
     position: relative;
 }
-
-
-/*OBJECTIVE SECTION*/
 
 
 .objective-sectionheader {
@@ -163,8 +225,6 @@ ul li {
     margin-right: 10%;
     margin-bottom: 18%;
 }
-
-
 
 .objective-sectionmiddle {
     grid-area: middle;
@@ -314,6 +374,13 @@ ul li {
     max-width: 460px;
     max-height: 245;
 }
+
+
+
+
+
+
+
 
 
 
@@ -495,7 +562,7 @@ input[type=submit] {
 }
 
 .production-owner {
-    font-size: 35px;
+    font-size: 25px;
 }
 
 .core {
@@ -531,7 +598,7 @@ input[type=submit] {
 .footer-link {
     text-decoration: none;
     color: white;
-    padding: 10px;
+    padding: 2px;
 }
 
 .footer-link:hover {
@@ -543,7 +610,7 @@ input[type=submit] {
 
 
 footer {
-    padding: 10px;
+    padding: 5px;
     text-align: center;
     width: 100%;
     position: relative;
