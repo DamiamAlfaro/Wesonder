@@ -235,8 +235,6 @@ ul li {
 
 
 
-
-
 /*OBJECTIVE SECTION*/
 
 .objective-section {
@@ -649,9 +647,6 @@ input[type=submit] {
 }
 
 
-
-
-
 footer {
     padding: 5px;
     text-align: center;
@@ -661,3 +656,59 @@ footer {
     background-color: #28282B;
     color: white;
 }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+/*MAPPING*/
+
+#map {
+	height: 100vh;
+    width: 100%;
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

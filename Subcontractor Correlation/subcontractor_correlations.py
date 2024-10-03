@@ -917,7 +917,7 @@ if __name__ == '__main__':
 	'''
 	Step 2: Combine and remove separates in the newly downloaded CSLB subs
 	'''
-	#clearing_newly_downloaded_cslb_subs()
+	clearing_newly_downloaded_cslb_subs()
 
 
 	'''
@@ -997,8 +997,8 @@ if __name__ == '__main__':
 	'''
 	Step 6: Put the resulting dataframes from Step 4 into a combined dataframe
 	'''
-	list_of_new_dataframes = os.path.join(os.getcwd(),"extractions2")
-	combining_csv_files(list_of_new_dataframes)
+	#list_of_new_dataframes = os.path.join(os.getcwd(),"extractions2")
+	#combining_csv_files(list_of_new_dataframes)
 
 
 

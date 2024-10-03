@@ -313,6 +313,18 @@ October 2, 2024
 	3. For the Contact Section, we just need to redirect them to my email, and add some illustrations as well.
 		
 
+October 3, 2024
+
+
+	1. We are going to leave the Design portion aside for now, and focus on the mapping, we want to endeavor into something new, and perhaps learn more about
+	such beautiful functionality in Javascript. There has to be a balance between Aesthetics/Subjective work and Functional/Objective work. In this case,
+	the former refers to the Design Portion, whereas the latter refers to the Mapping Portion.
+	2. That being said, there is going to be three different maps:
+		I. Contractors
+		II. Awarding Bodies
+		III. Projects
+
+
 
 
 
