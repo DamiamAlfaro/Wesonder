@@ -196,7 +196,7 @@ if __name__ == "__main__":
     '''
     Automation
     '''
-    awarding_body_count = 3454
+    awarding_body_count = 6298
 
     while awarding_body_count != 8571:
 
