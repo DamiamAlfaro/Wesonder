@@ -14,7 +14,7 @@ def cslb_conversion(csv_file, address_file, count):
     df = pd.read_csv(csv_file, low_memory=False)
 
     # Acquire the Address Columns (4-7)
-    df_addresses = df.iloc[:, 4:6]
+    df_addresses = df.iloc[:, 4:7]
 
     '''
     Geolocation Conversion and Allocation
