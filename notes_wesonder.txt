@@ -325,6 +325,18 @@ October 3, 2024
 		III. Projects
 
 
+October 4, 2024
+
+
+	1. We will not do anything today most likely, but I was thinking: we need some type of verification method for accounts, such as email since a hacker can create
+	a web crawler and flood our server with accounts if they do not require a verification email.
+	2. There are 4 Data Bases that contain addresses, and we need their Geolocations:
+		I. CSLB (Ongoing as of October 3rd, 2024)
+		II. DIR Projects (Ongoing as of October 4th, 2024)
+		III. DIR Entities (Ongoing as of October 4th, 2024)
+		IV. Federal Projects (NA)
+
+
 
 
 

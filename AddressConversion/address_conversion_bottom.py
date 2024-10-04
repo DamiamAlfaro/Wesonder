@@ -6,7 +6,7 @@ from geopy.geocoders import Nominatim
 This function converts all addresses into Latitude & Longitude coordinates
 that will be used in Leaflet later on.
 '''
-def cslb_conversion(csv_file):
+def cslb_conversion(csv_file, address_file,count, total_r):
 
 
     
@@ -20,13 +20,17 @@ def cslb_conversion(csv_file):
     Geolocation Conversion and Allocation
     '''
 
-    # Upcoming Columns
-    complete_addresses = [] # CompleteAddress
-    existence_status = [] # AddressExistence
-    coordinates = [] # [X_Coordinates, Y_Coordinates]
-
     # Iterate through the addreses
-    for index, row in df_addresses.head(5).iterrows():
+    for index, row in df_addresses.iloc[count:total_r].iterrows():
+
+        # Situation Awareness
+        print(f"Current Count: {index}")
+
+        # Upcoming Columns
+        complete_addresses = [] # CompleteAddress
+        existence_status = [] # AddressExistence
+        x_coordinates = [] # X_Coordinates
+        y_coordinates = []
 
         # Identify the address parts
         street = row['Address']
@@ -39,65 +43,65 @@ def cslb_conversion(csv_file):
 
         # Append the complete address for reference
         complete_addresses.append(complete_address)
-        print(complete_address)
+        print(f"Address: {complete_address}")
 
         # Get the numerical geolocation
         location = geolocator.geocode(complete_address)
-
-        # Where X & Y Coordinates will be allocated
-        splited_coordinates = []
         
         # If the address' geolocation is found, append it to the list
         if location:
             x_coordinate = location.latitude
-            splited_coordinates.append(x_coordinate)
+            x_coordinates.append(x_coordinate)
             y_coordinate = location.longitude
-            splited_coordinates.append(y_coordinate)
+            y_coordinates.append(y_coordinate)
             existence_status.append(0)
-            print(x_coordinate, y_coordinate)
+            print("Geolocation: Exists")
+            print(f"X-Coordinate: {x_coordinate}")
+            print(f"Y-Coordinate: {y_coordinate}")
+
+
         
         # If not (most likely PO Box) then append counterfeit
         else:
-            splited_coordinates.append(0)
-            splited_coordinates.append(0)
+            x_coordinates.append(0)
+            y_coordinates.append(0)
             existence_status.append(1)
-            print("Nonexistent")
+            print("Geolocation: Nonexistent")
+            print("X-Coordinate: NA")
+            print("Y-Coordinate: NA")
 
-        coordinates.append(splited_coordinates)    
         
         # Checks if the folder have the same length, in order to assure organization
-        fraudulent_check =  len(complete_addresses) == len(existence_status) == len(coordinates)        
+        fraudulent_check =  len(complete_addresses) == len(existence_status) == len(x_coordinates) == len(y_coordinates)
         
         # If it is the same, add it to the DataFrame
         if fraudulent_check == True:
-            print("het:")
+            data_to_df = {"CompleteAddress":complete_addresses,
+                          "AddressExistence":existence_status,
+                          "X_Coordinates":x_coordinates,
+                          "Y_Coordinates":y_coordinates}
+
+            # Convert to DataFrame
+            df = pd.DataFrame(data_to_df)
+
+            # Allocate to file
+            dataframe_to_file(df, address_file)
+            
 
         else:
             print(f"something happened at {row}")
             break
         
                 
-
-        
-
-
-
-
-
-
-
-
-    return "yes"
-    
-
-
 '''
 Here we will write the new 4 columns into the existent csv file
 that display whether the address exists or not, if the former, include its
 X and Y coordinates, if the latter, nothing.
 '''
-def address_status_columns_append(dataframe):
-    pass
+def dataframe_to_file(dataframe,csv_file):
+
+    # Convert the dataframe to a csv file
+    dataframe.to_csv(csv_file, mode="a", header=False, index=False)
 
 
 
@@ -108,27 +112,30 @@ if __name__ == "__main__":
     # Set up the file with addresses
     cslb_contractors_file = "/Users/damiamalfaro/Desktop/Europe/testing_wesonder/testing_allsubs.csv"
 
+    # Address Conversion File
+    address_conversion_file = "/Users/damiamalfaro/Desktop/Europe/testing_wesonder/file_address_conversion_bottom.csv"
+    
+
     # Set up the geolocator
-    geolocator = Nominatim(user_agent="my-app",timeout=20)
+    geolocator = Nominatim(user_agent="my-app",timeout=24)
     
     # Just for reference, not used
-    total_rows = 253006
+    total_rows = 253006 # Ironically, used as the last row index
 
-    # Current count for the thousands, i.e. 1 = 1000
-    current_count = 0 
+    # Current Count Record
+    current_count = 168958
 
-    cslb_conversion(cslb_contractors_file)
+    # Convert the addresses to Geolocations and store them in new csv file for later use
+    cslb_conversion(cslb_contractors_file, address_conversion_file, current_count, total_rows)
 
-    #while current_count != 254
-        
-        # Display the count
-        #print(current_count)
+    
 
-        # Address-Geolocation Conversion
-        #cslb_conversion(cslb_contractors_file,current_count)
 
-        # Add to the count after each iteration
-        #current_count += 1
+
+
+
+
+
 
 
 

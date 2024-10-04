@@ -12,5 +12,3 @@ L.tileLayer('https://tile.openstreetmap.org/{z}/{x}/{y}.png', {
 
 var marker = L.marker([x,y]).addTo(map);
 marker.bindPopup("Name: Subcontractor X<br> PhoneNumber: 666-000-999 <br> License: C12, C32, A");
-
-
