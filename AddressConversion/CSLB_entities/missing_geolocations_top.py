@@ -32,19 +32,20 @@ def geolocation_search_refinement(csv_file,count):
             
             # Check if the Google Maps API was found      
             if geocode_result:      
-                print("GEOLOCATION REFINED ATTEMPT: {index}")
+                print(f"GEOLOCATION REFINED ATTEMPT: {index}")
                 location = geocode_result[0]['geometry']['location']
                 new_x_coordinate = location['lat']
                 new_y_coordinate = location['lng']
-                df_initial.at[index,'GeolocationFound'] = 0
-                df_initial.at[index,'X_Coordinate'] = new_x_coordinate
-                df_initial.at[index,'Y_Coordinate'] = new_y_coordinate
+                df_initial.loc[index,'GeolocationFound'] = 0
+                df_initial.loc[index,'X_Coordinate'] = new_x_coordinate
+                df_initial.loc[index,'Y_Coordinate'] = new_y_coordinate
                 print(f"{address}\n{0}\n{new_x_coordinate}\n{new_y_coordinate}")
-                df_initial.to_csv(csv_file, index=False) 
             
             else:
                 print("STILL MISSING")
 
+        # Move it to the csv file
+        df_initial.to_csv(csv_file,index=False)
 
                   
 
@@ -65,13 +66,13 @@ if __name__ == "__main__":
     with open(google_api_file, "r") as file:
         google_api_key = file.readlines() 
 
-    gmaps = googlemaps.Client(key=google_api_key)
+    gmaps = googlemaps.Client(key=google_api_key[0])
 
     # Activate Geolocator
     geolocator = Nominatim(user_agent="my-app", timeout=24)
 
     # Access the file
-    locations_file = "/Users/damiamalfaro/Desktop/Europe/testing_wesonder/geolocation_conversion/file_address_conversion_top.csv"
+    locations_file = "/Users/damiamalfaro/Desktop/Europe/testing_wesonder/Geolocations_CSLB_Entities/file_address_conversion_top.csv"
 
     # Record current count
     current_count = 0
