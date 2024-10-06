@@ -132,7 +132,7 @@ if __name__ == "__main__":
     total_rows = 573220
 
     # Current count for the thousands, i.e. 1 = 1000
-    current_count = 286611
+    current_count = 314887
 
     # Convert the addresses to Geolocations and store them in new csv file for later use
     cslb_conversion(source_contractors_file, address_conversion_file, current_count)

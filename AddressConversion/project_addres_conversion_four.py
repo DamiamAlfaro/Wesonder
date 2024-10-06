@@ -21,7 +21,7 @@ def cslb_conversion(csv_file, address_file, count, rows_t):
     '''
 
     # Iterate through the addreses
-    for index, row in df_addresses.iloc[429917:rows_t].iterrows():
+    for index, row in df_addresses.iloc[count:rows_t].iterrows():
 
         # Empty cells check
         if pd.isna(row['ProjectAddress1']) or pd.isna(row['City']) or pd.isna(row['State']):
@@ -133,7 +133,7 @@ if __name__ == "__main__":
     total_rows = 573220
 
     # Current count for the thousands, i.e. 1 = 1000
-    current_count = 0
+    current_count = 457762
 
     # Convert the addresses to Geolocations and store them in new csv file for later use
     cslb_conversion(source_contractors_file, address_conversion_file, current_count, total_rows)
