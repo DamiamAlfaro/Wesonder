@@ -12,7 +12,7 @@ def geolocation_search_refinement(csv_file,count):
     df_initial = pd.read_csv(csv_file)
 
     # Iterate through the dataframe and ignore the ones with geolocations found
-    for index, row in df_initial[10:20].iterrows():
+    for index, row in df_initial[count:].iterrows():
 
         # Define the variables
         address = row['FullAddress']
@@ -32,11 +32,14 @@ def geolocation_search_refinement(csv_file,count):
             
             # Check if the Google Maps API was found      
             if geocode_result:      
+                print("GEOLOCATION REFINED ATTEMPT: {index}")
                 location = geocode_result[0]['geometry']['location']
                 new_x_coordinate = location['lat']
                 new_y_coordinate = location['lng']
+                df_initial.at[index,'GeolocationFound'] = 0
                 df_initial.at[index,'X_Coordinate'] = new_x_coordinate
                 df_initial.at[index,'Y_Coordinate'] = new_y_coordinate
+                print(f"{address}\n{0}\n{new_x_coordinate}\n{new_y_coordinate}")
                 df_initial.to_csv(csv_file, index=False) 
             
             else:
@@ -54,42 +57,27 @@ def geolocation_search_refinement(csv_file,count):
 
 
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 # Outset
 if __name__ == "__main__":
 
     # Enable google maps
-    gmaps = googlemaps.Client(key="AIzaSyByyzK0B972uyHwhJ0ZD0CHdET0TjGgtN4")
+    google_api_file = "/Users/damiamalfaro/Desktop/google_api.txt"
+    with open(google_api_file, "r") as file:
+        google_api_key = file.readlines() 
+
+    gmaps = googlemaps.Client(key=google_api_key)
 
     # Activate Geolocator
     geolocator = Nominatim(user_agent="my-app", timeout=24)
 
     # Access the file
     locations_file = "/Users/damiamalfaro/Desktop/Europe/testing_wesonder/geolocation_conversion/file_address_conversion_top.csv"
+
+    # Record current count
+    current_count = 0
+
     # Refine the search of geolocations 
-    geolocation_search_refinement(locations_file)
+    geolocation_search_refinement(locations_file,current_count)
 
     
 
