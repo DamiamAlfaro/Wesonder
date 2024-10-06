@@ -123,7 +123,7 @@ if __name__ == "__main__":
     total_rows = 253006 # Ironically, used as the last row index
 
     # Current Count Record
-    current_count = 168958
+    current_count = 225982
 
     # Convert the addresses to Geolocations and store them in new csv file for later use
     cslb_conversion(cslb_contractors_file, address_conversion_file, current_count, total_rows)

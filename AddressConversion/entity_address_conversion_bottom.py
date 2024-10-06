@@ -109,7 +109,7 @@ def dataframe_to_file(dataframe,csv_file):
 if __name__ == "__main__":
 
     # Set up the file with addresses
-    cslb_contractors_file = "/Users/damiamalfaro/Desktop/Europe/testing_wesonder/dir_entities_refined.csv"
+    cslb_contractors_file = "/Users/damiamalfaro/Desktop/Europe/testing_wesonder/dir_entities_no_empty.csv"
 
     # Address Conversion File
     address_conversion_file = "/Users/damiamalfaro/Desktop/Europe/testing_wesonder/file_entity_conversion_bottom.csv"
@@ -119,10 +119,10 @@ if __name__ == "__main__":
     geolocator = Nominatim(user_agent="my-app",timeout=24)
 
     # Just for reference, not used
-    total_rows = 113703
+    total_rows = 99182
 
     # Current count for the thousands, i.e. 1 = 1000
-    current_count = 56852
+    current_count = 49591
 
     # Convert the addresses to Geolocations and store them in new csv file for later use
     cslb_conversion(cslb_contractors_file, address_conversion_file, current_count, total_rows)
