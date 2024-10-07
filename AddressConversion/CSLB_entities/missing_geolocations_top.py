@@ -1,134 +1,47 @@
 import pandas as pd
-from geopy.geocoders import Nominatim
+import requests
 import time
-import googlemaps
 
+# Load the CSV file
+file_path = '/Users/damiamalfaro/Desktop/Europe/testing_wesonder/Geolocations_CSLB_Entities/file_address_conversion_top.csv'
+df = pd.read_csv(file_path)
 
+# Google Maps API URL
+api_url = 'https://maps.googleapis.com/maps/api/geocode/json'
 
+# Your Google Maps API Key
+api_key = 'AIzaSyAdgg_Tl2lEe1CAIQiEXQDbhXvc3taB0-I'
 
-def geolocation_search_refinement(csv_file,count):
-    
-    # Read the file using pandas
-    df_initial = pd.read_csv(csv_file)
+def get_coordinates(address):
+    """Fetch latitude and longitude for a given address using Google Maps Geocoding API."""
+    params = {
+        'address': address,
+        'key': api_key
+    }
+    response = requests.get(api_url, params=params)
+    if response.status_code == 200:
+        data = response.json()
+        if data['status'] == 'OK':
+            location = data['results'][0]['geometry']['location']
+            return location['lat'], location['lng']
+    return None, None
 
-    # Iterate through the dataframe and ignore the ones with geolocations found
-    for index, row in df_initial[count:].iterrows():
-
-        # Define the variables
+# Iterate over each row in the DataFrame
+for index, row in df.iterrows():
+    if row['X_Coordinate'] == 0 and row['Y_Coordinate'] == 0:
         address = row['FullAddress']
-        geolocation_status = row['GeolocationFound']
-        x_coordinate = row['X_Coordinate']
-        y_coordinate = row['Y_Coordinate']
+        lat, lng = get_coordinates(address)
+        if lat and lng:
+            # Update the DataFrame with the new coordinates
+            df.at[index, 'X_Coordinate'] = lat
+            df.at[index, 'Y_Coordinate'] = lng
 
-        # Check if geolocation is missing
-        if geolocation_status == 0:
-            continue
-        else:
-            print("-------------------------------------------------")
-            print(f"GEOLOCATION PREVIOUS ATTEMPT: {index}")
-            print(f"{address}\n{geolocation_status}\n{x_coordinate}\n{y_coordinate}")
-
-            geocode_result = gmaps.geocode(address)
+            print(f"Current {index}\n{address}\n{lat}\n{lng}")
             
-            # Check if the Google Maps API was found      
-            if geocode_result:      
-                print(f"GEOLOCATION REFINED ATTEMPT: {index}")
-                location = geocode_result[0]['geometry']['location']
-                new_x_coordinate = location['lat']
-                new_y_coordinate = location['lng']
-                df_initial.loc[index,'GeolocationFound'] = 0
-                df_initial.loc[index,'X_Coordinate'] = new_x_coordinate
-                df_initial.loc[index,'Y_Coordinate'] = new_y_coordinate
-                print(f"{address}\n{0}\n{new_x_coordinate}\n{new_y_coordinate}")
+            # Save the updated CSV after each modification
+            df.to_csv(file_path, index=False)
             
-            else:
-                print("STILL MISSING")
+            # Sleep for a bit to avoid exceeding Google Maps API rate limits
+            time.sleep(1)  # Adjust based on your usage and API limits
 
-        # Move it to the csv file
-        df_initial.to_csv(csv_file,index=False)
-
-                  
-
-
-
-
-
-
-
-
-
-
-# Outset
-if __name__ == "__main__":
-
-    # Enable google maps
-    google_api_file = "/Users/damiamalfaro/Desktop/google_api.txt"
-    with open(google_api_file, "r") as file:
-        google_api_key = file.readlines() 
-
-    gmaps = googlemaps.Client(key=google_api_key[0])
-
-    # Activate Geolocator
-    geolocator = Nominatim(user_agent="my-app", timeout=24)
-
-    # Access the file
-    locations_file = "/Users/damiamalfaro/Desktop/Europe/testing_wesonder/Geolocations_CSLB_Entities/file_address_conversion_top.csv"
-
-    # Record current count
-    current_count = 0
-
-    # Refine the search of geolocations 
-    geolocation_search_refinement(locations_file,current_count)
-
-    
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+print("CSV file update complete!")

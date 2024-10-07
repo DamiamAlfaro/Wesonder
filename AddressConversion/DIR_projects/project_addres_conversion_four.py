@@ -1,12 +1,14 @@
 import pandas as pd
 from geopy.geocoders import Nominatim
+import time
+import googlemaps
 
 
 '''
 This function converts all addresses into Latitude & Longitude coordinates
 that will be used in Leaflet later on.
 '''
-def cslb_conversion(csv_file, address_file, count, rows_t):
+def cslb_conversion(csv_file, address_file, count):
 
 
 
@@ -21,7 +23,7 @@ def cslb_conversion(csv_file, address_file, count, rows_t):
     '''
 
     # Iterate through the addreses
-    for index, row in df_addresses.iloc[count:rows_t].iterrows():
+    for index, row in df_addresses.iloc[count:573220].iterrows():
 
         # Empty cells check
         if pd.isna(row['ProjectAddress1']) or pd.isna(row['City']) or pd.isna(row['State']):
@@ -45,7 +47,7 @@ def cslb_conversion(csv_file, address_file, count, rows_t):
         # Combine the addresses if there is a second part of it
         if street_2 and not pd.isna(street_2):
             complete_address = f"{street.title()} {street_2.title()}, {city.title()}, {state}"
-
+        
         # If not, that's even better
         else:
             complete_address = f"{street.title()}, {city.title()}, {state}"
@@ -56,23 +58,22 @@ def cslb_conversion(csv_file, address_file, count, rows_t):
         print(f"Address: {complete_address}")
 
         # Get the numerical geolocation
-        location = geolocator.geocode(complete_address)
+        geocode_result = gmaps.geocode(complete_address)
+        try:
+            location = geocode_result[0]['geometry']['location']
 
-        # If the address' geolocation is found, append it to the list
-        if location:
-            x_coordinate = location.latitude
+
+            # If the address' geolocation is found, append it to the list
+            x_coordinate = location['lat']
             x_coordinates.append(x_coordinate)
-            y_coordinate = location.longitude
+            y_coordinate = location['lng']
             y_coordinates.append(y_coordinate)
             existence_status.append(0)
             print("Geolocation: Exists")
             print(f"X-Coordinate: {x_coordinate}")
             print(f"Y-Coordinate: {y_coordinate}")
 
-
-
-        # If not (most likely PO Box) then append counterfeit
-        else:
+        except:
             x_coordinates.append(0)
             y_coordinates.append(0)
             existence_status.append(1)
@@ -120,161 +121,26 @@ def dataframe_to_file(dataframe,csv_file):
 if __name__ == "__main__":
 
     # Source File
-    source_contractors_file = "/Users/damiamalfaro/Desktop/Europe/testing_wesonder/dir_projects_complete.csv"
+    source_contractors_file = "/Users/damiamalfaro/Desktop/Europe/testing_wesonder/Geolocations_DIR_Projects/dir_projects_complete.csv"
 
     # Address Conversion File
-    address_conversion_file = "/Users/damiamalfaro/Desktop/Europe/testing_wesonder/geolocation_conversion/file_projects_conversion_four.csv"
-
+    address_conversion_file = "/Users/damiamalfaro/Desktop/Europe/testing_wesonder/Geolocations_DIR_Projects/file_projects_conversion_one.csv"
 
     # Set up the geolocator
-    geolocator = Nominatim(user_agent="my-app",timeout=24)
+    google_api_file = "/Users/damiamalfaro/Desktop/google_api.txt"
+    with open(google_api_file, "r") as file:
+        google_api_key = file.readlines()
+
+    gmaps = googlemaps.Client(key=google_api_key[0])    
 
     # Just for reference, not used
     total_rows = 573220
 
     # Current count for the thousands, i.e. 1 = 1000
-    current_count = 457762
+    current_count = 463592
 
     # Convert the addresses to Geolocations and store them in new csv file for later use
-    cslb_conversion(source_contractors_file, address_conversion_file, current_count, total_rows)
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+    cslb_conversion(source_contractors_file, address_conversion_file, current_count)
 
 
 

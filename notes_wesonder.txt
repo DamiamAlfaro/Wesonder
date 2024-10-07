@@ -331,12 +331,47 @@ October 4, 2024
 	1. We will not do anything today most likely, but I was thinking: we need some type of verification method for accounts, such as email since a hacker can create
 	a web crawler and flood our server with accounts if they do not require a verification email.
 	2. There are 4 Data Bases that contain addresses, and we need their Geolocations:
-		I. CSLB (Ongoing as of October 3rd, 2024)
-		II. DIR Projects (Ongoing as of October 4th, 2024)
+		I. CSLB (Ongoing as of October 3rd, 2024; Finished as October 5)
+		II. DIR Projects (Ongoing as of October 4th, 2024, Finished as October 6)
 		III. DIR Entities (Ongoing as of October 4th, 2024)
 		IV. Federal Projects (NA)
 
 
+October 6, 2024
+
+
+	1. Currently, we are refining the Geolocation Search for our databases as some of the addresses' geolocations were not acquired in the first text. That being said, we need to refine the
+	methodology of geolocation search, there are currently three problems for the addresses lacking a geolocation:
+		I. PO Boxes: Our plan to solve this is to build a webcrawler for the FIND USPS Locations Website and enter the original Zip Code of the address, the results might be multiple
+		addresses, or just one at random choice. Of course, there will be a disclaimer in the WeSonder mapping about these types of addresses.
+			A. Apparently, Google Maps API is quite effective in finding these addresses, but we will still display the Post Offices Addresses just in case.
+		II. Spelling: Some of the addresses include verbosity addresses, e.g. instead of "St", they use "Street", or "Court" for "Ct", among others. We just need to create a list of
+		frequent address abbreviations and transcribe them to the proper string that acquires the geolocation.
+			A. Google Maps API is quite effective here, regardless of the wording, thereby we will be using it as a substitude of this method.
+		III. Out of state: Remove them, we are just focused in California for now.
+			A. Google Maps API also takes care of this, just out of words...
+	2. Another envisaged issue is the frequent update of CSLB Entities, but the solution for that will be to include the new entities to the current CSLB Database based on comparison with
+	the previous one, and apply the search of Geolocation Version 1, and then the Version 2. Or both simultaneously.
+	3. Let's structure our approach:
+		I. COMPLETED: Set up the Missing Address Functionality for the CSLB Entities (missing_addresses.py)
+			A. Let it loose
+		II. CANCELLED: Before starting the CSLB Refinement, build a webcrawler for the zip codes of Post Offices
+			A. Let it loose
+			B. We decided to dismiss this functionality. Why? What's the benefit of it? If the user sees the potential addresses, which will be multiple, it will only generate
+			confusion and perhaps reduce trustworhiness, we can just display a message saying the liability of such address with PO Box attributes.
+		III. COMPLETED: Do a refinement function for the DIR Entities as well.
+			A. Let it loose
+		IV. COMPLETED: Fix all the DIR Projects with Google Maps API as well.
+
+
+October 7, 2024
+
+
+	1. COMPLETED: The goal for today is to load the csv file into javascript. 
+		I. We were able to load it from Google Cloud Storage.
+		II. We have the columns for the X and Y Coordinates.
+	2. COMPLETED: Let's map the first 100 markers
+	3. Find a way to map all of the markers, without too much memory or cloud usage. 
 
 
 
