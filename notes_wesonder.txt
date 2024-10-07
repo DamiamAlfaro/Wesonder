@@ -371,7 +371,11 @@ October 7, 2024
 		I. We were able to load it from Google Cloud Storage.
 		II. We have the columns for the X and Y Coordinates.
 	2. COMPLETED: Let's map the first 100 markers
-	3. Find a way to map all of the markers, without too much memory or cloud usage. 
+	3. COMPLETED: Find a way to map all of the markers, without too much memory or cloud usage. We found a way to do it via clustering, which looks quite amazing.
+	4. Refine the data, and start with the functionalities.
+		I. Remove the addresses that are not from California, and make sure that the address is indeed from outside the state.
+		II. Start with the awarding bodies functionality, and the way we want the user to select the type is by a scroll down menu that shows the functionality in
+		question.
 
 
 
