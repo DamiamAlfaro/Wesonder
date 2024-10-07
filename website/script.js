@@ -1,3 +1,8 @@
+
+// THIS IS FOR THE SHOWING OF ONLY THE MARKERS, 
+// BUT IF YOU SHOW THEM ALL, THE BROWSER BECOMES
+// QUITE SLOW.
+
 // // Create the map and set the initial view to some coordinates (adjust as needed)
 // var map = L.map('map').setView([37.7749, -122.4194], 10);  // Starting position (San Francisco)
 
