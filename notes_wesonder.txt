@@ -376,6 +376,9 @@ October 7, 2024
 		I. Remove the addresses that are not from California, and make sure that the address is indeed from outside the state.
 		II. Start with the awarding bodies functionality, and the way we want the user to select the type is by a scroll down menu that shows the functionality in
 		question.
+	5. We can refine the clustering in that, once the user comes to a certain zoom point, all cluster disappears, and the marks just show up. Make this an user choice, but
+	only to a certain zoom distance, aesthetically speaking.
+
 
 
 
