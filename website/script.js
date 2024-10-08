@@ -79,9 +79,8 @@
 //   })
 //   .catch(error => console.error('Error fetching CSV:', error));
 
-
 // Initialize the map
-var map = L.map('map').setView([37.7749, -122.4194], 2);
+var map = L.map('map').setView([37.7749, -122.4194], 2); // Set an initial zoom and center
 
 // Add the tile layer (background map)
 L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
@@ -89,9 +88,71 @@ L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
 }).addTo(map);
 
 // Global marker cluster variable
-var markers;
+var markers = L.markerClusterGroup({
+    disableClusteringAtZoom: 14  // Keep clustering until zoom level 14
+});
 
-// Function to load data from a CSV file
+// Load markers dynamically based on map bounds
+map.on('moveend', function() {
+    var bounds = map.getBounds();
+    loadMarkersWithinBounds(bounds);
+});
+
+// Function to dynamically load markers within the current bounds of the map
+function loadMarkersWithinBounds(bounds) {
+    var southWest = bounds.getSouthWest();
+    var northEast = bounds.getNorthEast();
+
+    // Fetch markers dynamically from the server based on the current bounds
+    fetchMarkersInBounds(southWest.lat, southWest.lng, northEast.lat, northEast.lng);
+}
+
+// Function to fetch markers within specific bounds
+function fetchMarkersInBounds(southLat, southLng, northLat, northLng) {
+    // Example: Dynamic request URL (you would implement this on the server side)
+    var requestUrl = `https://yourserver.com/api/geolocations?swLat=${southLat}&swLng=${southLng}&neLat=${northLat}&neLng=${northLng}`;
+
+    // Fetch the markers for the visible area
+    fetch(requestUrl)
+        .then(response => response.json())  // Assuming the response is in JSON format
+        .then(data => {
+            // Clear any existing markers
+            markers.clearLayers();
+
+            // Parse and add new markers to the cluster group
+            const validCoordinates = data.map(row => ({
+                lat: parseFloat(row['X_Coordinate']),
+                lng: parseFloat(row['Y_Coordinate']),
+                name: row['BusinessName'] || row['EntityName'],
+                address: row['CompleteAddress'] || row['FullAddress'],
+                phone: row['PhoneNumber'] || row['EntityEmail'],
+                license: row['LicenseNumber'],
+                businessType: row['BusinessType'],
+                x: row['X_Coordinate'],
+                y: row['Y_Coordinate']
+            }));
+
+            validCoordinates.forEach(coord => {
+                var marker = L.marker([coord.lat, coord.lng]);
+                marker.bindPopup(`
+                    <strong>Name:</strong> ${coord.name || 'N/A'}<br/>
+                    <strong>Address:</strong> ${coord.address || 'N/A'}<br/>
+                    <strong>Phone/Email:</strong> ${coord.phone || 'N/A'}<br/>
+                    <strong>License Number:</strong> ${coord.license || 'N/A'}<br/>
+                    <strong>Business Type:</strong> ${coord.businessType || 'N/A'}<br/>
+                    <strong>X Coordinate:</strong> ${coord.x}<br/>
+                    <strong>Y Coordinate:</strong> ${coord.y}
+                `);
+                markers.addLayer(marker);
+            });
+
+            // Add the marker cluster group to the map
+            map.addLayer(markers);
+        })
+        .catch(error => console.error('Error fetching markers:', error));
+}
+
+// Function to load data from a CSV file (handles both datasets)
 function loadData(dataset) {
     // Remove previous markers from the map if any
     if (markers) {
@@ -100,7 +161,7 @@ function loadData(dataset) {
 
     // Create a new marker cluster group
     markers = L.markerClusterGroup({
-        disableClusteringAtZoom: 12  // Disable clustering at zoom level 12
+        disableClusteringAtZoom: 15  // Adjust clustering behavior
     });
 
     // Determine which CSV file to load based on the dataset
@@ -199,6 +260,7 @@ function loadData(dataset) {
         })
         .catch(error => console.error('Error fetching CSV:', error));
 }
+
 
 
 
