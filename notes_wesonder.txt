@@ -188,7 +188,6 @@ September 24, 2024
 		i. Navbar (sometimes even two).
 			1. What can we include here?
 				a. About us (basically my website).
-				b. 
 		ii. Do not request cookies alert (at least for now, let it grow first).
 		iii. Provide a 8-10 sec gif of what the website does (e.g. mapbox cool design)
 		iv. Provide the pros of using WeSonder (e.g. a matrix/display of a 3x3 good beneficial points like zeemaps).
@@ -372,13 +371,32 @@ October 7, 2024
 		II. We have the columns for the X and Y Coordinates.
 	2. COMPLETED: Let's map the first 100 markers
 	3. COMPLETED: Find a way to map all of the markers, without too much memory or cloud usage. We found a way to do it via clustering, which looks quite amazing.
-	4. Refine the data, and start with the functionalities.
-		I. Remove the addresses that are not from California, and make sure that the address is indeed from outside the state.
-		II. Start with the awarding bodies functionality, and the way we want the user to select the type is by a scroll down menu that shows the functionality in
-		question.
-	5. We can refine the clustering in that, once the user comes to a certain zoom point, all cluster disappears, and the marks just show up. Make this an user choice, but
+	4. COMPLETED: Refine the data, and start with the functionalities.
+		I. COMPLETED: Remove the addresses that are not from California, and make sure that the address is indeed from outside the state.
+	5. COMPLETED: We can refine the clustering in that, once the user comes to a certain zoom point, all cluster disappears, and the marks just show up. Make this an user choice, but
 	only to a certain zoom distance, aesthetically speaking.
 
+
+October 8, 2024
+
+
+	1. Now that we have the aesthetics of the map completed, it's time to implement the variety of functionalities to the map, i.e. the different datapoints that can be showed. 
+	2. (COMPLETED) Awarding Bodies: the display of all awarding bodies in California.
+	3. CSLB Contractors: the display of all active subcontractors in california. Keep in mind that this cannot be showed simultaneously with other datasets. This will be different
+	than the others as there will also be a classifying display for these entities, i.e. there will be a variety of classifications to based the display on, such as:
+		I. Classification (License Type)
+			A. (COMPLETED) There are problems with the scrolling of the display.
+			B. (COMPLETED) Also, the D licences are not apparent. There is something wrong with them.
+			C. I know it is tiring, but you need to fix the thing about other addresses. 
+		II. County
+		III. BusinessType
+		IV. LicenseNumber
+	4. DIR Projects: The display of all recorded projects in the State. The same rules apply for this one.
+	5. The 100 mile click: A creative functionality that allows the user to click anypoint in the map and any entity in the 100 mile radius will appear, whether a project,
+	a contractor, or an awarding body. Anything within the 100 mile radius will pop up.
+	6. Lastly, we will do the logo today.
+	7. Do not let people download your dataset.
+	
 
 
 

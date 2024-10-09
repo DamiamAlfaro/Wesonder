@@ -143,6 +143,7 @@ filterControl.onAdd = function(map) {
     div.innerHTML = `
         <strong>Select License Types:</strong><br/>
         <div class="filter-box-content">
+            <label><input type="checkbox" id="selectAll" onchange="toggleSelectAll(this)"> Select All<br/></label>
             <label><input type="checkbox" value="C-2" id="C2" onchange="filterByLicense()"> C-2 - Insulation and Acoustical Contractor<br/></label>
             <label><input type="checkbox" value="C-4" id="C4" onchange="filterByLicense()"> C-4 - Boiler, Hot Water Heating and Steam Fitting Contractor<br/></label>
             <label><input type="checkbox" value="C-5" id="C5" onchange="filterByLicense()"> C-5 - Framing and Rough Carpentry Contractor<br/></label>
@@ -260,6 +261,17 @@ filterControl.onAdd = function(map) {
 };
 filterControl.addTo(map);
 
+function toggleSelectAll(selectAllCheckbox) {
+    var checkboxes = document.querySelectorAll('.filter-box input[type="checkbox"]:not(#selectAll)'); // Exclude the "Select All" checkbox
+
+    checkboxes.forEach(checkbox => {
+        checkbox.checked = selectAllCheckbox.checked; // Set all checkboxes to match the "Select All" checkbox state
+    });
+
+    filterByLicense(); // Call filterByLicense to update the map based on the new selections
+}
+
+
 // Global variables to store data and selected licenses
 var dataCache = [];
 var selectedLicenses = [];
@@ -375,7 +387,9 @@ function filterByLicense() {
             marker.bindPopup(`
                 <strong>Business Name:</strong> ${coord['BusinessName'] || 'N/A'}<br/>
                 <strong>License Number:</strong> ${coord['LicenseNumber'] || 'N/A'}<br/>
-                <strong>Classification:</strong> ${coord['Classification'] || 'N/A'}
+                <strong>Classification:</strong> ${coord['Classification'] || 'N/A'}<br/>
+                <strong>Address:</strong> ${coord['CompleteAddress'] || 'N/A'}</br>
+                <strong>Phone Number:</strong> ${coord['PhoneNumber'] || 'N/A'} 
             `);
             markers.addLayer(marker);
         }
