@@ -239,19 +239,22 @@ function loadCSV2Data() {
 }
 
 function filterByLicense() {
-    // Get selected checkboxes
-    var checkboxes = document.querySelectorAll('.filter-box input[type="checkbox"]:checked');
+    // Get the state of the "Select All" checkbox
+    var selectAllChecked = document.getElementById('selectAll').checked;
+
+    // Get selected checkboxes (exclude "Select All")
+    var checkboxes = document.querySelectorAll('.filter-box input[type="checkbox"]:not(#selectAll):checked');
     selectedLicenses = Array.from(checkboxes).map(checkbox => checkbox.value);
 
     // Clear existing markers
     markers.clearLayers();
 
-    // If no license is selected or 'Select All' is checked, display all data
-    var filteredData;
-    if (selectedLicenses.length === 0 || document.getElementById('selectAll').checked) {
-        filteredData = dataCache.filter(row => row['State'] === 'CA');
-    } else {
-        // Filter based on selected licenses
+    // If "Select All" is checked, display all markers
+    if (selectAllChecked) {
+        var filteredData = dataCache.filter(row => row['State'] === 'CA');
+    } 
+    // If "Select All" is not checked, display only markers corresponding to selected licenses
+    else if (selectedLicenses.length > 0) {
         filteredData = dataCache.filter(row => {
             const classification = (row['Classification'] || '').replace(/\s+/g, ''); // Remove any spaces
             const licenseArray = classification.split('|'); // Split the classification by "|" into an array
@@ -261,6 +264,9 @@ function filterByLicense() {
                 return licenseArray.some(classItem => classItem.replace(/-/g, '') === cleanLicense); // Exact match for each item
             });
         });
+    } else {
+        // If no checkboxes are selected, don't show any markers
+        filteredData = [];
     }
 
     // Add filtered markers to the map
@@ -279,7 +285,7 @@ function filterByLicense() {
         }
     });
 }
-
+ 
 
 
 
