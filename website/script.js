@@ -1,125 +1,3 @@
-// // Initialize the map
-// var map = L.map('map').setView([37.7749, -122.4194], 2);
-
-// // Add the tile layer (background map)
-// L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
-//     attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
-// }).addTo(map);
-
-// // Global marker cluster variable
-// var markers;
-
-// // Function to load data from a CSV file
-// function loadData(dataset) {
-//     // Remove previous markers from the map if any
-//     if (markers) {
-//         map.removeLayer(markers);
-//     }
-
-//     // Create a new marker cluster group
-//     markers = L.markerClusterGroup({
-//         disableClusteringAtZoom: 16  // Disable clustering at zoom level 12
-//     });
-
-//     // Determine which CSV file to load based on the dataset
-//     var csvUrl;
-//     if (dataset === 'csv1') {
-//         csvUrl = 'https://storage.googleapis.com/wesonder_databases/geolocations_dir_entities/dir_entities_geolocations.csv'; // Replace with actual CSV URL
-//     } else if (dataset === 'csv2') {
-//         csvUrl = 'https://storage.googleapis.com/wesonder_databases/geolocations_cslb/cslb_contractors_geolocation.csv'; // Replace with actual CSV URL
-//     }
-
-//     // Fetch the CSV file
-//     fetch(csvUrl)
-//         .then(response => response.text())
-//         .then(csvText => {
-//             // Parse the CSV file
-//             Papa.parse(csvText, {
-//                 header: true,
-//                 complete: function(results) {
-//                     // Access parsed data
-//                     const data = results.data;
-
-//                     // Check which dataset is loaded
-//                     if (dataset === 'csv1') {
-//                         // For the first CSV, filter by "CA" in State and Zip starting with 9
-//                         const validCoordinates = data.filter(row => 
-//                             !isNaN(parseFloat(row['X_Coordinate'])) &&
-//                             !isNaN(parseFloat(row['Y_Coordinate'])) &&
-//                             row['EntityType'] === 'Awarding Body\nType' &&
-//                             row['EntityState'] === 'CA'
-//                         ).map(row => {
-//                             return {
-//                                 lat: parseFloat(row['X_Coordinate']),
-//                                 lng: parseFloat(row['Y_Coordinate']),
-//                                 name: row['EntityName'],
-//                                 address: row['FullAddress'],
-//                                 email: row['EntityEmail'],
-//                                 x: row['X_Coordinate'],
-//                                 y: row['Y_Coordinate']
-//                             };
-//                         });
-
-//                         // Add markers to the cluster group
-//                         validCoordinates.forEach(coord => {
-//                             var marker = L.marker([coord.lat, coord.lng]);
-//                             marker.bindPopup(`
-//                                 <strong>Entity Name:</strong> ${coord.name || 'N/A'}<br/>
-//                                 <strong>Full Address:</strong> ${coord.address || 'N/A'}<br/>
-//                                 <strong>Email:</strong> ${coord.email || 'N/A'}<br/>
-//                                 <strong>X Coordinate:</strong> ${coord.x}<br/>
-//                                 <strong>Y Coordinate:</strong> ${coord.y}
-//                             `);
-//                             markers.addLayer(marker);
-//                         });
-
-//                     } else if (dataset === 'csv2') {
-//                         // For the second CSV, filter by "CA" in State and Zip starting with 9
-//                         const validCoordinates = data.filter(row => 
-//                             !isNaN(parseFloat(row['X_Coordinate'])) &&
-//                             !isNaN(parseFloat(row['Y_Coordinate'])) &&
-//                             row['State'] === 'CA' &&
-//                             row['Zip'] && row['Zip'].startsWith('9')
-//                         ).map(row => {
-//                             return {
-//                                 lat: parseFloat(row['X_Coordinate']),
-//                                 lng: parseFloat(row['Y_Coordinate']),
-//                                 name: row['BusinessName'],
-//                                 address: row['CompleteAddress'],
-//                                 phone: row['PhoneNumber'],
-//                                 license: row['LicenseNumber'],
-//                                 businessType: row['BusinessType'],
-//                                 x: row['X_Coordinate'],
-//                                 y: row['Y_Coordinate']
-//                             };
-//                         });
-
-//                         // Add markers to the cluster group
-//                         validCoordinates.forEach(coord => {
-//                             var marker = L.marker([coord.lat, coord.lng]);
-//                             marker.bindPopup(`
-//                                 <strong>Business Name:</strong> ${coord.name || 'N/A'}<br/>
-//                                 <strong>Complete Address:</strong> ${coord.address || 'N/A'}<br/>
-//                                 <strong>Phone Number:</strong> ${coord.phone || 'N/A'}<br/>
-//                                 <strong>License Number:</strong> ${coord.license || 'N/A'}<br/>
-//                                 <strong>Business Type:</strong> ${coord.businessType || 'N/A'}<br/>
-//                                 <strong>X Coordinate:</strong> ${coord.x}<br/>
-//                                 <strong>Y Coordinate:</strong> ${coord.y}
-//                             `);
-//                             markers.addLayer(marker);
-//                         });
-//                     }
-
-//                     // Add the markers to the map
-//                     map.addLayer(markers);
-//                 }
-//             });
-//         })
-//         .catch(error => console.error('Error fetching CSV:', error));
-// }
-
-
-
 // Initialize the map
 var map = L.map('map').setView([37.7749, -122.4194], 5);
 
@@ -344,7 +222,7 @@ function loadCSV1Data() {
 
 // Function to load CSV2 data
 function loadCSV2Data() {
-    var csvUrl = 'https://storage.googleapis.com/wesonder_databases/geolocations_cslb/cslb_contractors_geolocation.csv'; // Replace with actual URL
+    var csvUrl = 'https://storage.googleapis.com/wesonder_databases/geolocations_cslb/refined_cslb_geolocations.csv'; // Replace with actual URL
 
     fetch(csvUrl)
         .then(response => response.text())
@@ -360,7 +238,6 @@ function loadCSV2Data() {
         .catch(error => console.error('Error fetching CSV2:', error));
 }
 
-// Function to filter and update markers on the map for CSV2
 function filterByLicense() {
     // Get selected checkboxes
     var checkboxes = document.querySelectorAll('.filter-box input[type="checkbox"]:checked');
@@ -369,16 +246,22 @@ function filterByLicense() {
     // Clear existing markers
     markers.clearLayers();
 
-    // Filter the cached data based on selected licenses
-    var filteredData = dataCache.filter(row => {
-        const classification = (row['Classification'] || '').replace(/\s+/g, ''); // Remove any spaces
-        const licenseArray = classification.split('|'); // Split the classification by "|" into an array
+    // If no license is selected or 'Select All' is checked, display all data
+    var filteredData;
+    if (selectedLicenses.length === 0 || document.getElementById('selectAll').checked) {
+        filteredData = dataCache.filter(row => row['State'] === 'CA');
+    } else {
+        // Filter based on selected licenses
+        filteredData = dataCache.filter(row => {
+            const classification = (row['Classification'] || '').replace(/\s+/g, ''); // Remove any spaces
+            const licenseArray = classification.split('|'); // Split the classification by "|" into an array
 
-        return selectedLicenses.some(license => {
-            const cleanLicense = license.replace(/-/g, ''); // Normalize the selected license (e.g., "C-2" becomes "C2")
-            return licenseArray.some(classItem => classItem.replace(/-/g, '') === cleanLicense); // Exact match for each item
+            return row['State'] === 'CA' && selectedLicenses.some(license => {
+                const cleanLicense = license.replace(/-/g, ''); // Normalize the selected license (e.g., "C-2" becomes "C2")
+                return licenseArray.some(classItem => classItem.replace(/-/g, '') === cleanLicense); // Exact match for each item
+            });
         });
-    });
+    }
 
     // Add filtered markers to the map
     filteredData.forEach(coord => {
@@ -388,13 +271,15 @@ function filterByLicense() {
                 <strong>Business Name:</strong> ${coord['BusinessName'] || 'N/A'}<br/>
                 <strong>License Number:</strong> ${coord['LicenseNumber'] || 'N/A'}<br/>
                 <strong>Classification:</strong> ${coord['Classification'] || 'N/A'}<br/>
-                <strong>Address:</strong> ${coord['CompleteAddress'] || 'N/A'}</br>
-                <strong>Phone Number:</strong> ${coord['PhoneNumber'] || 'N/A'} 
+                <strong>Address:</strong> ${coord['CompleteAddress'] || 'N/A'}<br/>
+                <strong>Phone Number:</strong> ${coord['PhoneNumber'] || 'N/A'}<br/>
+                <strong>Business Type:</strong> ${coord['BusinessType'] || 'N/A'}
             `);
             markers.addLayer(marker);
         }
     });
 }
+
 
 
 
