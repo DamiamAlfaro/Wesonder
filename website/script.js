@@ -143,18 +143,18 @@ filterControl.onAdd = function(map) {
     div.innerHTML = `
         <strong>Select License Types:</strong><br/>
         <div class="filter-box-content">
-            <label><input type="checkbox" value="C-2" id="C2" onchange="filterByLicense()"> C-2 - Insulation and Acoustical Contractor<br/>
-            <label><input type="checkbox" value="C-4" id="C4" onchange="filterByLicense()"> C-4 - Boiler, Hot Water Heating and Steam Fitting Contractor<br/>
-            <label><input type="checkbox" value="C-5" id="C5" onchange="filterByLicense()"> C-5 - Framing and Rough Carpentry Contractor<br/>
-            <label><input type="checkbox" value="C-6" id="C6" onchange="filterByLicense()"> C-6 - Cabinet, Millwork and Finish Carpentry Contractor<br/>
-            <label><input type="checkbox" value="C-7" id="C7" onchange="filterByLicense()"> C-7 - Low Voltage Systems Contractor<br/>
-            <label><input type="checkbox" value="C-8" id="C8" onchange="filterByLicense()"> C-8 - Concrete Contractor<br/>
-            <label><input type="checkbox" value="C-9" id="C9" onchange="filterByLicense()"> C-9 - Drywall Contractor<br/>
-            <label><input type="checkbox" value="C-10" id="C10" onchange="filterByLicense()"> C-10 - Electrical Contractor<br/>
-            <label><input type="checkbox" value="C-11" id="C11" onchange="filterByLicense()"> C-11 - Elevator Contractor<br/>
-            <label><input type="checkbox" value="C-12" id="C12" onchange="filterByLicense()"> C-12 - Earthwork and Paving Contractors<br/>
-            <label><input type="checkbox" value="C-13" id="C13" onchange="filterByLicense()"> C-13 - Fencing Contractor<br/>
-            <label><input type="checkbox" value="C-15" id="C15" onchange="filterByLicense()"> C-15 - Flooring and Floor Covering Contractors<br/>
+            <label><input type="checkbox" value="C-2" id="C2" onchange="filterByLicense()"> C-2 - Insulation and Acoustical Contractor<br/></label>
+            <label><input type="checkbox" value="C-4" id="C4" onchange="filterByLicense()"> C-4 - Boiler, Hot Water Heating and Steam Fitting Contractor<br/></label>
+            <label><input type="checkbox" value="C-5" id="C5" onchange="filterByLicense()"> C-5 - Framing and Rough Carpentry Contractor<br/></label>
+            <label><input type="checkbox" value="C-6" id="C6" onchange="filterByLicense()"> C-6 - Cabinet, Millwork and Finish Carpentry Contractor<br/></label>
+            <label><input type="checkbox" value="C-7" id="C7" onchange="filterByLicense()"> C-7 - Low Voltage Systems Contractor<br/></label>
+            <label><input type="checkbox" value="C-8" id="C8" onchange="filterByLicense()"> C-8 - Concrete Contractor<br/></label>
+            <label><input type="checkbox" value="C-9" id="C9" onchange="filterByLicense()"> C-9 - Drywall Contractor<br/></label>
+            <label><input type="checkbox" value="C-10" id="C10" onchange="filterByLicense()"> C-10 - Electrical Contractor<br/></label>
+            <label><input type="checkbox" value="C-11" id="C11" onchange="filterByLicense()"> C-11 - Elevator Contractor<br/></label>
+            <label><input type="checkbox" value="C-12" id="C12" onchange="filterByLicense()"> C-12 - Earthwork and Paving Contractors<br/></label>
+            <label><input type="checkbox" value="C-13" id="C13" onchange="filterByLicense()"> C-13 - Fencing Contractor<br/></label>
+            <label><input type="checkbox" value="C-15" id="C15" onchange="filterByLicense()"> C-15 - Flooring and Floor Covering Contractors<br/></label>
             <label><input type="checkbox" value="C-16" id="C16" onchange="filterByLicense()"> C-16 - Fire Protection Contractor<br/></label>
             <label><input type="checkbox" value="C-17" id="C17" onchange="filterByLicense()"> C-17 - Glazing Contractor<br/></label>
             <label><input type="checkbox" value="C-20" id="C20" onchange="filterByLicense()"> C-20 - Warm-Air Heating, Ventilating and Air-Conditioning Contractor<br/></label>
@@ -252,6 +252,10 @@ filterControl.onAdd = function(map) {
             <label><input type="checkbox" value="D-65" id="D65" onchange="filterByLicense()"> D-65 - Weatherization and Energy Conservation<br/></label>
         </div>
     `;
+
+    L.DomEvent.disableScrollPropagation(div);
+    L.DomEvent.disableClickPropagation(div);
+
     return div;
 };
 filterControl.addTo(map);

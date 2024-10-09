@@ -719,7 +719,7 @@ footer {
     display: none;
 }
 
-/* Scrollbar styles for webkit browsers */
+/* Scrollbar styles */
 .filter-box-content::-webkit-scrollbar {
     width: 8px;
 }
