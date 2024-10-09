@@ -687,18 +687,56 @@ footer {
     margin-bottom: 2px;
 }
 
+
 .filter-box {
     background-color: white;
     padding: 10px;
     border-radius: 5px;
     box-shadow: 0 0 15px rgba(0, 0, 0, 0.2);
+    width: 300px;
     max-height: 400px;
-    overflow-y: scroll;
+    overflow: hidden;
+    z-index: 1000;
+    position: absolute;
+    top: 10px;
+    right: 10px;
+}
+
+.filter-box-content {
+    max-height: 350px;
+    overflow-y: auto;
+    padding-right: 10px;
+}
+
+.filter-box-content label {
+    display: block;
+    margin-bottom: 5px;
+    white-space: normal;
+    word-wrap: break-word;
 }
 
 .hidden {
     display: none;
 }
+
+/* Scrollbar styles for webkit browsers */
+.filter-box-content::-webkit-scrollbar {
+    width: 8px;
+}
+
+.filter-box-content::-webkit-scrollbar-track {
+    background: #f1f1f1;
+}
+
+.filter-box-content::-webkit-scrollbar-thumb {
+    background: #888;
+    border-radius: 4px;
+}
+
+.filter-box-content::-webkit-scrollbar-thumb:hover {
+    background: #555;
+}
+
 
 
 
