@@ -709,7 +709,7 @@ footer {
     border-radius: 5px;
     box-shadow: 0 0 15px rgba(0, 0, 0, 0.2);
     width: 300px;
-    max-height: 400px;
+    max-height: 780px;
     overflow: hidden;
     z-index: 1000;
     position: absolute;
