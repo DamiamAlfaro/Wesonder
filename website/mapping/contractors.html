@@ -36,12 +36,16 @@
     <main>
 
         <select id="datasetSelect" onchange="loadData(this.value)">
-            <option value="csv1">Dataset 1</option>
-            <option value="csv2">Dataset 2</option>
+            <option value="" disabled selected>Select a dataset</option> <!-- Default option -->
+            <option value="csv1">Awarding Bodies</option>
+            <option value="csv2">Contractors</option>
         </select>
         
-
         <div id="map"></div>
+
+        <div id="markerCount">
+            Markers Displayed: 0
+        </div>
 
 
     </main>

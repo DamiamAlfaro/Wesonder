@@ -8,10 +8,15 @@ L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
 
 // Global marker cluster variable
 var markers = L.markerClusterGroup({
-    disableClusteringAtZoom: 16
+    disableClusteringAtZoom: 15
 });
 
 map.addLayer(markers); // Add empty cluster group to the map initially
+
+function updateMarkerCount() {
+    var markerCount = markers.getLayers().length;
+    document.getElementById('markerCount').innerText = `Markers Displayed: ${markerCount}`;
+}
 
 // Create a custom control for filtering CSV2 options
 var filterControl = L.control({position: 'topright'});
@@ -153,11 +158,13 @@ function toggleSelectAll(selectAllCheckbox) {
 // Global variables to store data and selected licenses
 var dataCache = [];
 var selectedLicenses = [];
-var currentDataset = 'csv1'; // Keep track of which dataset is active
+var currentDataset = ''; // Initially, no dataset is active
 
 // Function to load data based on dataset selection
 function loadData(dataset) {
     currentDataset = dataset;
+
+    document.getElementById('markerCount').innerText = 'Markers Displayed: 0';
 
     // Show filter options only for csv2
     var filterBox = document.getElementById('filterBox');
@@ -214,6 +221,9 @@ function loadCSV1Data() {
                         `);
                         markers.addLayer(marker);
                     });
+
+                    updateMarkerCount(); 
+
                 }
             });
         })
@@ -284,6 +294,8 @@ function filterByLicense() {
             markers.addLayer(marker);
         }
     });
+
+    updateMarkerCount(); 
 }
 
 

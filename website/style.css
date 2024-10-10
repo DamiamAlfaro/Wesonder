@@ -683,8 +683,23 @@ footer {
     width: 100%;
 }
 
-#controls {
-    margin-bottom: 2px;
+#datasetSelect {
+    position: absolute;
+    top: 10px; /* Adjust this value if needed */
+    left: 55px; /* Adjust the position to move it away from the map */
+    z-index: 1000; /* Ensure it stays above the map */
+    width: 200px; /* Adjust the width as necessary */
+}
+
+#markerCount {
+    position: absolute;
+    top: 60px; /* Adjust this value based on the height of the dropdown */
+    left: 55px; /* Match this with the left value of the dropdown */
+    background-color: white;
+    padding: 5px;
+    z-index: 1000; /* Ensure it stays above the map */
+    border: 1px solid #ccc; /* Optional styling for clarity */
+    border-radius: 4px; /* Optional rounding for a cleaner look */
 }
 
 
