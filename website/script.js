@@ -21,7 +21,6 @@ filterControl.onAdd = function(map) {
     div.innerHTML = `
         <strong>Select License Types:</strong><br/>
         <div class="filter-box-content">
-            <label><input type="checkbox" id="selectAll" onchange="toggleSelectAll(this)"> Select All<br/></label>
             <label><input type="checkbox" value="C-2" id="C2" onchange="filterByLicense()"> C-2 - Insulation and Acoustical Contractor<br/></label>
             <label><input type="checkbox" value="C-4" id="C4" onchange="filterByLicense()"> C-4 - Boiler, Hot Water Heating and Steam Fitting Contractor<br/></label>
             <label><input type="checkbox" value="C-5" id="C5" onchange="filterByLicense()"> C-5 - Framing and Rough Carpentry Contractor<br/></label>
@@ -129,6 +128,7 @@ filterControl.onAdd = function(map) {
             <label><input type="checkbox" value="D-63" id="D63" onchange="filterByLicense()"> D-63 - Construction Clean-up<br/></label>
             <label><input type="checkbox" value="D-64" id="D64" onchange="filterByLicense()"> D-64 - Non-specialized<br/></label>
             <label><input type="checkbox" value="D-65" id="D65" onchange="filterByLicense()"> D-65 - Weatherization and Energy Conservation<br/></label>
+            <label><input type="checkbox" id="selectAll" onchange="toggleSelectAll(this)"> Select All<br/></label>
         </div>
     `;
 
@@ -285,7 +285,7 @@ function filterByLicense() {
         }
     });
 }
- 
+
 
 
 
