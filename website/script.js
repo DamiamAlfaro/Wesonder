@@ -15,7 +15,7 @@ map.addLayer(markers); // Add empty cluster group to the map initially
 
 function updateMarkerCount() {
     var markerCount = markers.getLayers().length;
-    document.getElementById('markerCount').innerText = `Markers Displayed: ${markerCount}`;
+    document.getElementById('markerCount').innerText = `Entities Displayed: ${markerCount}`;
 }
 
 // Create a custom control for filtering CSV2 options
@@ -164,7 +164,7 @@ var currentDataset = ''; // Initially, no dataset is active
 function loadData(dataset) {
     currentDataset = dataset;
 
-    document.getElementById('markerCount').innerText = 'Markers Displayed: 0';
+    document.getElementById('markerCount').innerText = 'Entities Displayed: 0';
 
     // Show filter options only for csv2
     var filterBox = document.getElementById('filterBox');
