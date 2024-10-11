@@ -292,9 +292,10 @@ function loadCSV1Data() {
         .catch(error => console.error('Error fetching CSV1:', error));
 }
 
-// Function to load CSV2 data
+// Function to load CSV2 data Finally is fucking shwoing
+
 function loadCSV2Data() {
-    var csvUrl = 'https://storage.googleapis.com/wesonder_databases/geolocations_cslb/refined_cslb_geolocations.csv'; // Replace with actual URL
+    var csvUrl = 'https://storage.googleapis.com/wesonder_databases/geolocations_cslb/refined_refined_cslb_geolocations.csv'; // Replace with actual URL
 
     fetch(csvUrl)
         .then(response => response.text())
