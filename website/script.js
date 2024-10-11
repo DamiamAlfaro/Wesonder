@@ -247,8 +247,7 @@ function loadData(dataset) {
 
 // Function to load CSV1 data (no filtering)
 function loadCSV1Data() {
-    var csvUrl = 'https://storage.googleapis.com/wesonder_databases/geolocations_dir_entities/dir_entities_geolocations.csv'; // Replace with actual URL
-
+    var csvUrl = 'https://storage.googleapis.com/wesonder_databases/geolocations_dir_entities/new_refined_dir_entities.csv'; // Replace with actual URL
     fetch(csvUrl)
         .then(response => response.text())
         .then(csvText => {
@@ -269,7 +268,9 @@ function loadCSV1Data() {
                             lng: parseFloat(row['Y_Coordinate']),
                             name: row['EntityName'],
                             address: row['FullAddress'],
-                            email: row['EntityEmail']
+                            email: row['EntityEmail'],
+                            webpage: row['WebPages'],
+                            webpagelink: row['WebPagesLinks']
                         };
                     });
 
@@ -280,6 +281,8 @@ function loadCSV1Data() {
                             <strong>Entity Name:</strong> ${coord.name || 'N/A'}<br/>
                             <strong>Full Address:</strong> ${coord.address || 'N/A'}<br/>
                             <strong>Email:</strong> ${coord.email || 'N/A'}
+                            <strong>Bidding Sites:</strong> ${coord.webpage || 'N/A'}
+                            <strong>Bidding Websites:</strong> ${coord.webpagelink || 'N/A'}
                         `);
                         markers.addLayer(marker);
                     });
@@ -368,9 +371,3 @@ function filterByLicense() {
 
     updateMarkerCount(); 
 }
-
-
-
-
-
-
