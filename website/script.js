@@ -276,18 +276,27 @@ function loadCSV1Data() {
 
                     // Add markers to the map for CSV1
                     validCoordinates.forEach(coord => {
+                        // Split the 'webpage' and 'webpagelink' fields by commas
+                        var webpageArray = coord.webpage ? coord.webpage.split(',') : [];
+                        var webpagelinkArray = coord.webpagelink ? coord.webpagelink.split(',') : [];
+
+                        // Generate HTML for displaying webpages as clickable links
+                        var webpageHTML = webpageArray.map((page, index) => {
+                            var link = webpagelinkArray[index] || '#'; // Use corresponding link or '#' if missing
+                            return `<a href="${link}" target="_blank">${page}</a>`;
+                        }).join(', ');
+
                         var marker = L.marker([coord.lat, coord.lng]);
                         marker.bindPopup(`
                             <strong>Entity Name:</strong> ${coord.name || 'N/A'}<br/>
                             <strong>Full Address:</strong> ${coord.address || 'N/A'}<br/>
-                            <strong>Email:</strong> ${coord.email || 'N/A'}
-                            <strong>Bidding Sites:</strong> ${coord.webpage || 'N/A'}
-                            <strong>Bidding Websites:</strong> ${coord.webpagelink || 'N/A'}
+                            <strong>Email:</strong> ${coord.email || 'N/A'}<br/>
+                            <strong>Bidding Sites:</strong> ${webpageHTML || 'N/A'}
                         `);
                         markers.addLayer(marker);
                     });
 
-                    updateMarkerCount(); 
+                    updateMarkerCount();
 
                 }
             });

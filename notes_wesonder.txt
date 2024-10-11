@@ -382,22 +382,39 @@ October 8, 2024
 
 	1. Now that we have the aesthetics of the map completed, it's time to implement the variety of functionalities to the map, i.e. the different datapoints that can be showed. 
 	2. (COMPLETED) Awarding Bodies: the display of all awarding bodies in California.
-	3. CSLB Contractors: the display of all active subcontractors in california. Keep in mind that this cannot be showed simultaneously with other datasets. This will be different
+	3. (COMPLETED) CSLB Contractors: the display of all active subcontractors in california. Keep in mind that this cannot be showed simultaneously with other datasets. This will be different
 	than the others as there will also be a classifying display for these entities, i.e. there will be a variety of classifications to based the display on, such as:
-		I. Classification (License Type)
+		I. (COMPLETED) Classification (License Type)
 			A. (COMPLETED) There are problems with the scrolling of the display.
 			B. (COMPLETED) Also, the D licences are not apparent. There is something wrong with them.
-			C. I know it is tiring, but you need to fix the thing about other addresses. 
-		II. County
-		III. BusinessType
-		IV. LicenseNumber
+			C. (COMPLETED) I know it is tiring, but you need to fix the thing about other addresses. 
+		II. (COMPLETED) County
 	4. DIR Projects: The display of all recorded projects in the State. The same rules apply for this one.
-	5. The 100 mile click: A creative functionality that allows the user to click anypoint in the map and any entity in the 100 mile radius will appear, whether a project,
+	5. (REJECTED) The 100 mile click: A creative functionality that allows the user to click anypoint in the map and any entity in the 100 mile radius will appear, whether a project,
 	a contractor, or an awarding body. Anything within the 100 mile radius will pop up.
 	6. Lastly, we will do the logo today.
 	7. Do not let people download your dataset.
+
+
+October 9, 2024
+
+
+	1. (COMPLETED) Today we were just fixing and updating geolocations all day, tiring and monotonous, but at the end of the day, enhanced accuracy.
+	2. (COMPLETED) Added some aesthetic features to the map as well, such as markers count and the selection of dataset while display.
+
+
+October 10, 2024
+
+
+	1. Make the changes specified on October 8.
+	2. But also, the allocation of bidding sites to each awarding body.
+	3. In order to improve performance, enforce a rule that only up to 3 Licenses can be checked at once, and limiting the others. Up to three. I found that if you click the
+	checkboxes too fast, the site freezes, however, if you click a checkbox and leave 2-3 seconds in between, the site remains stable. Perhaps there can be a function like that.
 	
 
+October 11, 2024
+
+	1. We are going to substitude the 100 mile functionality with the addition of links to the awarding bodies
 
 
 

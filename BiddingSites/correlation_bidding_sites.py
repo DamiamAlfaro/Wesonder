@@ -31,7 +31,6 @@ def appearance_check(csv_file_1, csv_file_2):
 Correlating the links with the respective awarding body
 '''
 def link_correlation(csv_file_1, csv_file_2):
-    
     # Awarding Bodies websites
     df_websites = pd.read_csv(csv_file_1, on_bad_lines='skip')
 
@@ -44,45 +43,41 @@ def link_correlation(csv_file_1, csv_file_2):
     website_addresses = []
     website_links = []
     
-    # Iterate through every awarding body and find the row indexes, web addreses, and website links
+    # Iterate through every awarding body and find the row indexes, web addresses, and website links
     for index, row in df_ab.iterrows():
-
         # Assign a variable for the awarding body name
         entity_in_question = row['EntityName']
         awarding_bodies_names.append(entity_in_question)
-        print(entity_in_question)
 
-        # If the awarding body is found within the website dataframe, obtain the desired variables aforementioned
+        # If the awarding body is found within the website dataframe, obtain the desired variables
         if entity_in_question in df_websites['AwardingBody'].values:
-
-            # Creates a list of indexes where the name of the awarding boyd is found, such indexes will be use for identification below
+            # Create a list of indexes where the awarding body is found
             indexes = df_websites[df_websites['AwardingBody'] == entity_in_question].index.tolist()
-            row_indexes.append(indexes)
 
-            # Where the rest of the variables will reside
-            website_addresses_list = [] 
+            # Initialize lists for storing website addresses and links
+            website_addresses_list = []
             website_link_list = []
 
             # Iterate through the list of indexes and acquire the remaining variables (web addresses and web links)
-            for index in indexes:
-                
-                # Pinpoint the respective website address and website link based on index
-                website_address = df_websites['BiddingSite'][index]
-                website_link = df_websites['SiteLink'][index]
-                
-                # To avoid duplicates, check if the site is already in the list, add bidding site and site link if not
+            for i in indexes:
+                website_address = df_websites.at[i, 'BiddingSite']
+                website_link = df_websites.at[i, 'SiteLink']
+
+                # To avoid duplicates, check if the site is already in the list
                 if website_address not in website_addresses_list:
                     website_addresses_list.append(website_address)
                     website_link_list.append(website_link)
 
             # Append to the main list
+            row_indexes.append(indexes)
             website_addresses.append(website_addresses_list)
             website_links.append(website_link_list)
-            #print(website_addresses_list)
-            #print(website_link_list)
-            #print(len(website_addresses_list) == len(website_link_list))
 
-        #print("--------------------------------------------")
+        else:
+            # Append empty lists if no match found
+            row_indexes.append([])
+            website_addresses.append([])
+            website_links.append([])
 
 
     # Return all variables
@@ -105,23 +100,18 @@ def horizontal_display_of_data(tuple_with_data):
     df = pd.DataFrame(columns=["AwardingBodyName","WebPages","WebPagesLinks"])
 
     for index, (name, web_address, web_link) in enumerate(zip(names, web_addresses, web_links)):
-        print(index)
-        print(name)
-    
+
         web_addresses_string = ",".join(web_address)
         web_links_string = ",".join(web_link)
-        
-        print(web_addresses_string)
-        print(web_links_string)
-
-        print('=========================================')
 
         row_data = [name, web_addresses_string, web_links_string]
+
 
         df = pd.concat([df, pd.DataFrame([row_data], columns=df.columns)], ignore_index=True)
 
     df.to_csv("correlation_biddingsites.csv", index=False)
 
+    
        
 
 
