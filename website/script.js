@@ -172,66 +172,6 @@ filterControl.onAdd = function(map) {
     return div;
 };
 
-// <div class="filter-box-content" id="countyFilter">
-//             <label><input type="checkbox" value="Mariposa" onchange="filterByLicense()"> Mariposa<br/></label>
-//             <label><input type="checkbox" value="Los Angeles" onchange="filterByLicense()"> Los Angeles<br/></label>
-//             <label><input type="checkbox" value="San Diego" onchange="filterByLicense()"> San Diego<br/></label>
-//             <label><input type="checkbox" value="Fresno" onchange="filterByLicense()"> Fresno<br/></label>
-//             <label><input type="checkbox" value="San Bernardino" onchange="filterByLicense()"> San Bernardino<br/></label>
-//             <label><input type="checkbox" value="San Joaquin" onchange="filterByLicense()"> San Joaquin<br/></label>
-//             <label><input type="checkbox" value="Shasta" onchange="filterByLicense()"> Shasta<br/></label>
-//             <label><input type="checkbox" value="Placer" onchange="filterByLicense()"> Placer<br/></label>
-//             <label><input type="checkbox" value="Orange" onchange="filterByLicense()"> Orange<br/></label>
-//             <label><input type="checkbox" value="Merced" onchange="filterByLicense()"> Merced<br/></label>
-//             <label><input type="checkbox" value="San Francisco" onchange="filterByLicense()"> San Francisco<br/></label>
-//             <label><input type="checkbox" value="Solano" onchange="filterByLicense()"> Solano<br/></label>
-//             <label><input type="checkbox" value="Riverside" onchange="filterByLicense()"> Riverside<br/></label>
-//             <label><input type="checkbox" value="Monterey" onchange="filterByLicense()"> Monterey<br/></label>
-//             <label><input type="checkbox" value="Santa Barbara" onchange="filterByLicense()"> Santa Barbara<br/></label>
-//             <label><input type="checkbox" value="Ventura" onchange="filterByLicense()"> Ventura<br/></label>
-//             <label><input type="checkbox" value="Napa" onchange="filterByLicense()"> Napa<br/></label>
-//             <label><input type="checkbox" value="Stanislaus" onchange="filterByLicense()"> Stanislaus<br/></label>
-//             <label><input type="checkbox" value="El Dorado" onchange="filterByLicense()"> El Dorado<br/></label>
-//             <label><input type="checkbox" value="Sacramento" onchange="filterByLicense()"> Sacramento<br/></label>
-//             <label><input type="checkbox" value="Kings" onchange="filterByLicense()"> Kings<br/></label>
-//             <label><input type="checkbox" value="Santa Clara" onchange="filterByLicense()"> Santa Clara<br/></label>
-//             <label><input type="checkbox" value="Sonoma" onchange="filterByLicense()"> Sonoma<br/></label>
-//             <label><input type="checkbox" value="Calaveras" onchange="filterByLicense()"> Calaveras<br/></label>
-//             <label><input type="checkbox" value="San Mateo" onchange="filterByLicense()"> San Mateo<br/></label>
-//             <label><input type="checkbox" value="Santa Cruz" onchange="filterByLicense()"> Santa Cruz<br/></label>
-//             <label><input type="checkbox" value="Tulare" onchange="filterByLicense()"> Tulare<br/></label>
-//             <label><input type="checkbox" value="Kern" onchange="filterByLicense()"> Kern<br/></label>
-//             <label><input type="checkbox" value="Alameda" onchange="filterByLicense()"> Alameda<br/></label>
-//             <label><input type="checkbox" value="Contra Costa" onchange="filterByLicense()"> Contra Costa<br/></label>
-//             <label><input type="checkbox" value="Yolo" onchange="filterByLicense()"> Yolo<br/></label>
-//             <label><input type="checkbox" value="San Luis Obispo" onchange="filterByLicense()"> San Luis Obispo<br/></label>
-//             <label><input type="checkbox" value="Marin" onchange="filterByLicense()"> Marin<br/></label>
-//             <label><input type="checkbox" value="Lake" onchange="filterByLicense()"> Lake<br/></label>
-//             <label><input type="checkbox" value="Sutter" onchange="filterByLicense()"> Sutter<br/></label>
-//             <label><input type="checkbox" value="San Benito" onchange="filterByLicense()"> San Benito<br/></label>
-//             <label><input type="checkbox" value="Butte" onchange="filterByLicense()"> Butte<br/></label>
-//             <label><input type="checkbox" value="Imperial" onchange="filterByLicense()"> Imperial<br/></label>
-//             <label><input type="checkbox" value="Madera" onchange="filterByLicense()"> Madera<br/></label>
-//             <label><input type="checkbox" value="Tehama" onchange="filterByLicense()"> Tehama<br/></label>
-//             <label><input type="checkbox" value="Nevada" onchange="filterByLicense()"> Nevada<br/></label>
-//             <label><input type="checkbox" value="Glenn" onchange="filterByLicense()"> Glenn<br/></label>
-//             <label><input type="checkbox" value="Tuolumne" onchange="filterByLicense()"> Tuolumne<br/></label>
-//             <label><input type="checkbox" value="Yuba" onchange="filterByLicense()"> Yuba<br/></label>
-//             <label><input type="checkbox" value="Inyo" onchange="filterByLicense()"> Inyo<br/></label>
-//             <label><input type="checkbox" value="Humboldt" onchange="filterByLicense()"> Humboldt<br/></label>
-//             <label><input type="checkbox" value="Amador" onchange="filterByLicense()"> Amador<br/></label>
-//             <label><input type="checkbox" value="Mono" onchange="filterByLicense()"> Mono<br/></label>
-//             <label><input type="checkbox" value="Lassen" onchange="filterByLicense()"> Lassen<br/></label>
-//             <label><input type="checkbox" value="Mendocino" onchange="filterByLicense()"> Mendocino<br/></label>
-//             <label><input type="checkbox" value="Siskiyou" onchange="filterByLicense()"> Siskiyou<br/></label>
-//             <label><input type="checkbox" value="Plumas" onchange="filterByLicense()"> Plumas<br/></label>
-//             <label><input type="checkbox" value="Del Norte" onchange="filterByLicense()"> Del Norte<br/></label>
-//             <label><input type="checkbox" value="Modoc" onchange="filterByLicense()"> Modoc<br/></label>
-//             <label><input type="checkbox" value="Trinity" onchange="filterByLicense()"> Trinity<br/></label>
-//             <label><input type="checkbox" value="Colusa" onchange="filterByLicense()"> Colusa<br/></label>
-//             <label><input type="checkbox" value="Alpine" onchange="filterByLicense()"> Alpine<br/></label>
-//             <label><input type="checkbox" value="Sierra" onchange="filterByLicense()"> Sierra<br/></label>
-//         </div>
 
 filterControl.addTo(map);
 
@@ -277,7 +217,7 @@ function loadData(dataset) {
 
 // Function to load CSV1 data (no filtering)
 function loadCSV1Data() {
-    var csvUrl = 'https://storage.googleapis.com/wesonder_databases/geolocations_dir_entities/new_refined_dir_entities.csv'; // Replace with actual URL
+    var csvUrl = 'https://storage.googleapis.com/wesonder_databases/wesonder_frontend/new_refined_dir_entities.csv'; // Replace with actual URL
     fetch(csvUrl)
         .then(response => response.text())
         .then(csvText => {
@@ -337,7 +277,7 @@ function loadCSV1Data() {
 // Function to load CSV2 data Finally is fucking shwoing
 
 function loadCSV2Data() {
-    var csvUrl = 'https://storage.googleapis.com/wesonder_databases/geolocations_cslb/refined_refined_cslb_geolocations.csv'; // Replace with actual URL
+    var csvUrl = 'https://storage.googleapis.com/wesonder_databases/wesonder_frontend/refined_refined_cslb_geolocations.csv'; // Replace with actual URL
 
     fetch(csvUrl)
         .then(response => response.text())
