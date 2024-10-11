@@ -150,7 +150,6 @@ filterControl.onAdd = function(map) {
             <label><input type="checkbox" value="D-63" id="D63" onchange="filterByLicense()"> D-63 - Construction Clean-up<br/></label>
             <label><input type="checkbox" value="D-64" id="D64" onchange="filterByLicense()"> D-64 - Non-specialized<br/></label>
             <label><input type="checkbox" value="D-65" id="D65" onchange="filterByLicense()"> D-65 - Weatherization and Energy Conservation<br/></label>
-            <label><input type="checkbox" id="selectAll" onchange="toggleSelectAll(this)"> Select All<br/></label>
         </div>
         </br>
         <strong>Select County</strong></br>
@@ -359,8 +358,8 @@ let maxSelections = 3;
 let selectedLicenseCount = 0;
 
 function filterByLicense() {
-    // Get all license checkboxes (exclude the "Select All" checkbox)
-    var licenseCheckboxes = document.querySelectorAll('.filter-box input[type="checkbox"]:not(#selectAll):not(#countyFilter input[type="checkbox"])');
+    // Get all license checkboxes (exclude the county checkboxes)
+    var licenseCheckboxes = document.querySelectorAll('.filter-box input[type="checkbox"]:not(#countyFilter input[type="checkbox"])');
     
     // Get the checked license checkboxes
     var checkedLicenseCheckboxes = Array.from(licenseCheckboxes).filter(checkbox => checkbox.checked);
@@ -391,17 +390,14 @@ function filterByLicense() {
     // Clear existing markers
     markers.clearLayers();
 
-    // If "Select All" is checked, display all markers
-    var selectAllChecked = document.getElementById('selectAll').checked;
-    if (selectAllChecked) {
-        var filteredData = dataCache.filter(row => row['State'] === 'CA');
-    } else if (selectedLicenses.length > 0) {
+    // Filter by selected licenses and counties
+    if (selectedLicenses.length > 0) {
         // Filter by selected licenses
         filteredData = dataCache.filter(row => {
             const classification = (row['Classification'] || '').replace(/\s+/g, ''); // Remove any spaces
             const licenseArray = classification.split('|'); // Split the classification by "|" into an array
 
-            const matchesLicense = selectedLicenses.length === 0 || selectedLicenses.some(license => {
+            const matchesLicense = selectedLicenses.some(license => {
                 const cleanLicense = license.replace(/-/g, ''); // Normalize the selected license (e.g., "C-2" becomes "C2")
                 return licenseArray.some(classItem => classItem.replace(/-/g, '') === cleanLicense); // Exact match for each item
             });
@@ -433,6 +429,7 @@ function filterByLicense() {
 
     updateMarkerCount(); 
 }
+
 
 
 
