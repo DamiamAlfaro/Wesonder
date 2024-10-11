@@ -45,7 +45,7 @@ def link_correlation(csv_file_1, csv_file_2):
     website_links = []
     
     # Iterate through every awarding body and find the row indexes, web addreses, and website links
-    for index, row in df_ab.head(10).iterrows():
+    for index, row in df_ab.iterrows():
 
         # Assign a variable for the awarding body name
         entity_in_question = row['EntityName']
@@ -120,19 +120,51 @@ def horizontal_display_of_data(tuple_with_data):
 
         df = pd.concat([df, pd.DataFrame([row_data], columns=df.columns)], ignore_index=True)
 
-    df.to_csv("testing.csv", index=False)
+    df.to_csv("correlation_biddingsites.csv", index=False)
 
        
 
 
 
+'''
+Correlate the awarding body with the main dataset
+'''
+def main_correlation(main_csv_file, converted_csv_file):
+
+    # Read the main dataset into a df
+    df_main = pd.read_csv(main_csv_file, on_bad_lines='skip', low_memory=False)
+
+    # Read the converted csv file
+    df_sites = pd.read_csv(converted_csv_file, on_bad_lines='skip')
+
+    for index, row in df_sites.iterrows():
+
+        # Assign the variables you want to allocate in the main dataset
+        awarding_body_name = row['AwardingBodyName']
+        web_pages = row['WebPages']
+        web_pages_links = row['WebPagesLinks']
+
+        # Iterate through the main dataset to match values
+        if awarding_body_name in df_main['EntityName'].values:
+
+            # Get the row index of the main dataset where the match occurs
+            row_number = df_main.index.get_loc(df_main[df_main['EntityName'] == awarding_body_name].index[0])
+
+            print(f"{index}: {awarding_body_name} - Row: {row_number}")
+
+            df_main['AwardingBodyName'][row_number] = awarding_body_name
+            df_main['WebPages'][row_number] = web_pages
+            df_main['WebPagesLinks'][row_number] = web_pages_links
+
+
+    
+    new_refined_df_main = df_main
+    new_refined_df_main.to_csv('new_refined_dir_entities.csv',index=False)
+
+    
 
 
 
-
-
-def convert_to_csv(dataframe):
-    pass
 
 
 
@@ -146,12 +178,20 @@ if __name__ == "__main__":
     # Read the awarding body list
     awarding_bodies_list = "awarding_bodies.csv"
 
+    # Main Dataset
+    main_dataset = "/Users/damiamalfaro/Desktop/Europe/testing_wesonder/Geolocations_DIR_Entities/dir_entities_geolocations.csv"
+
+    # Converted csv file
+    converted_file = "correlation_biddingsites.csv"
+
     # Correlate the files and its variables
-    correlation_tuple = link_correlation(awarding_bodies_websites, awarding_bodies_list)
+    #correlation_tuple = link_correlation(awarding_bodies_websites, awarding_bodies_list)
 
-    horizontal_display_of_data(correlation_tuple)
+    # Create the new dataframe for further correlation
+    #horizontal_display_of_data(correlation_tuple)
 
-
+    # Main Correlation
+    #main_correlation(main_dataset, converted_file)
 
 
 
