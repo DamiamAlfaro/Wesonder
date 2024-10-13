@@ -24,6 +24,7 @@ main {
     border: 2px solid;
     border-color: transparent;
     display: inline-block;
+    margin-bottom: 3%;
 }
 
 .navbar-leftside {
@@ -512,6 +513,7 @@ input[type=submit] {
 .section .crust {
    display : flex;
    flex-direction : row;
+   width: 95%;
    
 }
 
@@ -522,11 +524,21 @@ input[type=submit] {
     font-size: 1.7em;
  }
 
-.section .crust .crust-side .crust-image {
+
+.section .crust .crust-side-image {
     text-align: justify;
-    width: 500px;
-    height: 600px;
-    padding: 100px;
+    max-width: 500px;
+    max-height: 600px;
+    padding: 20px;
+    background-color: rgba(189, 195, 199, 0.4);
+    border-radius: 10px;
+}
+
+.crust-image {
+    text-align: justify;
+    max-width: 500px;
+    max-height: 600px;
+    padding: 0px;
 }
 
 
