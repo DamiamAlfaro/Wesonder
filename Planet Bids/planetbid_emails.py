@@ -58,15 +58,31 @@ def scroll_table_container(container, driver,scroll_pause_time=2):
     result_message = "Round Completed"
     return result_message
 
+
+
+'''
+This function will embellish strings and allocate them into a csv file for further analysis and research
+'''
+def string_embellishment_and_allocation(list_of_lists_of_strings):
+    
+    # Remove the fax numbers, we don't need them, we aren't in the 90s
+    pass
+
+
+
 '''
 The actual web crawling
 '''
-def webscraping_planetbids(url, awarding_body):
+def webscraping_planetbids(url, awarding_body, external_count: int):
 
     # Load the webdriver
     driver = webdriver.Chrome()
     driver.get(url)
     time.sleep(3)
+
+    # COunt in case the program halts (shall be modify accordingly to the terminal output when halt occurred)
+    count = 0
+    print(f"Current {awarding_body} Count: {count}")
 
     # Position yourself within the Planetbids and scroll down over the table containing all bids
     try:
@@ -85,9 +101,16 @@ def webscraping_planetbids(url, awarding_body):
     bids = bid_display_table.find_elements(By.TAG_NAME, 'tr')
     
     # The tr element of the table display to click on
-    bid_target = bids[2]
+    bid_target = bids[2+count]
     driver.execute_script("arguments[0].scrollIntoView();", bid_target)
     driver.execute_script("arguments[0].click();", bid_target)
+
+    # Bid Title for future usage
+    bid_title_element = WebDriverWait(driver,5).until(
+        EC.presence_of_element_located((By.CLASS_NAME,'bid-detail-title'))
+    )
+    bid_title_text = bid_title_element.text
+    
     
     # Pinpoint the initial element for the main welcome page
     bid_description = WebDriverWait(driver, 10).until(
@@ -99,6 +122,8 @@ def webscraping_planetbids(url, awarding_body):
     rows_of_infomration = bid_description.find_elements(By.CLASS_NAME,"row")
     for text_row in rows_of_infomration[2:]:
         bid_information_rows.append(text_row.text)
+
+    # The general information of the project; string to be addded later    
     bid_text_information = "|".join(bid_information_rows)
 
     # Now pinpoint the headers in order to jump/click into the 'Prospective Bidders' tab
@@ -142,10 +167,21 @@ def webscraping_planetbids(url, awarding_body):
         for attribute in singular_attributes:
             entity_in_question.append(attribute.text)
         
-        # Each entity's list should contain 5 attributes: name, address, contact, phone, and email
+        # Each entity's list should contain 5 attributes: name, address, contact, phone, and email. Or if Fax is included, the length is 6
         all_entities.append(entity_in_question)
-        print(entity_in_question)
-        print(len(entity_in_question))
+
+    # Append the rest of the important strings (project general information, project name, and awarding body)
+    other_important_strings = [bid_text_information, bid_title_text, awarding_body]
+
+    # String embellishment and csv allocation function
+    string_embellishment_and_allocation(all_entities, other_important_strings)
+    
+    # Go back to the bid table display
+    driver.back()
+    driver.back()
+    count += 1
+    time.sleep(1)
+        
 
 
 
@@ -185,7 +221,7 @@ def reading_csv_with_planetbids(csv_file):
         link = row['WebLink']
         awarding_body = row['AwardingBody']
 
-        webscraping_planetbids(link, awarding_body)
+        webscraping_planetbids(link, awarding_body, 0)
 
 
 
