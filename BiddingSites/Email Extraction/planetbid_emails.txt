@@ -1,8 +1,0 @@
-October 14, 2024
-
-1. We want to extract all emails from planetbids from the "Prospective Bidders" tab in order to promote WESONDER there as well.
-To do so we need to create a webcrawler that iterates through each planetbids site and jumps straight into the PB section
-of the respective bid. 
-
-2. Once we collect the information from the website of planetbids, we need to annotate the name of the project bid that
-the sub's email was extracted from, the department of planebtids (who is the awarding body), and the date.
