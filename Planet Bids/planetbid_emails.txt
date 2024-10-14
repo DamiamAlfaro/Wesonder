@@ -1,0 +1,23 @@
+October 14, 2024
+
+1. The goal is pretty clear: to obtain as many emails as possible while mapping the correlations between subcontractors involved in the respective bidding
+platforms that will eventually lead to useful data display. Perhaps as a functionality of WESONDER or as its own independent service.
+2. We want to extract all emails from planetbids from the "Prospective Bidders" tab in order to promote WESONDER there as well.
+To do so we need to create a webcrawler that iterates through each planetbids site and jumps straight into the PB section
+of the respective bid. 
+2. Once we collect the information from the website of planetbids, we need to annotate the name of the project bid that
+the sub's email was extracted from, the department of planebtids (who is the awarding body), and the date.
+3. We need to clean the strings a little bit, we cannot load the csv with unnecessary characters such as '\n', or ':'. Let's load the
+csv file directly with the datum necessary, i.e. the phone number, email, etc.
+4. Also, we need to create a function of cleaning of strings separately from the webcrawler, perhaps within the webcrawler function we can call
+the string cleaning function. 
+5. Lastly, we need to find a way to return to the last iteration from one, each planetbids links, and twp, each <tr> element within the respective planetbids
+link once the program halts. 
+
+
+
+
+
+
+
+
