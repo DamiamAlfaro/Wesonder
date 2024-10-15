@@ -65,12 +65,106 @@ This function will embellish strings and allocate them into a csv file for furth
 '''
 def string_embellishment_and_allocation(list_of_lists_of_strings, other_strings):
     
-    # Remove the fax numbers, we don't need them, we aren't in the 90s
-    pass
+    # Variables from the first list
+    names = []
+    street_addresses = []
+    cities = []
+    states = []
+    zip_codes = []
+    complete_addresses = []
+    contacts = []
+    phone_numbers = []
+    emails = []
+
+    # Iteration through first list
+    for first_list in list_of_lists_of_strings:
+
+        # Remove the fax numbers, we don't need them, we aren't in the 90s
+        if len(first_list) == 6:
+            first_list.pop(4)
+        
+        # Identify attributes
+        company_name = first_list[0]
+        company_address = first_list[1]
+        company_contact = first_list[2]
+        company_phone = first_list[3]
+        company_email = first_list[4]
+
+        # Add the company name
+        names.append(company_name.upper())
+
+        # Categorize by Street Address, City, State, Zip Code, and Complete Address. Do it by breaking down the address string into "\n"
+        address_split = company_address.split("\n")
+        if len(address_split) == 3:
+            street_address = f"{address_split[0]} {address_split[1]}"
+        else:
+            street_address = f"{address_split[0]}"
+        
+        # Split the last part of address_split (which is always the city, state, and zip code, regardless of Suite # or not)
+        second_address_split = address_split[-1].split(" ")
+        city = second_address_split[0][:-1] # remove the "," from the end
+        state = second_address_split[1]
+        zip_code = second_address_split[2]
+        complete_address = f"{street_address}, {city} {state}, {zip_code}"
+
+        # Add the location attributes
+        street_addresses.append(street_address)
+        cities.append(city)
+        states.append(state)
+        zip_codes.append(zip_code)
+        complete_addresses.append(complete_address)
+
+        # Add the contact
+        contact_split = company_contact.split(" ")
+        contacts.append(contact_split[1])
+
+        # Add the phone number
+        phone_split = company_phone.split(" ")
+        phone_numbers.append(phone_split[1])
+
+        # Add the emails
+        emails.append(company_email)
+
+    
+    # Variables from the second list quantitavely correlating to the length of other attributes
+    project_name = [other_strings[0] for _ in range(len(names))]
+    awarding_bodies = [other_strings[1] for _ in range(len(names))]
+
+    # Creating a dataframe and exporting as csv
+    data = {
+    "EntityNames": names,
+    "StreetAddres": street_addresses,
+    "City": cities,
+    "State": states,
+    "ZipCode": zip_codes,
+    "CompleteAddresses": complete_addresses,
+    "Contacts": contacts,
+    "PhoneNumbers": phone_numbers,
+    "Emails": emails,
+    "ProjectName": project_name,
+    "AwardingBody": awarding_bodies
+    }
+
+    df = pd.DataFrame(data)
+    df.to_csv("testing.csv",index=False)
+
+
+
+        
+        
+            
+
+
+
+
+
+
+    
 
 
 
 '''
+
 The actual web crawling
 '''
 def webscraping_planetbids(url, awarding_body, internal_count):
@@ -136,7 +230,7 @@ def webscraping_planetbids(url, awarding_body, internal_count):
             bid_information_rows.append(text_row.text)
 
         # The general information of the project; string to be addded later    
-        bid_text_information = "|".join(bid_information_rows)
+        bid_text_information = "|".join(bid_information_rows) # (REJECTED)
 
         # Now pinpoint the headers in order to jump/click into the 'Prospective Bidders' tab
         bid_header_tabs = WebDriverWait(driver,5).until(
@@ -153,6 +247,7 @@ def webscraping_planetbids(url, awarding_body, internal_count):
         except:
             print(f"Something is wrong with the Prospective Bidders tab of {current_iteration_bid_table}")
             driver.back()
+            continue
             
 
         # Extract the datum for each attribute of each prospective bidder (email, address, etc.)
@@ -183,10 +278,9 @@ def webscraping_planetbids(url, awarding_body, internal_count):
             
             # Each entity's list should contain 5 attributes: name, address, contact, phone, and email. Or if Fax is included, the length is 6
             all_entities.append(entity_in_question)
-            print(entity_in_question)
 
         # Append the rest of the important strings (project general information, project name, and awarding body)
-        other_important_strings = [bid_text_information, bid_title_text, awarding_body]
+        other_important_strings = [bid_title_text, awarding_body]
 
         # String embellishment and csv allocation function
         string_embellishment_and_allocation(all_entities, other_important_strings)
@@ -194,7 +288,6 @@ def webscraping_planetbids(url, awarding_body, internal_count):
         # Go back to the bid table display
         driver.back()
         driver.back()
-        internal_count += 1
         time.sleep(2)
 
     
@@ -231,14 +324,17 @@ def reading_csv_with_planetbids(csv_file):
     # Convert it into a Pandas DataFrame
     df_main = pd.read_csv(csv_file)
 
+    # Current Count
+    count = 0
+
     # Iterate through the file
-    for index, row in df_main.head(1).iterrows():
+    for index, row in df_main[count:].iterrows():
         
         # Links Row
         link = row['WebLink']
         awarding_body = row['AwardingBody']
 
-        webscraping_planetbids(link, awarding_body, 0)
+        webscraping_planetbids(link, awarding_body, index)
 
 
 
