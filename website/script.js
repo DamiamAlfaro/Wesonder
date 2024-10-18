@@ -371,11 +371,3 @@ function filterByLicense() {
 
     updateMarkerCount(); 
 }
-
-
-
-
-
-
-
-
