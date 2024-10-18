@@ -389,11 +389,8 @@ October 8, 2024
 			B. (COMPLETED) Also, the D licences are not apparent. There is something wrong with them.
 			C. (COMPLETED) I know it is tiring, but you need to fix the thing about other addresses. 
 		II. (COMPLETED) County
-	4. DIR Projects: The display of all recorded projects in the State. The same rules apply for this one.
 	5. (REJECTED) The 100 mile click: A creative functionality that allows the user to click anypoint in the map and any entity in the 100 mile radius will appear, whether a project,
 	a contractor, or an awarding body. Anything within the 100 mile radius will pop up.
-	6. Lastly, we will do the logo today.
-	7. Do not let people download your dataset.
 
 
 October 9, 2024
@@ -406,15 +403,45 @@ October 9, 2024
 October 10, 2024
 
 
-	1. Make the changes specified on October 8.
-	2. But also, the allocation of bidding sites to each awarding body.
-	3. In order to improve performance, enforce a rule that only up to 3 Licenses can be checked at once, and limiting the others. Up to three. I found that if you click the
+	2. (COMPLETED) But also, the allocation of bidding sites to each awarding body.
+	3. (COMPLETED) In order to improve performance, enforce a rule that only up to 3 Licenses can be checked at once, and limiting the others. Up to three. I found that if you click the
 	checkboxes too fast, the site freezes, however, if you click a checkbox and leave 2-3 seconds in between, the site remains stable. Perhaps there can be a function like that.
 	
 
 October 11, 2024
 
-	1. We are going to substitude the 100 mile functionality with the addition of links to the awarding bodies
+	1. (COMPLETED) We are going to substitude the 100 mile functionality with the addition of links to the awarding bodies.
+	2. (INCOMPLETE) Lastly, we will do the logo today.
+	3. (REJECTED) Do not let people download your dataset.
+		I. Come on man, do not be so self-absorbed... Besides, you know that everyone can donwload the cslb data publicly right?...
+	4. We decided to remove the DIR Projects display, not only due to a tad lazyness, but also because there are around 500,000 projects, which will slow down the computer connected to
+	the site's shitty hotspot. Not only that, but there is not "objective" benefit to get out of the projects, just mere aesthetics and "functionality boast" (showing we can). If it was
+	the prior DIR website where the entities involved were displayed, then it would be useful, but now the only item being displayed is the project itself, not even the amount, so what's
+	the use of such datum? Just to increase aesthetic value (while slowing down website performance for the front end user?) and show that we are capable of it? So, if we reject it, then
+	what are the 4 main features? Good question. There are four features, it's just a matter of marketing and embellishing the fact that the four features are those available. The real
+	question is; how good is your rhetoric?... ;)
+		I. Contractors/Manufacturers (splitted into two):
+			A. License Type
+			B. Counties
+		II. Awarding Bodies
+		III. Awarding Bodies Websites
+
+
+October 17, 2024
+
+
+	1. After a long hiatus, I am back. We will focus on website aeasthetics now. For starters, we will develop the section where we show the product being used using gifs.
+	2. We decided that having the four functionalities will work, showing two grids, with two functionalities on each.
+	3. We've also decided that we are going to use the psychological promotion strategy of Price Anchoring, hierarchically the features are going to be:
+		I. General Contractors display
+		II. Awarding Bodies
+		III. Searching for Subcontractor using specific parameters (a searchbar that allows you to search using specific parameters: license number, name, phone number, website, etc.)
+		IV. Contractor Participation Locations
+		V. Project Locations (Base it on counties so it doesn't overweight the memory of the website)
+		VI. DVBE, DBE, SB, Feature
+
+
+		
 
 
 
