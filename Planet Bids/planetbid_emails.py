@@ -8,6 +8,8 @@ from selenium.webdriver.support.ui import WebDriverWait# type: ignore
 from selenium.webdriver.support import expected_conditions as EC  # type: ignore
 from selenium.common.exceptions import TimeoutException# type: ignore
 import time
+import re
+import os
 
 
 
@@ -59,11 +61,34 @@ def scroll_table_container(container, driver,scroll_pause_time=2):
     return result_message
 
 
+'''
+The function that appends to the csv file and creates a new one when there is none
+'''
+def recording_to_csv(dataframe, csv_file, current_iteration):
+    
+    # Acquire the directory list of csvfiles
+    current_directory = os.listdir()
+    
+    # Check if the csv file is within the directory
+    if csv_file in current_directory:
+        
+        # If it is, append to the csv file
+        dataframe.to_csv(csv_file, mode='a', index=False, header=False)
+        print(f"Iteration {current_iteration} appended")
+
+    # If it isn't, then create a new csv file with its title
+    else:
+        dataframe.to_csv(csv_file, index=False)
+        print(f"Iteration {current_iteration} created")
+
+
+
+
 
 '''
 This function will embellish strings and allocate them into a csv file for further analysis and research
 '''
-def string_embellishment_and_allocation(list_of_lists_of_strings, other_strings):
+def string_embellishment_and_allocation(list_of_lists_of_strings, other_strings, current_iteration):
     
     # Variables from the first list
     names = []
@@ -72,6 +97,7 @@ def string_embellishment_and_allocation(list_of_lists_of_strings, other_strings)
     states = []
     zip_codes = []
     complete_addresses = []
+    complete_addresses_nz = []
     contacts = []
     phone_numbers = []
     emails = []
@@ -99,13 +125,54 @@ def string_embellishment_and_allocation(list_of_lists_of_strings, other_strings)
             street_address = f"{address_split[0]} {address_split[1]}"
         else:
             street_address = f"{address_split[0]}"
+
         
         # Split the last part of address_split (which is always the city, state, and zip code, regardless of Suite # or not)
-        second_address_split = address_split[-1].split(" ")
-        city = second_address_split[0][:-1] # remove the "," from the end
-        state = second_address_split[1]
-        zip_code = second_address_split[2]
-        complete_address = f"{street_address}, {city} {state}, {zip_code}"
+        refined_address_split = address_split[-1].split(",")
+        second_address_split = refined_address_split[-1].split(" ")
+        
+        # Some cities might have more than one word as a name, we need to secure those instances as well, but for now, we know that zip code and state are at the end
+        zip_code = second_address_split[-1]
+        state = " ".join(second_address_split[1:-1])
+
+        # Convert the state word into the abbreviation
+        us_states = [
+            "Alabama", "Alaska", "Arizona", "Arkansas", "California",
+            "Colorado", "Connecticut", "Delaware", "Florida", "Georgia",
+            "Hawaii", "Idaho", "Illinois", "Indiana", "Iowa",
+            "Kansas", "Kentucky", "Louisiana", "Maine", "Maryland",
+            "Massachusetts", "Michigan", "Minnesota", "Mississippi", "Missouri",
+            "Montana", "Nebraska", "Nevada", "New Hampshire", "New Jersey",
+            "New Mexico", "New York", "North Carolina", "North Dakota", "Ohio",
+            "Oklahoma", "Oregon", "Pennsylvania", "Rhode Island", "South Carolina",
+            "South Dakota", "Tennessee", "Texas", "Utah", "Vermont",
+            "Virginia", "Washington", "West Virginia", "Wisconsin", "Wyoming"
+        ]
+
+        states_abbreviations = [
+            "AL", "AK", "AZ", "AR", "CA",
+            "CO", "CT", "DE", "FL", "GA",
+            "HI", "ID", "IL", "IN", "IA",
+            "KS", "KY", "LA", "ME", "MD",
+            "MA", "MI", "MN", "MS", "MO",
+            "MT", "NE", "NV", "NH", "NJ",
+            "NM", "NY", "NC", "ND", "OH",
+            "OK", "OR", "PA", "RI", "SC",
+            "SD", "TN", "TX", "UT", "VT",
+            "VA", "WA", "WV", "WI", "WY"
+        ]
+
+        if state in us_states:
+            state = states_abbreviations[us_states.index(state)]
+        else:
+            pass
+
+        # Now, the rest of the strings within the list are going to be the city no matter the number of remaining strings
+        city = refined_address_split[0]
+
+        # Create the complete address for future Google Maps Geolocation acquisition
+        complete_address = f"{street_address}, {city}, {state} {zip_code}"
+        complete_address_nz = f"{street_address}, {city}, {state}"
 
         # Add the location attributes
         street_addresses.append(street_address)
@@ -113,10 +180,12 @@ def string_embellishment_and_allocation(list_of_lists_of_strings, other_strings)
         states.append(state)
         zip_codes.append(zip_code)
         complete_addresses.append(complete_address)
+        complete_addresses_nz.append(complete_address_nz)
 
         # Add the contact
         contact_split = company_contact.split(" ")
-        contacts.append(contact_split[1])
+        contact = " ".join(contact_split[1:])
+        contacts.append(contact)
 
         # Add the phone number
         phone_split = company_phone.split(" ")
@@ -129,6 +198,7 @@ def string_embellishment_and_allocation(list_of_lists_of_strings, other_strings)
     # Variables from the second list quantitavely correlating to the length of other attributes
     project_name = [other_strings[0] for _ in range(len(names))]
     awarding_bodies = [other_strings[1] for _ in range(len(names))]
+    bid_all_information = [other_strings[2] for _ in range(len(names))]
 
     # Creating a dataframe and exporting as csv
     data = {
@@ -138,175 +208,51 @@ def string_embellishment_and_allocation(list_of_lists_of_strings, other_strings)
     "State": states,
     "ZipCode": zip_codes,
     "CompleteAddresses": complete_addresses,
+    "CompleteAddressNoZip":complete_addresses_nz,
     "Contacts": contacts,
     "PhoneNumbers": phone_numbers,
     "Emails": emails,
     "ProjectName": project_name,
-    "AwardingBody": awarding_bodies
+    "AwardingBody": awarding_bodies,
+    "BidInformation": bid_all_information
     }
 
+    # Return the df as a variable for the next function
     df = pd.DataFrame(data)
-    df.to_csv("testing.csv",index=False)
-
-
-
-        
-        
-            
-
-
-
-
-
-
     
+    # Convert to csv, either append or create new csv
+    csv_title_file = f"{re.sub(r'[^a-zA-Z0-9]', '_', awarding_bodies[0].lower())}.csv"
+    recording_to_csv(df,csv_title_file, current_iteration)
 
 
 
-'''
 
-The actual web crawling
-'''
-def webscraping_planetbids(url, awarding_body, internal_count):
+
+def webscraping_planetbids(url, awarding_body, count, index_number):
 
     # Load the webdriver
     driver = webdriver.Chrome()
     driver.get(url)
     time.sleep(3)
 
-    # COunt in case the program halts (shall be modify accordingly to the terminal output when halt occurred)
-    print(f"Current {awarding_body} Count: {internal_count}")
-
-    # Identifies if the total number of bids in the municipality increased
-    total_bids = driver.find_element(By.CLASS_NAME,"bids-table-filter-message")
-    total_bids_text_splitted = total_bids.text.split(" ")
-    really_total_bids = int(total_bids_text_splitted[1])
-    
-    for individual_bid in range(2,really_total_bids+1):
-
-        # Position yourself within the Planetbids and scroll down over the table containing all bids
-        try:
-            bid_display_table = WebDriverWait(driver, 10).until(
-                EC.presence_of_element_located((By.CLASS_NAME, 'table-overflow-container'))
-            )
-        
-        except:
-            print(f"There is something wrong with the site for {awarding_body}")
-            sys.exit(1)
-
-        # Scrolls all the way to the bottom of the planet bids display
-        scroll_table_container(bid_display_table,driver)
-
-        # Pinpoint the amount of bids in the website for future reference index number
-        bids = bid_display_table.find_elements(By.TAG_NAME, 'tr')
-        
-        # The tr element of the table display to click on
-        bid_target = bids[individual_bid]
-
-        # Positional awareness
-        current_iteration_bid_table = bid_target.text
-        print(f"Currently ({individual_bid}) at: {current_iteration_bid_table}")
-
-        
-        driver.execute_script("arguments[0].scrollIntoView();", bid_target)
-        driver.execute_script("arguments[0].click();", bid_target)
-
-        # Bid Title for future usage
-        bid_title_element = WebDriverWait(driver,5).until(
-            EC.presence_of_element_located((By.CLASS_NAME,'bid-detail-title'))
+    try:
+        bid_display_table = WebDriverWait(driver, 10).until(
+            EC.presence_of_element_located((By.CLASS_NAME, 'table-overflow-container'))
         )
-        bid_title_text = bid_title_element.text
         
-        
-        # Pinpoint the initial element for the main welcome page
-        bid_description = WebDriverWait(driver, 10).until(
-            EC.presence_of_element_located((By.CLASS_NAME, 'bid-detail-wrapper'))
-        )
+    except:
+        print(f"There is something wrong with the site for {awarding_body}")
+        sys.exit(1)
 
-        # Extract the text infomration of the bid of the site for future data analysis
-        bid_information_rows = []
-        rows_of_infomration = bid_description.find_elements(By.CLASS_NAME,"row")
-        for text_row in rows_of_infomration[2:]:
-            bid_information_rows.append(text_row.text)
+    scroll_table_container(bid_display_table,driver)
 
-        # The general information of the project; string to be addded later    
-        bid_text_information = "|".join(bid_information_rows) # (REJECTED)
-
-        # Now pinpoint the headers in order to jump/click into the 'Prospective Bidders' tab
-        bid_header_tabs = WebDriverWait(driver,5).until(
-            EC.presence_of_element_located((By.ID,'detail-navigation'))
-        )
-
-        # Click on the Prospective Bidders tab
-        try:
-            prospective_bidders_tab = WebDriverWait(bid_header_tabs,5).until(
-                EC.presence_of_element_located((By.CLASS_NAME,'bidPBs'))
-            )
-            prospective_bidders_tab.click()
-            time.sleep(1)
-        except:
-            print(f"Something is wrong with the Prospective Bidders tab of {current_iteration_bid_table}")
-            driver.back()
-            continue
-            
-
-        # Extract the datum for each attribute of each prospective bidder (email, address, etc.)
-        table_element = driver.find_element(By.TAG_NAME, 'table')
-        table_body_element = table_element.find_element(By.TAG_NAME,'tbody')
-        table_invidiual_elements = table_body_element.find_elements(By.TAG_NAME,'tr')
-
-        # A list that contains plenty of more lists which each corresponde to an entity's set of attributes
-        all_entities = []
-
-        for prospective_bidder_attribute in table_invidiual_elements:
-
-            # Where the entity's attribute are found
-            entity_in_question = []
-
-            # Pinpoint every individual td within the tr. By default, the first one is the unique on when it is used singular
-            td_element = prospective_bidder_attribute.find_element(By.TAG_NAME,'td')
-            information_field = td_element.find_element(By.TAG_NAME,'div')
-            singular_attributes = information_field.find_elements(By.TAG_NAME,'div')
-
-            # The name is separated
-            entity_name = information_field.find_element(By.CLASS_NAME,'table-address-vendorname')
-            entity_in_question.append(entity_name.text)
-            
-            # Iterate through each singular attribute to extract it
-            for attribute in singular_attributes:
-                entity_in_question.append(attribute.text)
-            
-            # Each entity's list should contain 5 attributes: name, address, contact, phone, and email. Or if Fax is included, the length is 6
-            all_entities.append(entity_in_question)
-
-        # Append the rest of the important strings (project general information, project name, and awarding body)
-        other_important_strings = [bid_title_text, awarding_body]
-
-        # String embellishment and csv allocation function
-        string_embellishment_and_allocation(all_entities, other_important_strings)
-        
-        # Go back to the bid table display
-        driver.back()
-        driver.back()
-        time.sleep(2)
+    bid_row_attributes = driver.find_elements(By.XPATH,'//tr[@rowattribute]')
+    for bid_row_attribute_number in bid_row_attributes:
+        bid_url_id = bid_row_attribute_number.get_attribute('rowattribute')
+        print(bid_url_id)
 
     
         
-
-
-
-
-
-
-
-
-
-
-
-        
-    
-    
-
 
 
 
@@ -317,7 +263,7 @@ def webscraping_planetbids(url, awarding_body, internal_count):
 
 
 '''
-Load the file with all planetbids and iterate through each
+OUTSET: Load the file with all planetbids and iterate through each
 '''
 def reading_csv_with_planetbids(csv_file):
 
@@ -334,7 +280,11 @@ def reading_csv_with_planetbids(csv_file):
         link = row['WebLink']
         awarding_body = row['AwardingBody']
 
-        webscraping_planetbids(link, awarding_body, index)
+        # Where the table bid usually starts
+        usual_outset = 69
+
+        # Start iteration
+        webscraping_planetbids(link, awarding_body, usual_outset, index)
 
 
 
