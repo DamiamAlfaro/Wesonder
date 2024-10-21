@@ -243,7 +243,7 @@ def webscraping_planetbids_rowattributes(url, awarding_body, index_number, link_
         
     except:
         print(f"There is something wrong with the site for {awarding_body}")
-        return [awarding_body, link]
+        return [awarding_body, url]
 
     # Scroll through the table
     scroll_table_container(bid_display_table,driver)
@@ -294,8 +294,11 @@ Store the link and awarding body into a csv file if faulty
 def faulty_links(awarding_body, link):
 
     # Allocate to csv
-    csv_drop_location = '/Users/damiamalfaro/Desktop/Europe/testing_wesonder/Planetbids/fautly_individual_sites/'
+    csv_drop_location = '/Users/damiamalfaro/Desktop/Europe/testing_wesonder/Planetbids/faulty_individual_sites/'
     csv_file_name = f"{re.sub(r'[^a-zA-Z0-9]', '_', awarding_body.lower())}.csv"
+
+    # Create a new dataframe to store the faulty links with their awarding bodies
+    dataframe = pd.DataFrame({"AwardingBody":[awarding_body],"FaultyLink":[link]})
     dataframe.to_csv(csv_drop_location + csv_file_name,index=False)
     
 
@@ -312,7 +315,7 @@ def reading_csv_with_planetbids(csv_file):
     df_main = pd.read_csv(csv_file)
 
     # Current Count
-    count = 0
+    count = 1
 
     # Iterate through the file
     for index, row in df_main[count:].iterrows():
@@ -339,10 +342,6 @@ def reading_csv_with_planetbids(csv_file):
 
         # Update the count
         count += 1
-
-
-
-
 
 
 
