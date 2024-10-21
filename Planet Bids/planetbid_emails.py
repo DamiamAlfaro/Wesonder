@@ -228,13 +228,14 @@ def string_embellishment_and_allocation(list_of_lists_of_strings, other_strings,
 
 
 
-def webscraping_planetbids(url, awarding_body, count, index_number):
+def webscraping_planetbids_rowattributes(url, awarding_body, index_number, link_id):
 
     # Load the webdriver
     driver = webdriver.Chrome()
     driver.get(url)
     time.sleep(3)
 
+    # Try to get the table with all bids
     try:
         bid_display_table = WebDriverWait(driver, 10).until(
             EC.presence_of_element_located((By.CLASS_NAME, 'table-overflow-container'))
@@ -242,21 +243,61 @@ def webscraping_planetbids(url, awarding_body, count, index_number):
         
     except:
         print(f"There is something wrong with the site for {awarding_body}")
-        sys.exit(1)
+        return [awarding_body, link]
 
+    # Scroll through the table
     scroll_table_container(bid_display_table,driver)
 
+    # The respective urls with unique rowattribute ids
+    rowattribute_id_urls = []
+
+    # Find the rowattribute id's to search them later
     bid_row_attributes = driver.find_elements(By.XPATH,'//tr[@rowattribute]')
     for bid_row_attribute_number in bid_row_attributes:
         bid_url_id = bid_row_attribute_number.get_attribute('rowattribute')
-        print(bid_url_id)
 
+        # Create a link with the rowattribute id number
+        new_url = f"https://vendors.planetbids.com/portal/{link_id}/bo/bo-detail/{bid_url_id}"
+        rowattribute_id_urls.append(new_url)
+
+    # Assimilate the length of the list of unique rowattribute id urls, same goes for awarding bodies
+    main_links = [url for _ in range(len(rowattribute_id_urls))]
+    awarding_body_repetition = [awarding_body for _ in range(len(rowattribute_id_urls))]
+
+    # Create and return a dataframe with the columns desired
+    df = pd.DataFrame({
+        "AwardingBody":awarding_body_repetition,
+        "AwardingBodyPBLink":main_links,
+        "UniqueBidPBLink":rowattribute_id_urls
+        })
+
+    return df
+
+
+
+        
+'''
+Store the rowattribute dataframe into a csv file
+'''
+def csv_rowattribute_storage(dataframe, awarding_body):
     
+    # Allocate to csv
+    csv_drop_location = '/Users/damiamalfaro/Desktop/Europe/testing_wesonder/Planetbids/individual_sites/'
+    csv_file_name = f"{re.sub(r'[^a-zA-Z0-9]', '_', awarding_body.lower())}.csv"
+    dataframe.to_csv(csv_drop_location + csv_file_name,index=False)
         
 
 
+'''
+Store the link and awarding body into a csv file if faulty
+'''
+def faulty_links(awarding_body, link):
 
-
+    # Allocate to csv
+    csv_drop_location = '/Users/damiamalfaro/Desktop/Europe/testing_wesonder/Planetbids/fautly_individual_sites/'
+    csv_file_name = f"{re.sub(r'[^a-zA-Z0-9]', '_', awarding_body.lower())}.csv"
+    dataframe.to_csv(csv_drop_location + csv_file_name,index=False)
+    
 
     
 
@@ -280,11 +321,28 @@ def reading_csv_with_planetbids(csv_file):
         link = row['WebLink']
         awarding_body = row['AwardingBody']
 
-        # Where the table bid usually starts
-        usual_outset = 69
+        # Link ID: use for identification in the future
+        link_id = link.split("/")[4]
+
+        # Acknowledge the count
+        print(f"Current Count: {count}\nAwarding Body: {awarding_body}")
 
         # Start iteration
-        webscraping_planetbids(link, awarding_body, usual_outset, index)
+        bid_url_ids = webscraping_planetbids_rowattributes(link, awarding_body, index, link_id)
+
+        # Check if the link is faulty
+        if isinstance(bid_url_ids,list):
+            faulty_links(awarding_body, link)
+
+        else:
+            csv_rowattribute_storage(bid_url_ids, awarding_body)
+
+        # Update the count
+        count += 1
+
+
+
+
 
 
 
@@ -301,12 +359,8 @@ def reading_csv_with_planetbids(csv_file):
 
 
 if __name__ == "__main__":
-    
-    # Bidding Sites csv file
-    bidding_sites_data_csv = "bidding_sites_data.csv"
-    #extracting_only_planetbids(bidding_sites_data_csv)
 
     # Planetbids Sites csv file
-    planetbids_sites = "planetbids_sites.csv"
+    planetbids_sites = "/Users/damiamalfaro/Desktop/Europe/testing_wesonder/Planetbids/planetbids_email_extracion/aaa_planetbids_sites.csv"
 
     reading_csv_with_planetbids(planetbids_sites)
