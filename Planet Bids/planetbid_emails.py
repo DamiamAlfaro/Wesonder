@@ -315,7 +315,7 @@ def reading_csv_with_planetbids(csv_file):
     df_main = pd.read_csv(csv_file)
 
     # Current Count
-    count = 1
+    count = 536
 
     # Iterate through the file
     for index, row in df_main[count:].iterrows():

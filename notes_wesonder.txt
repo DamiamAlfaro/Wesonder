@@ -436,12 +436,28 @@ October 17, 2024
 		I. General Contractors display
 		II. Awarding Bodies
 		III. Searching for Subcontractor using specific parameters (a searchbar that allows you to search using specific parameters: license number, name, phone number, website, etc.)
-		IV. Contractor Participation Locations
+		IV. Contractor Participation Locations (only if existent in the planetbids extraction)
 		V. Project Locations (Base it on counties so it doesn't overweight the memory of the website)
 		VI. DVBE, DBE, SB, Feature
 
 
-		
+October 20, 2024
+
+	1. (REJETED) We are going to finish the extraction of emails program today, and tomorrow continue with the development of wesonder.
+		I. (REJECTED) Find a way to iterate through 5 instances of bid tables, and then close the browser
+		II. (REJECTED) Also, iterate through the links of planebids using two sessions at a time, one for odd numbers and one for even numbers
+	2. New approach, find all rowattributes from each planetbids and store them for the second phase of planetbids_emails.py
+		I. Find a way to store the sites that did not work along with their awarding body name
+		II. Make the function continous, i.e. automated
+		III. Store every single new url with their respective rowattribute id in different csv files within a different folder
+
+
+October 22, 2024
+
+
+	1. Develop the functionality above, we need multiple features
+	2. For the website aesthetics, make it interactive by making the logo stand out bigger at first, and as the user scrolls down, the logo adjust to the proper size of the nav bar.
+	3. Enter the corporation/sole owner option as well
 
 
 
