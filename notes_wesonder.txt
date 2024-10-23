@@ -457,7 +457,8 @@ October 22, 2024
 
 	1. Develop the functionality above, we need multiple features
 	2. For the website aesthetics, make it interactive by making the logo stand out bigger at first, and as the user scrolls down, the logo adjust to the proper size of the nav bar.
-	3. Enter the corporation/sole owner option as well
+	3. Enter the corporation/sole owner option as well.
+	4. Clean computer first.
 
 
 
