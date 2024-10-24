@@ -300,17 +300,33 @@ function loadCSV2Data() {
 }
 
 // Track the number of selected license checkboxes
-let maxSelections = 3;
-let selectedLicenseCount = 0;
+let maxSelections = 3; // Set a limit for the maximum number of selected licenses
 
 function filterByLicense() {
     // Get selected business type checkboxes
     var corporationChecked = document.getElementById('corporationFilter').checked;
     var soleOwnerChecked = document.getElementById('soleOwnerFilter').checked;
 
+    // Get all license checkboxes (exclude the county checkboxes)
+    var licenseCheckboxes = document.querySelectorAll('.filter-box input[type="checkbox"]:not(#corporationFilter):not(#soleOwnerFilter):not(#countyFilter input[type="checkbox"])');
+
     // Get selected licenses
-    var licenseCheckboxes = document.querySelectorAll('.filter-box input[type="checkbox"]:not(#countyFilter input[type="checkbox"])');
-    selectedLicenses = Array.from(licenseCheckboxes).filter(checkbox => checkbox.checked).map(checkbox => checkbox.value);
+    var selectedLicenses = Array.from(licenseCheckboxes).filter(checkbox => checkbox.checked).map(checkbox => checkbox.value);
+
+    // Restrict the number of selected licenses (business type checkboxes do not count)
+    if (selectedLicenses.length >= maxSelections) {
+        // Disable unselected license checkboxes when the limit is reached
+        licenseCheckboxes.forEach(checkbox => {
+            if (!checkbox.checked) {
+                checkbox.disabled = true;
+            }
+        });
+    } else {
+        // Re-enable all license checkboxes if under the limit
+        licenseCheckboxes.forEach(checkbox => {
+            checkbox.disabled = false;
+        });
+    }
 
     // Get selected counties
     var countyCheckboxes = document.querySelectorAll('#countyFilter input[type="checkbox"]:checked');
