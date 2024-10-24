@@ -43,8 +43,12 @@ filterControl.onAdd = function(map) {
 
 
     div.innerHTML = `
-        <strong>Select License Types:</strong><br/>
+        <strong>Select Business Types:</strong><br/>
         <div class="filter-box-content">
+            <label><input type="checkbox" value="Corporation" id="corporationFilter" onchange="filterByLicense()"> Corporation<br/></label>
+            <label><input type="checkbox" value="Sole Owner" id="soleOwnerFilter" onchange="filterByLicense()"> Sole Owner<br/></label>
+
+            <strong>Select License Types:</strong><br/>
             <label><input type="checkbox" value="C-2" id="C2" onchange="filterByLicense()"> C-2 - Insulation and Acoustical Contractor<br/></label>
             <label><input type="checkbox" value="C-4" id="C4" onchange="filterByLicense()"> C-4 - Boiler, Hot Water Heating and Steam Fitting Contractor<br/></label>
             <label><input type="checkbox" value="C-5" id="C5" onchange="filterByLicense()"> C-5 - Framing and Rough Carpentry Contractor<br/></label>
@@ -167,7 +171,6 @@ filterControl.onAdd = function(map) {
         countyFilterDiv.innerHTML += checkboxHtml;
     });
 
-
     L.DomEvent.disableScrollPropagation(div);
     L.DomEvent.disableClickPropagation(div);
 
@@ -200,12 +203,12 @@ function loadData(dataset) {
 
     document.getElementById('markerCount').innerText = 'Entities Displayed: 0';
 
-    // Show filter options only for csv2
+    // Show filter options only for csv2 (Contractors)
     var filterBox = document.getElementById('filterBox');
     if (dataset === 'csv2') {
-        filterBox.classList.remove('hidden');
+        filterBox.classList.remove('hidden');  // Show the filter for Contractors
     } else {
-        filterBox.classList.add('hidden');
+        filterBox.classList.add('hidden');  // Hide the filter for other datasets
     }
 
     markers.clearLayers(); // Clear existing markers
@@ -216,6 +219,7 @@ function loadData(dataset) {
         loadCSV2Data();
     }
 }
+
 
 // Function to load CSV1 data (no filtering)
 function loadCSV1Data() {
@@ -300,62 +304,51 @@ let maxSelections = 3;
 let selectedLicenseCount = 0;
 
 function filterByLicense() {
-    // Get all license checkboxes (exclude the county checkboxes)
+    // Get selected business type checkboxes
+    var corporationChecked = document.getElementById('corporationFilter').checked;
+    var soleOwnerChecked = document.getElementById('soleOwnerFilter').checked;
+
+    // Get selected licenses
     var licenseCheckboxes = document.querySelectorAll('.filter-box input[type="checkbox"]:not(#countyFilter input[type="checkbox"])');
-    
-    // Get the checked license checkboxes
-    var checkedLicenseCheckboxes = Array.from(licenseCheckboxes).filter(checkbox => checkbox.checked);
+    selectedLicenses = Array.from(licenseCheckboxes).filter(checkbox => checkbox.checked).map(checkbox => checkbox.value);
 
-    // Update the selectedLicenseCount based on the number of checked license checkboxes
-    selectedLicenseCount = checkedLicenseCheckboxes.length;
-
-    // Disable license checkboxes if the maxSelections limit is reached
-    if (selectedLicenseCount >= maxSelections) {
-        licenseCheckboxes.forEach(checkbox => {
-            if (!checkbox.checked) {
-                checkbox.disabled = true; // Disable unchecked license checkboxes
-            }
-        });
-    } else {
-        licenseCheckboxes.forEach(checkbox => {
-            checkbox.disabled = false; // Enable all license checkboxes when the limit is not reached
-        });
-    }
-
-    // Get the selected license values
-    selectedLicenses = checkedLicenseCheckboxes.map(checkbox => checkbox.value);
-
-    // Get selected county checkboxes
+    // Get selected counties
     var countyCheckboxes = document.querySelectorAll('#countyFilter input[type="checkbox"]:checked');
     var selectedCounties = Array.from(countyCheckboxes).map(checkbox => checkbox.value);
 
     // Clear existing markers
     markers.clearLayers();
 
-    // Filter by selected licenses and counties
-    if (selectedLicenses.length > 0) {
-        // Filter by selected licenses
-        filteredData = dataCache.filter(row => {
-            const classification = (row['Classification'] || '').replace(/\s+/g, ''); // Remove any spaces
-            const licenseArray = classification.split('|'); // Split the classification by "|" into an array
+    // Filter the dataCache based on selected criteria
+    var filteredData = dataCache.filter(row => {
+        // Categorize 'Limited Liability' as 'Corporation'
+        const businessType = row['BusinessType'] === 'Limited Liability' ? 'Corporation' : row['BusinessType'];
 
-            const matchesLicense = selectedLicenses.some(license => {
-                const cleanLicense = license.replace(/-/g, ''); // Normalize the selected license (e.g., "C-2" becomes "C2")
-                return licenseArray.some(classItem => classItem.replace(/-/g, '') === cleanLicense); // Exact match for each item
-            });
+        // Check if the business type matches the selected checkboxes
+        const matchesBusinessType = (corporationChecked && businessType === 'Corporation') || 
+                                    (soleOwnerChecked && businessType === 'Sole Owner');
 
-            const matchesCounty = selectedCounties.length === 0 || selectedCounties.includes(row['County']);
+        // License type filtering
+        const classification = (row['Classification'] || '').replace(/\s+/g, ''); // Remove spaces
+        const licenseArray = classification.split('|'); // Split by "|"
 
-            return row['State'] === 'CA' && matchesLicense && matchesCounty;
+        // Check if the license matches the selected checkboxes
+        const matchesLicense = selectedLicenses.some(license => {
+            const cleanLicense = license.replace(/-/g, ''); // Normalize the selected license
+            return licenseArray.some(classItem => classItem.replace(/-/g, '') === cleanLicense); // Exact match for each item
         });
-    } else {
-        // If no checkboxes are selected, don't show any markers
-        filteredData = [];
-    }
+
+        // County filtering
+        const matchesCounty = selectedCounties.length === 0 || selectedCounties.includes(row['County']);
+
+        // Return true only if all filters match
+        return row['State'] === 'CA' && matchesBusinessType && matchesLicense && matchesCounty;
+    });
 
     // Add filtered markers to the map
     filteredData.forEach(coord => {
         if (!isNaN(parseFloat(coord['X_Coordinate'])) && !isNaN(parseFloat(coord['Y_Coordinate']))) {
+
             var marker = L.marker([parseFloat(coord['X_Coordinate']), parseFloat(coord['Y_Coordinate'])]);
             marker.bindPopup(`
                 <strong>Business Name:</strong> ${coord['BusinessName'] || 'N/A'}<br/>
