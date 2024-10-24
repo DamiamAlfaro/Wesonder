@@ -47,6 +47,9 @@ filterControl.onAdd = function(map) {
         <div class="filter-box-content">
             <label><input type="checkbox" value="Corporation" id="corporationFilter" onchange="filterByLicense()"> Corporation<br/></label>
             <label><input type="checkbox" value="Sole Owner" id="soleOwnerFilter" onchange="filterByLicense()"> Sole Owner<br/></label>
+            <label><input type="checkbox" value="Limited Liability" id="limitedLiabilityFilter" onchange="filterByLicense()"> Limited Liability<br/></label>
+            <label><input type="checkbox" value="Partnership" id="partnershipFilter" onchange="filterByLicense()"> Partnership<br/></label>
+            <label><input type="checkbox" value="Joint Venture" id="jointVentureFilter" onchange="filterByLicense()"> Joint Venture<br/></label>
 
             <strong>Select License Types:</strong><br/>
             <label><input type="checkbox" value="C-2" id="C2" onchange="filterByLicense()"> C-2 - Insulation and Acoustical Contractor<br/></label>
@@ -306,9 +309,12 @@ function filterByLicense() {
     // Get selected business type checkboxes
     var corporationChecked = document.getElementById('corporationFilter').checked;
     var soleOwnerChecked = document.getElementById('soleOwnerFilter').checked;
+    var limitedLiabilityChecked = document.getElementById('limitedLiabilityFilter').checked;
+    var partnershipChecked = document.getElementById('partnershipFilter').checked;
+    var jointVentureChecked = document.getElementById('jointVentureFilter').checked;
 
-    // Get all license checkboxes (exclude the county checkboxes)
-    var licenseCheckboxes = document.querySelectorAll('.filter-box input[type="checkbox"]:not(#corporationFilter):not(#soleOwnerFilter):not(#countyFilter input[type="checkbox"])');
+    // Get all license checkboxes (exclude the county checkboxes and business type checkboxes)
+    var licenseCheckboxes = document.querySelectorAll('.filter-box input[type="checkbox"]:not(#corporationFilter):not(#soleOwnerFilter):not(#limitedLiabilityFilter):not(#partnershipFilter):not(#jointVentureFilter):not(#countyFilter input[type="checkbox"])');
 
     // Get selected licenses
     var selectedLicenses = Array.from(licenseCheckboxes).filter(checkbox => checkbox.checked).map(checkbox => checkbox.value);
@@ -337,12 +343,15 @@ function filterByLicense() {
 
     // Filter the dataCache based on selected criteria
     var filteredData = dataCache.filter(row => {
-        // Categorize 'Limited Liability' as 'Corporation'
-        const businessType = row['BusinessType'] === 'Limited Liability' ? 'Corporation' : row['BusinessType'];
+        // Get the business type directly from the data
+        const businessType = row['BusinessType'];
 
         // Check if the business type matches the selected checkboxes
         const matchesBusinessType = (corporationChecked && businessType === 'Corporation') || 
-                                    (soleOwnerChecked && businessType === 'Sole Owner');
+                                    (soleOwnerChecked && businessType === 'Sole Owner') ||
+                                    (limitedLiabilityChecked && businessType === 'Limited Liability') ||
+                                    (partnershipChecked && businessType === 'Partnership') ||
+                                    (jointVentureChecked && businessType === 'JointVenture');
 
         // License type filtering
         const classification = (row['Classification'] || '').replace(/\s+/g, ''); // Remove spaces
