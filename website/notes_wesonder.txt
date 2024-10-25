@@ -463,8 +463,17 @@ October 22, 2024
 
 October 23, 2024
 
+
 	1. Focus on categorizing based on Corporation/Sole Owner (include LLCs) on the search
 
+	
+October 24, 2024
+
+	
+	1. We are going to clean the project CSV now and allocate them to their respective projects, unfortunately, someone forgot to include the names, and we just have the addresses
+	currently.
+		I. Remove any duplicates
+		II. Remove anything that does not has a geolocation
 
 
 
