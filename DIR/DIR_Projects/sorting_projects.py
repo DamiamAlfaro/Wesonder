@@ -7,7 +7,6 @@ import pandas as pd  # type: ignore
 Cleanse the shit out of the csv file
 '''
 def cleansing_file(csv_file):
-
     pass
 
 
