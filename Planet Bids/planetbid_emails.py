@@ -362,4 +362,4 @@ if __name__ == "__main__":
     # Planetbids Sites csv file
     planetbids_sites = "/Users/damiamalfaro/Desktop/Europe/testing_wesonder/Planetbids/planetbids_email_extracion/aaa_planetbids_sites.csv"
 
-    reading_csv_with_planetbids(planetbids_sites)
+    #reading_csv_with_planetbids(planetbids_sites)
