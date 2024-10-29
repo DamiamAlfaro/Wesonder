@@ -200,7 +200,6 @@ var dataCache = [];
 var selectedLicenses = [];
 var currentDataset = ''; // Initially, no dataset is active
 
-// Function to load data based on dataset selection
 function loadData(dataset) {
     currentDataset = dataset;
 
@@ -220,8 +219,11 @@ function loadData(dataset) {
         loadCSV1Data();
     } else if (dataset === 'csv2') {
         loadCSV2Data();
+    } else if (dataset === 'csv3') {
+        loadCSV3Data(); // Load data for the new Projects dataset
     }
 }
+
 
 
 // Function to load CSV1 data (no filtering)
@@ -243,8 +245,8 @@ function loadCSV1Data() {
                         row['EntityState'] === 'CA'
                     ).map(row => {
                         return {
-                            lat: parseFloat(row['X_Coordinate']),
-                            lng: parseFloat(row['Y_Coordinate']),
+                            lat: parseFloat(row['X_Coordinates']),
+                            lng: parseFloat(row['Y_Coordinates']),
                             name: row['EntityName'],
                             address: row['FullAddress'],
                             email: row['EntityEmail'],
@@ -389,3 +391,53 @@ function filterByLicense() {
 
     updateMarkerCount(); 
 }
+
+function loadCSV3Data() {
+    var csvUrl = 'https://storage.googleapis.com/wesonder_databases/wesonder_frontend/mapping_dir_projects.csv'; // Replace with actual URL
+
+    fetch(csvUrl)
+        .then(response => response.text())
+        .then(csvText => {
+            Papa.parse(csvText, {
+                header: true,
+                complete: function(results) {
+                    var data = results.data;
+
+                    // Filter valid coordinates and prepare marker data for CSV3
+                    var validCoordinates = data.filter(row => 
+                        !isNaN(parseFloat(row['X_Coordinate'])) &&
+                        !isNaN(parseFloat(row['Y_Coordinate']))
+                    ).map(row => {
+                        return {
+                            lat: parseFloat(row['X_Coordinate']),
+                            lng: parseFloat(row['Y_Coordinate']),
+                            name: row['ProjectName'],  // Replace with the actual column name
+                            number: row['ProjectNumber'],
+                            idnumber: row['ProjectIDNumber'],
+                            dirnumber: row['ProjectDIRNumber'],
+                            awardingbody: row['AwardingBody'],  // Replace with the actual column name
+                            description: row['ProjectDescription']  // Replace with the actual column name if exists
+                        };
+                    });
+
+                    // Add markers to the map for CSV3
+                    validCoordinates.forEach(coord => {
+                        var marker = L.marker([coord.lat, coord.lng]);
+                        marker.bindPopup(`
+                            <strong>Project Name:</strong> ${coord.name || 'N/A'}<br/>
+                            <strong>Project Number:</strong> ${coord.number || 'N/A'}</br>
+                            <strong>Project ID:</strong> ${coord.idnumber || 'N/A'}<br/>
+                            <strong>Project DIR Number:</strong> ${coord.dirnumber || 'N/A'}<br/>
+                            <strong>Address:</strong> ${coord.awardingbody || 'N/A'}<br/>
+                            <strong>Description:</strong> ${coord.description || 'N/A'}
+                        `);
+                        markers.addLayer(marker);
+                    });
+
+                    updateMarkerCount();
+                }
+            });
+        })
+        .catch(error => console.error('Error fetching CSV3:', error));
+}
+
