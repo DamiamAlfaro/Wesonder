@@ -15,7 +15,7 @@ from selenium.webdriver.support import expected_conditions as EC # type: ignore
 
 
 '''
-Cleanse the shit out of the csv file
+Cleanse the shit out of the csv file.
 '''
 def cleansing_file(csv_file):
     
