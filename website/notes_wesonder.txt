@@ -476,6 +476,13 @@ October 24, 2024
 		II. Remove anything that does not has a geolocation
 
 
+October 28, 2024
+
+
+	1. Fix the issue with D licenses, they are being taken by D06, etc.
+	2. Do not make it look rudimentary, for example, the selection display between Awarding Bodies and Contractors, that look too rudimentary, enhance the aesthetics of it
+	to make it resemble your design. Apply your design to everything, thereby enhancing the mesmerizing effect of everything with your skills.
+
 
 
 

@@ -1,4 +1,10 @@
 import pandas as pd  # type: ignore
+import time
+import re
+from selenium import webdriver # type: ignore
+from selenium.webdriver.common.by import By # type: ignore
+from selenium.webdriver.support.ui import WebDriverWait # type: ignore
+from selenium.webdriver.support import expected_conditions as EC # type: ignore
 
 
 
@@ -125,8 +131,126 @@ def allocation_of_geolocations(main_csv_file, geolocations_csv_file,folder_name)
 
 
 
+'''
+We are going to dismiss the projects that did not acquire a geolocation, after that we will allocate the respective county
+to each of the projects in order to optimize the speed of the display, just as we do with the Contractor Licenses.
+'''
+def geolocation_only_addresses(csv_file):
+    
+    # Import as dataframe
+    df = pd.read_csv(csv_file, low_memory=False)
+    df_valid = df[df['X_Coordinates'].notna()]
+    df_valid.to_csv('mapping_dir_projects_no_county.csv',index=False)
 
 
+'''
+Acquire the municipalities and their counties
+'''
+def california_municipalities(url):
+
+    # Initiate driver
+    driver = webdriver.Chrome()
+    driver.get(url)
+    time.sleep(2)
+
+    # Locate the table element corresponding to the data required and scrap its columns 0 and 1 (Municipality and County)
+    table_element_list = driver.find_elements(By.TAG_NAME,'table')
+    table_element = table_element_list[1]
+    tbody_tag = table_element.find_element(By.TAG_NAME,'tbody')
+    tr_tags = tbody_tag.find_elements(By.TAG_NAME, 'tr')
+
+    municipalities = []
+    counties = []
+
+    for td_tag in tr_tags:
+        th_tag = td_tag.find_element(By.TAG_NAME,'th')
+        td_tags = td_tag.find_elements(By.TAG_NAME,'td')
+        municipality = re.sub(r'[^a-zA-Z0-9\s]', '', th_tag.text)
+        county = td_tags[1].text
+        municipalities.append(municipality)
+        counties.append(county)
+
+    df = pd.DataFrame({
+        'Location':municipalities,
+        'County':counties
+    })
+
+    df.to_csv('municipalities.csv',index=False)
+
+'''
+Acquire the municipalities and their counties
+'''
+def cdps_location(url):
+
+    # Initiate driver
+    driver = webdriver.Chrome()
+    driver.get(url)
+    time.sleep(2)
+
+    # Locate the table element corresponding to the data required and scrap its columns 0 and 1 (Municipality and County)
+    table_element_list = driver.find_elements(By.TAG_NAME,'table')
+    table_element = table_element_list[1]
+    tbody_tag = table_element.find_element(By.TAG_NAME,'tbody')
+    tr_tags = tbody_tag.find_elements(By.TAG_NAME, 'tr')
+
+    places = []
+    counties = []
+
+    for td_tag in tr_tags:
+        th_tag = td_tag.find_element(By.TAG_NAME,'th')
+        td_tags = td_tag.find_elements(By.TAG_NAME,'td')
+        place = re.sub(r'[^a-zA-Z0-9\s]', '', th_tag.text)
+        county = td_tags[0].text
+        places.append(place)
+        counties.append(county)
+    
+    df = pd.DataFrame({
+        'Location':places,
+        'County':counties
+    })
+
+    df.to_csv('other_places.csv',index=False)
+
+
+
+
+'''
+Get the counties, municipalities, and census designated places of california. The goal is to store the respective locations
+into a dataframe for later use
+'''
+def counties_and_censuses():
+
+    # Pinpoint the url that will be used
+    municipalities_url = 'https://en.wikipedia.org/wiki/List_of_municipalities_in_California'
+    cdp_url = 'https://en.wikipedia.org/wiki/List_of_largest_census-designated_places_in_California'
+    california_municipalities(municipalities_url)
+    cdps_location(cdp_url)
+
+
+
+
+
+
+
+
+
+
+'''
+Allocating the counties for each project based on the city where it took place in order to optimize the display of the projects
+as a feature in wesonder by utilizing the up-to-three-functionality from the contractors.
+'''
+def county_allocation(csv_file):
+    
+    # You know the drill
+    df = pd.read_csv(csv_file, low_memory=False)
+
+    # Ready to be mappeds
+    df_new = df[df['County'].notna()]
+    df_new.to_csv('/Users/damiamalfaro/Desktop/Europe/testing_wesonder/Geolocations_DIR_Projects/mapping_dir_projects.csv',index=False)
+    
+
+
+    
 
 
 
@@ -140,6 +264,7 @@ if __name__ == "__main__":
     faulty_csv_file = f'{folder_name}dir_projects_faulty.csv'
     geolocations_file = f'{folder_name}dir_projects_geolocations.csv'
     projects_with_addreses = f'{folder_name}dir_projects_containing_addresses.csv'
+    absolute_csv_file = '/Users/damiamalfaro/Downloads/dir_projects_no_county.csv'
 
     # Clean the DIR Projects Geolocations
     #cleansing_file(faulty_csv_file)
@@ -154,5 +279,11 @@ if __name__ == "__main__":
     #categorizing_addresses(main_csv_file)
 
     # Allocate the respective geolocations into the addresses
-    allocation_of_geolocations(projects_with_addreses,geolocations_file,folder_name)
+    #allocation_of_geolocations(projects_with_addreses,geolocations_file,folder_name)
 
+    # Last thing: clean the unnecessary projects withouth addresses so as to show the projects with geolocations only
+    #geolocation_only_addresses(absolute_csv_file)
+
+    # County allocation: first acquire the counties, the Census Designated Places, and then connect them with the main csv
+    #counties_and_censuses()
+    #county_allocation(absolute_csv_file)
