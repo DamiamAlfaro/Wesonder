@@ -395,6 +395,8 @@ function filterByLicense() {
 function loadCSV3Data() {
     var csvUrl = 'https://storage.googleapis.com/wesonder_databases/wesonder_frontend/mapping_dir_projects.csv'; // Replace with actual URL
 
+    console.log('Loading CSV3 data...');
+
     fetch(csvUrl)
         .then(response => response.text())
         .then(csvText => {
@@ -402,15 +404,16 @@ function loadCSV3Data() {
                 header: true,
                 complete: function(results) {
                     var data = results.data;
+                    console.log('Parsed CSV3 data:', data);
 
                     // Filter valid coordinates and prepare marker data for CSV3
                     var validCoordinates = data.filter(row => 
-                        !isNaN(parseFloat(row['X_Coordinate'])) &&
-                        !isNaN(parseFloat(row['Y_Coordinate']))
+                        !isNaN(parseFloat(row['X_Coordinates'])) &&
+                        !isNaN(parseFloat(row['Y_Coordinates']))
                     ).map(row => {
                         return {
-                            lat: parseFloat(row['X_Coordinate']),
-                            lng: parseFloat(row['Y_Coordinate']),
+                            lat: parseFloat(row['X_Coordinates']),
+                            lng: parseFloat(row['Y_Coordinates']),
                             name: row['ProjectName'],  // Replace with the actual column name
                             number: row['ProjectNumber'],
                             idnumber: row['ProjectIDNumber'],
@@ -440,4 +443,3 @@ function loadCSV3Data() {
         })
         .catch(error => console.error('Error fetching CSV3:', error));
 }
-
