@@ -245,8 +245,8 @@ function loadCSV1Data() {
                         row['EntityState'] === 'CA'
                     ).map(row => {
                         return {
-                            lat: parseFloat(row['X_Coordinates']),
-                            lng: parseFloat(row['Y_Coordinates']),
+                            lat: parseFloat(row['X_Coordinate']),
+                            lng: parseFloat(row['Y_Coordinate']),
                             name: row['EntityName'],
                             address: row['FullAddress'],
                             email: row['EntityEmail'],
