@@ -488,7 +488,11 @@ October 29, 2024
 
 	
 	1. We cleansed the project coordinates off camera, so now we just need to delete a couple.
-	2. After, we are going to restrict the quantity of counties being displayed on projects up to three.
+		I. There are still coordinates that are not align with the proper county, but they are minimal, so we can just delete them. It is impossible to map all of the projects of
+		California, not without a security clearance.
+	2. (REJECTED) After, we are going to restrict the quantity of counties being displayed on projects up to three.
+	3. Since is a Premium feature, let the rich pay and struggle a little bit, just make it beautiful while he struggles (a creative loading illustration)
+		I. Also block the map when loading.
 
 
 

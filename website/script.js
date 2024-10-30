@@ -395,6 +395,9 @@ function filterByLicense() {
 function loadCSV3Data() {
     var csvUrl = 'https://storage.googleapis.com/wesonder_databases/wesonder_frontend/geolocations_dir_projects.csv'; // Replace with actual URL
 
+    // Show loading indicator
+    document.getElementById('loading').style.display = 'block';
+
     console.log('Loading CSV3 data...');
 
     fetch(csvUrl)
@@ -432,7 +435,7 @@ function loadCSV3Data() {
                         var marker = L.marker([coord.lat, coord.lng]);
                         marker.bindPopup(`
                             <strong>Project Name:</strong> ${coord.name || 'N/A'}<br/>
-                            <strong>Project Number:</strong> ${coord.number || 'N/A'}</br>
+                            <strong>Project Number:</strong> ${coord.number || 'N/A'}<br/>
                             <strong>Project ID:</strong> ${coord.idnumber || 'N/A'}<br/>
                             <strong>Project DIR Number:</strong> ${coord.dirnumber || 'N/A'}<br/>
                             <strong>Awarding Body:</strong> ${coord.awardingbody || 'N/A'}<br/>
@@ -446,8 +449,15 @@ function loadCSV3Data() {
                     });
 
                     updateMarkerCount();
+
+                    // Hide loading indicator once points are displayed
+                    document.getElementById('loading').style.display = 'none';
                 }
             });
         })
-        .catch(error => console.error('Error fetching CSV3:', error));
+        .catch(error => {
+            console.error('Error fetching CSV3:', error);
+            // Hide loading indicator if there's an error
+            document.getElementById('loading').style.display = 'none';
+        });
 }
