@@ -393,7 +393,7 @@ function filterByLicense() {
 }
 
 function loadCSV3Data() {
-    var csvUrl = 'https://storage.googleapis.com/wesonder_databases/wesonder_frontend/mapping_dir_projects.csv'; // Replace with actual URL
+    var csvUrl = 'https://storage.googleapis.com/wesonder_databases/wesonder_frontend/geolocations_dir_projects.csv'; // Replace with actual URL
 
     console.log('Loading CSV3 data...');
 
@@ -419,7 +419,11 @@ function loadCSV3Data() {
                             idnumber: row['ProjectIDNumber'],
                             dirnumber: row['ProjectDIRNumber'],
                             awardingbody: row['AwardingBody'],  // Replace with the actual column name
-                            description: row['ProjectDescription']  // Replace with the actual column name if exists
+                            description: row['ProjectDescription1'],  // Replace with the actual column name if exists
+                            address: row['CompleteAddress'],
+                            start: row['DateStarted'],
+                            finish: row['DateFinished'],
+                            release: row['DateReleased']
                         };
                     });
 
@@ -431,8 +435,12 @@ function loadCSV3Data() {
                             <strong>Project Number:</strong> ${coord.number || 'N/A'}</br>
                             <strong>Project ID:</strong> ${coord.idnumber || 'N/A'}<br/>
                             <strong>Project DIR Number:</strong> ${coord.dirnumber || 'N/A'}<br/>
-                            <strong>Address:</strong> ${coord.awardingbody || 'N/A'}<br/>
-                            <strong>Description:</strong> ${coord.description || 'N/A'}
+                            <strong>Awarding Body:</strong> ${coord.awardingbody || 'N/A'}<br/>
+                            <strong>Description:</strong> ${coord.description || 'N/A'}<br/>
+                            <strong>Address:</strong> ${coord.address || 'N/A'}<br/>
+                            <strong>Start Date:</strong> ${coord.start || 'N/A'}<br/>
+                            <strong>Finish Date:</strong> ${coord.finish || 'N/A'}<br/>
+                            <strong>Release Date:</strong> ${coord.release || 'N/A'}<br/>
                         `);
                         markers.addLayer(marker);
                     });
