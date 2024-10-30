@@ -343,7 +343,7 @@ function filterByLicense() {
     // Clear existing markers
     markers.clearLayers();
 
-    // Filter the dataCache based on selected criteria
+    // Filter the dataCache based on selected criteria.
     var filteredData = dataCache.filter(row => {
         // Get the business type directly from the data
         const businessType = row['BusinessType'];
