@@ -394,96 +394,81 @@ function filterByLicense() {
 
 // it works mate
 function loadCSV3Data() {
-    // Array of Google Cloud CSV URLs, each with 25,000 geolocations
-    const csvUrls = [
-        'https://storage.googleapis.com/wesonder_databases/wesonder_frontend/dir_projects_chunks/chunk1.csv',
-        'https://storage.googleapis.com/wesonder_databases/wesonder_frontend/dir_projects_chunks/chunk2.csv',
-        'https://storage.googleapis.com/wesonder_databases/wesonder_frontend/dir_projects_chunks/chunk3.csv',
-        'https://storage.googleapis.com/wesonder_databases/wesonder_frontend/dir_projects_chunks/chunk4.csv',
-        'https://storage.googleapis.com/wesonder_databases/wesonder_frontend/dir_projects_chunks/chunk5.csv',
-        'https://storage.googleapis.com/wesonder_databases/wesonder_frontend/dir_projects_chunks/chunk6.csv',
-        'https://storage.googleapis.com/wesonder_databases/wesonder_frontend/dir_projects_chunks/chunk7.csv',
-        'https://storage.googleapis.com/wesonder_databases/wesonder_frontend/dir_projects_chunks/chunk8.csv',
-        // Add more URLs as needed
-    ];
+    var csvUrl = 'https://storage.googleapis.com/wesonder_databases/wesonder_frontend/geolocations_dir_projects.csv'; // Replace with actual URL
 
     // Show loading indicator
     document.getElementById('loading').style.display = 'block';
 
-    let currentIndex = 0;
-    let markers = L.layerGroup(); // Layer group to hold markers
+    console.log('Loading CSV3 data...');
 
-    function loadNextCSV() {
-        if (currentIndex >= csvUrls.length) {
-            // Hide loading indicator once all files are processed
-            document.getElementById('loading').style.display = 'none';
-            updateMarkerCount();
-            return; // End of all files
-        }
+    fetch(csvUrl)
+        .then(response => response.text())
+        .then(csvText => {
+            Papa.parse(csvText, {
+                header: true,
+                complete: function(results) {
+                    var data = results.data;
+                    console.log('Parsed CSV3 data:', data);
 
-        // Fetch and parse the next CSV file
-        const csvUrl = csvUrls[currentIndex];
-        console.log(`Loading CSV3 data from: ${csvUrl}`);
+                    // Filter valid coordinates and prepare marker data for CSV3
+                    var validCoordinates = data.filter(row => 
+                        !isNaN(parseFloat(row['X_Coordinates'])) &&
+                        !isNaN(parseFloat(row['Y_Coordinates']))
+                    ).map(row => {
+                        return {
+                            lat: parseFloat(row['X_Coordinates']),
+                            lng: parseFloat(row['Y_Coordinates']),
+                            name: row['ProjectName'],  // Replace with the actual column name
+                            number: row['ProjectNumber'],
+                            idnumber: row['ProjectIDNumber'],
+                            dirnumber: row['ProjectDIRNumber'],
+                            awardingbody: row['AwardingBody'],  // Replace with the actual column name
+                            description: row['ProjectDescription1'],  // Replace with the actual column name if exists
+                            address: row['CompleteAddress'],
+                            start: row['DateStarted'],
+                            finish: row['DateFinished'],
+                            release: row['DateReleased']
+                        };
+                    });
 
-        Papa.parse(csvUrl, {
-            header: true,
-            download: true,
-            step: function(row) {
-                // Filter valid coordinates and create marker data
-                if (!isNaN(parseFloat(row.data['X_Coordinates'])) && !isNaN(parseFloat(row.data['Y_Coordinates']))) {
-                    const coord = {
-                        lat: parseFloat(row.data['X_Coordinates']),
-                        lng: parseFloat(row.data['Y_Coordinates']),
-                        name: row.data['ProjectName'],  // Replace with the actual column name
-                        number: row.data['ProjectNumber'],
-                        idnumber: row.data['ProjectIDNumber'],
-                        dirnumber: row.data['ProjectDIRNumber'],
-                        awardingbody: row.data['AwardingBody'],  // Replace with the actual column name
-                        description: row.data['ProjectDescription1'],  // Replace with the actual column name if exists
-                        address: row.data['CompleteAddress'],
-                        start: row.data['DateStarted'],
-                        finish: row.data['DateFinished'],
-                        release: row.data['DateReleased']
+                    // Define options for canvas markers
+                    const markerOptions = {
+                        radius: 3,
+                        color: '#3388ff',
+                        fillColor: '#3388ff',
+                        fillOpacity: 0.5,
+                        renderer: L.canvas() // Use canvas rendering
                     };
 
-                    // Add the marker to the map
-                    addMarkerToMap(coord, markers);
+                    // Add circle markers with canvas renderer to the map
+                    validCoordinates.forEach(coord => {
+                        const circleMarker = L.circleMarker([coord.lat, coord.lng], markerOptions);
+                        circleMarker.bindPopup(`
+                            <strong>Project Name:</strong> ${coord.name || 'N/A'}<br/>
+                            <strong>Project Number:</strong> ${coord.number || 'N/A'}<br/>
+                            <strong>Project ID:</strong> ${coord.idnumber || 'N/A'}<br/>
+                            <strong>Project DIR Number:</strong> ${coord.dirnumber || 'N/A'}<br/>
+                            <strong>Awarding Body:</strong> ${coord.awardingbody || 'N/A'}<br/>
+                            <strong>Description:</strong> ${coord.description || 'N/A'}<br/>
+                            <strong>Address:</strong> ${coord.address || 'N/A'}<br/>
+                            <strong>Start Date:</strong> ${coord.start || 'N/A'}<br/>
+                            <strong>Finish Date:</strong> ${coord.finish || 'N/A'}<br/>
+                            <strong>Release Date:</strong> ${coord.release || 'N/A'}<br/>
+                        `);
+                        markers.addLayer(circleMarker);
+                    });
+
+                    map.addLayer(markers); // Add the markers layer to the map
+                    updateMarkerCount();
+
+                    // Hide loading indicator once points are displayed
+                    document.getElementById('loading').style.display = 'none';
                 }
-            },
-            complete: function() {
-                currentIndex++; // Move to the next CSV URL
-                loadNextCSV(); // Recursively load the next CSV file
-            }
+            });
+        })
+        .catch(error => {
+            console.error('Error fetching CSV3:', error);
+            // Hide loading indicator if there's an error
+            document.getElementById('loading').style.display = 'none';
         });
-    }
-
-    // Start loading the first CSV
-    loadNextCSV();
-}
-
-// Function to add each marker to the map incrementally
-function addMarkerToMap(coord, markers) {
-    const markerOptions = {
-        radius: 3,
-        color: '#3388ff',
-        fillColor: '#3388ff',
-        fillOpacity: 0.5,
-        renderer: L.canvas() // Use canvas rendering for performance
-    };
-
-    const circleMarker = L.circleMarker([coord.lat, coord.lng], markerOptions);
-    circleMarker.bindPopup(`
-        <strong>Project Name:</strong> ${coord.name || 'N/A'}<br/>
-        <strong>Project Number:</strong> ${coord.number || 'N/A'}<br/>
-        <strong>Project ID:</strong> ${coord.idnumber || 'N/A'}<br/>
-        <strong>Project DIR Number:</strong> ${coord.dirnumber || 'N/A'}<br/>
-        <strong>Awarding Body:</strong> ${coord.awardingbody || 'N/A'}<br/>
-        <strong>Description:</strong> ${coord.description || 'N/A'}<br/>
-        <strong>Address:</strong> ${coord.address || 'N/A'}<br/>
-        <strong>Start Date:</strong> ${coord.start || 'N/A'}<br/>
-        <strong>Finish Date:</strong> ${coord.finish || 'N/A'}<br/>
-        <strong>Release Date:</strong> ${coord.release || 'N/A'}<br/>
-    `);
-    markers.addLayer(circleMarker);
-    map.addLayer(markers); // Add the markers layer to the map incrementally
 }
