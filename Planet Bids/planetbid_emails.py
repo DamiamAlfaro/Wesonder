@@ -344,7 +344,10 @@ def reading_csv_with_planetbids(csv_file):
         count += 1
 
 
-
+'''
+Now, let's extract the contractor attributes from planetbids, especifically from the links
+of the csv file.
+'''
 
 
 
