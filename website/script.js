@@ -392,6 +392,7 @@ function filterByLicense() {
     updateMarkerCount(); 
 }
 
+// it works mate
 function loadCSV3Data() {
     var csvUrl = 'https://storage.googleapis.com/wesonder_databases/wesonder_frontend/geolocations_dir_projects.csv'; // Replace with actual URL
 
