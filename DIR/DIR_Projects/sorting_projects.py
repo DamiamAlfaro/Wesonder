@@ -231,10 +231,6 @@ def counties_and_censuses():
 
 
 
-
-
-
-
 '''
 Allocating the counties for each project based on the city where it took place in order to optimize the display of the projects
 as a feature in wesonder by utilizing the up-to-three-functionality from the contractors.
@@ -250,7 +246,19 @@ def county_allocation(csv_file):
     
 
 
+
+'''
+Splitting the main file into chunks of 25,000
+'''
+def main_file_to_multiple_chunks(main_file, files_location):
     
+    # Import as dataframe
+    df = pd.read_csv(main_file, chunksize=50000)
+
+    chunk_num = 1
+    for chunk in df:
+        chunk.to_csv(f'{files_location}chunk{chunk_num}.csv', index=False)
+        chunk_num += 1
 
 
 
@@ -265,6 +273,8 @@ if __name__ == "__main__":
     geolocations_file = f'{folder_name}dir_projects_geolocations.csv'
     projects_with_addreses = f'{folder_name}dir_projects_containing_addresses.csv'
     absolute_csv_file = '/Users/damiamalfaro/Downloads/dir_projects_no_county.csv'
+    file = "/Users/damiamalfaro/Downloads/geolocations_dir_projects.csv"
+    files_location = '/Users/damiamalfaro/Downloads/'
 
     # Clean the DIR Projects Geolocations
     #cleansing_file(faulty_csv_file)
@@ -287,3 +297,9 @@ if __name__ == "__main__":
     # County allocation: first acquire the counties, the Census Designated Places, and then connect them with the main csv
     #counties_and_censuses()
     #county_allocation(absolute_csv_file)
+
+
+    '''
+    We are going to split the file into chunks of 25,000 in order to improve the display speed
+    '''
+    main_file_to_multiple_chunks(file, files_location)

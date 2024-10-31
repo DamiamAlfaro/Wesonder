@@ -495,6 +495,11 @@ October 29, 2024
 		I. Also block the map when loading.
 
 
+October 30, 2024
+
+
+	1. Fuck it, while we scrap, we will implement the server functionality.
+
 
 
 
