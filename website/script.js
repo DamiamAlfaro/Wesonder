@@ -430,10 +430,19 @@ function loadCSV3Data() {
                         };
                     });
 
-                    // Add markers to the map for CSV3
+                    // Define options for canvas markers
+                    const markerOptions = {
+                        radius: 3,
+                        color: '#3388ff',
+                        fillColor: '#3388ff',
+                        fillOpacity: 0.5,
+                        renderer: L.canvas() // Use canvas rendering
+                    };
+
+                    // Add circle markers with canvas renderer to the map
                     validCoordinates.forEach(coord => {
-                        var marker = L.marker([coord.lat, coord.lng]);
-                        marker.bindPopup(`
+                        const circleMarker = L.circleMarker([coord.lat, coord.lng], markerOptions);
+                        circleMarker.bindPopup(`
                             <strong>Project Name:</strong> ${coord.name || 'N/A'}<br/>
                             <strong>Project Number:</strong> ${coord.number || 'N/A'}<br/>
                             <strong>Project ID:</strong> ${coord.idnumber || 'N/A'}<br/>
@@ -445,9 +454,10 @@ function loadCSV3Data() {
                             <strong>Finish Date:</strong> ${coord.finish || 'N/A'}<br/>
                             <strong>Release Date:</strong> ${coord.release || 'N/A'}<br/>
                         `);
-                        markers.addLayer(marker);
+                        markers.addLayer(circleMarker);
                     });
 
+                    map.addLayer(markers); // Add the markers layer to the map
                     updateMarkerCount();
 
                     // Hide loading indicator once points are displayed
