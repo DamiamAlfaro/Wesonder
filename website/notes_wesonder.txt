@@ -501,6 +501,18 @@ October 30, 2024
 	1. Fuck it, while we scrap, we will implement the server functionality.
 
 
+October 31, 2024
+
+
+	1. For the DVBE, we need to correlate the words of their 'Keywords' column with the CSLB Description of Licenses. How?
+		I. First, we will extract the wording of each license, their title, and their respective license number from the CSLB Website and store it into a csv file neatly.
+		II. Second, we are going to find linguistic correlations between the wording/description of each license from the CSLB website with the words on the
+		'Keywords' columns of the DVBE file.
+		III. Make sure that if the word is not correlate, it is dismissed, or at least labeled as "Other trades". E.g. if 'Printing' is not on any of the licenses of the
+		CSLB website, it will be listed on WESONDER as 'Other trades: "Printing"'.
+	2. We just realized that there are four types of Industries: Services, Non-Manufacturer, Construction, and Manufacturer.
+		I. Everyone that has 'Construction' in that column, directly has the type of License on the left column. So no need of stratification.
+
 
 
 

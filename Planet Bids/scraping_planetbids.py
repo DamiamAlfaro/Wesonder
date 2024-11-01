@@ -17,23 +17,23 @@ import glob
 '''
 The function that appends to the csv file and creates a new one when there is none
 '''
-def recording_to_csv(dataframe, csv_file, current_iteration):
+def recording_to_csv(dataframe, csv_file, current_iteration, folder_number):
     
     # Acquire the directory list of csvfiles
-    current_directory = '/Users/damiamalfaro/Desktop/Europe/testing_wesonder/Planetbids/planetbids_correlation/'
-    instance_check = glob.glob(current_directory + "*.csv")
+    current_directory = f'planetbids_correlation{folder_number}/'
+    instance_check = os.listdir(current_directory)
     
     # Check if the csv file is within the directory
     if csv_file in instance_check:
         
         # If it is, append to the csv file
         dataframe.to_csv(current_directory+csv_file, mode='a', index=False, header=False)
-        print(f"Iteration {current_iteration} appended")
+        print(f"[Iteration {current_iteration} appended]\n")
 
     # If it isn't, then create a new csv file with its title
     else:
         dataframe.to_csv(current_directory+csv_file, index=False)
-        print(f"Iteration {current_iteration} created")
+        print(f"[Iteration {current_iteration} created]\n")
 
 
 
@@ -41,7 +41,7 @@ def recording_to_csv(dataframe, csv_file, current_iteration):
 '''
 JA: This function will embellish strings and allocate them into a csv file for further analysis and research
 '''
-def string_embellishment_and_allocation(list_of_lists_of_strings, other_strings, current_iteration):
+def string_embellishment_and_allocation(list_of_lists_of_strings, other_strings, current_iteration, folder_number):
     
     # Variables from the first list
     names = []
@@ -152,6 +152,7 @@ def string_embellishment_and_allocation(list_of_lists_of_strings, other_strings,
     project_name = [other_strings[0] for _ in range(len(names))]
     awarding_bodies = [other_strings[1] for _ in range(len(names))]
     bid_all_information = [other_strings[2] for _ in range(len(names))]
+    bid_particular_link = [other_strings[3] for _ in range(len(names))]
 
     # Creating a dataframe and exporting as csv
     data = {
@@ -167,7 +168,8 @@ def string_embellishment_and_allocation(list_of_lists_of_strings, other_strings,
     "Emails": emails,
     "ProjectName": project_name,
     "AwardingBody": awarding_bodies,
-    "BidInformation": bid_all_information
+    "BidInformation": bid_all_information,
+    "BidUrl": bid_particular_link
     }
 
     # Return the df as a variable for the next function
@@ -175,45 +177,51 @@ def string_embellishment_and_allocation(list_of_lists_of_strings, other_strings,
     
     # Convert to csv, either append or create new csv
     csv_title_file = f"{re.sub(r'[^a-zA-Z0-9]', '_', awarding_bodies[0].lower())}.csv"
-    recording_to_csv(df,csv_title_file, current_iteration)
+    recording_to_csv(df,csv_title_file, current_iteration, folder_number)
 
 
 
 '''
 Actually webscrap each attribute from the planetbids link
 '''
-def planetbids_webscraping(url, main_index, current_index, awarding_body):
+def planetbids_webscraping(url, main_index, current_index, awarding_body, folder_number):
 
     # Initiate the webdriver
     driver = webdriver.Chrome()
     driver.get(url)
-    time.sleep(8)
+    time.sleep(4)
 
     # Bid Title for future usage
-    bid_title_element = WebDriverWait(driver,5).until(
-        EC.presence_of_element_located((By.CLASS_NAME,'bid-detail-title'))
-    )
-    bid_title_text = bid_title_element.text
+    try:
+        bid_title_element = WebDriverWait(driver,10).until(
+            EC.presence_of_element_located((By.CLASS_NAME,'bid-detail-title'))
+        )
+        bid_title_text = bid_title_element.text
+    except:
+        bid_title_element = f'Bid{current_index}{awarding_body}'
     
     
     # Pinpoint the initial element for the main welcome page
-    bid_description = WebDriverWait(driver, 10).until(
-        EC.presence_of_element_located((By.CLASS_NAME, 'bid-detail-wrapper'))
-    )
+    try:
+        bid_description = WebDriverWait(driver, 10).until(
+            EC.presence_of_element_located((By.CLASS_NAME, 'bid-detail-wrapper'))
+        )
 
-    # Extract the text infomration of the bid of the site for future data analysis
-    bid_information_rows = []
-    rows_of_infomration = bid_description.find_elements(By.CLASS_NAME,"row")
-    for text_row in rows_of_infomration[2:]:
-        bid_information_rows.append(text_row.text)
+        # Extract the text infomration of the bid of the site for future data analysis
+        bid_information_rows = []
+        rows_of_infomration = bid_description.find_elements(By.CLASS_NAME,"row")
+        for text_row in rows_of_infomration[2:]:
+            bid_information_rows.append(text_row.text)
 
-    # The general information of the project; string to be addded later    
-    bid_text_information = "|".join(bid_information_rows)
-    
+        # The general information of the project; string to be addded later    
+        bid_text_information = "|".join(bid_information_rows)
+
+    except:
+        bid_description = 'none'    
 
     # Click on the Prospective Bidders tab
     try:
-        prospective_bidders_tab = WebDriverWait(driver,5).until(
+        prospective_bidders_tab = WebDriverWait(driver,10).until(
             EC.presence_of_element_located((By.XPATH,"//li[@class='bidPBs']"))
             )
         prospective_bidders_tab.click()
@@ -221,8 +229,7 @@ def planetbids_webscraping(url, main_index, current_index, awarding_body):
 
     except:
         print(f"Something is wrong with the Prospective Bidders tab of {file} #{current_index} in {main_index}")
-        sys.exit(1)
-        
+                
         
 
     # Extract the datum for each attribute of each prospective bidder (email, address, etc.)
@@ -255,23 +262,28 @@ def planetbids_webscraping(url, main_index, current_index, awarding_body):
         all_entities.append(entity_in_question)
 
     # Append the rest of the important strings (project general information, project name, and awarding body)
-    other_important_strings = [bid_title_text, awarding_body, bid_text_information]
+    other_important_strings = [bid_title_text, awarding_body, bid_text_information, url]
 
     # String embellishment and csv allocation function
-    string_embellishment_and_allocation(all_entities, other_important_strings, current_index)
+    string_embellishment_and_allocation(all_entities, other_important_strings, current_index, folder_number)
 
 
 '''
 Now, let's extract the contractor attributes from planetbids, especifically from the links
 of the csv file.
 '''
-def scraping_each_pb_site(csv_file, main_index):
+def scraping_each_pb_site(csv_file, main_index, folder_number):
     
     # Import as dataframe
     df = pd.read_csv(csv_file)
+
+    # Current iteration within the file
+    count = 0
     
     # Iterate through each of the individual project links
-    for index, row in df.iterrows():
+    for index, row in df.iloc[count:].iterrows():
+
+        print(f'File: {csv_file}\nFile Number: {main_index}\nCurrent Iteration: {index}\nPercentage Completed: {round(index/len(df),3)}')
         
         # Variables from csv file
         awarding_body = row['AwardingBody']
@@ -279,13 +291,12 @@ def scraping_each_pb_site(csv_file, main_index):
 
         # Make sure it works
         try:
-            planetbids_webscraping(individual_project_url,main_index, index, awarding_body)
-        
-        # It is what it is if it doesn't
+            planetbids_webscraping(individual_project_url,main_index, index, awarding_body, folder_number)
+
+        # Since it is difficult to stop, let's give it a quick push and make it longer to stop
         except:
+            time.sleep(8)
             continue
-
-
 
 
         
@@ -305,11 +316,22 @@ def scraping_each_pb_site(csv_file, main_index):
 if __name__ == "__main__":
 
     # Iterate through each csv file
-    treasure_location = '/Users/damiamalfaro/Desktop/Europe/testing_wesonder/Planetbids/accurate/'
-    csv_files = glob.glob(treasure_location + "*.csv")
-    csv_files.sort()
-    print(len(csv_files))
-    # for file in range(len(csv_files)):
-    #     print(csv_files[file])
-    #     scraping_each_pb_site(csv_files[file], file)
+    treasure_location = 'accurate/'
 
+    '''
+    Folder total = 1417
+    Current Iteration Session 1: 5 (0-472)
+    Current Iteration Session 2: 473 (473-944)
+    Current Iteration Session 3: 945 (945-1417)
+    '''
+    treasure_files = os.listdir(treasure_location)
+    
+    # Counts vary on the file being executed
+    count = 5
+    halt_count = 472
+    folder_number = 1 # Based on the session
+
+    # Iterate through each csv
+    for file in range(count, len(treasure_files)):
+        scraping_each_pb_site(f'{treasure_location}{treasure_files[file]}', file, folder_number)
+        print(f'{treasure_files[file]} Completed\nOverall Completed: {round(file/len(treasure_files),3)}')
