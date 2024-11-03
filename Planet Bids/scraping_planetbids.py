@@ -327,8 +327,8 @@ if __name__ == "__main__":
     treasure_files = os.listdir(treasure_location)
     
     # Counts vary on the file being executed
-    count = 29
-    halt_count = 1417
+    count = 47
+    halt_count = 552
     folder_number = 1 # Based on the session
 
     # Iterate through each csv
