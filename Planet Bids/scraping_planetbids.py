@@ -274,7 +274,7 @@ of the csv file.
 '''
 def scraping_each_pb_site(csv_file, main_index, folder_number):
     
-    # Import as dataframe as usual
+    # Import as dataframe as
     df = pd.read_csv(csv_file)
 
     # Current iteration within the file
