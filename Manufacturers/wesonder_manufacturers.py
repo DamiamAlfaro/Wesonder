@@ -279,7 +279,7 @@ def webscraping_manufacturer_attributes(index, spec_number, spec_name, whole_spe
 
 '''
 Acquire the individual data of each manufactuerer, i.e. cell phone number, website,
-address, and any other available attribute
+address, and any other available attribute, right?
 Counts: 
     1. Current Count = 8080 (0 - 14914) Computer1
     2. Current Count = 20084 (14915 - 29828) Computer1
