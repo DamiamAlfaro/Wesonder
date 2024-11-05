@@ -281,10 +281,10 @@ def webscraping_manufacturer_attributes(index, spec_number, spec_name, whole_spe
 Acquire the individual data of each manufactuerer, i.e. cell phone number, website,
 address, and any other available attribute, right?
 Counts: 
-    1. Current Count = 8080 (0 - 14914) Computer1
-    2. Current Count = 20084 (14915 - 29828) Computer1
-    3. Current Count = 34992 (29829 - 44742) Computer1
-    4. Current Count = 49933 (44743 - 59656) Computer1
+    1. Current Count = 13514 (0 - 14914) Computer1
+    2. Current Count = 25481 (14915 - 29828) Computer1
+    3. Current Count = 40432 (29829 - 44742) Computer1
+    4. Current Count = 55316 (44743 - 59656) Computer1
     5. Current Count = 59657 (59657 - 74570) Computer2
     6. Current Count = 74571 (74571 - 89484) Computer2
     7. Current Count = 89485 (89485 - 104398) Computer2
@@ -297,7 +297,7 @@ def manufacturers_attributes(csv_file):
     df = pd.read_csv(csv_file)
 
     # Track the count (Total Count: 119314)
-    count = 8080
+    count = 13514
     halt_count = 14914
     csv_file_number = 1 # CHANGEEEEEEEE
     
