@@ -43,6 +43,7 @@ def extract_data_from_link(url):
     except:
         address = 'none'
 
+
     # Locate the phone variable
     try:
         phone_numbers = soup.find_all('a', attrs={'itemprop':'telephone'})
@@ -104,7 +105,13 @@ def reading_initial_file(csv_file, count, halt, allocation_file):
 
 
 
-
+'''
+Clean the last file from manufacturers without attributes
+'''
+def cleaning_none_manufacturers(csv_file):
+    df = pd.read_csv(csv_file)
+    df_cleaned = df[df['ManufacturerAddress'] != 'none']
+    df_cleaned.to_csv('all_manufacturers.csv',index=False)
 
 
 
@@ -132,5 +139,13 @@ if __name__ == "__main__":
     allocation_file = f'manufacturers_attributes{allocation_file_number}.csv'
 
     # Read the file above based on the counts
-    reading_initial_file(manufacturers_file, count, halt, allocation_file)
+    #reading_initial_file(manufacturers_file, count, halt, allocation_file)
+
+    # Now, as a last step, clear the file of manufacturers from "none", i.e. manufacturers withouth attributes
+    final_file = 'manufacturers.csv'
+    cleaning_none_manufacturers(final_file)
+
+
+
+
 
