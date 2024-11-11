@@ -97,8 +97,8 @@ def reading_initial_file(csv_file, count, halt, allocation_file):
         store_into_file(list_of_variables, manufacturer_data, allocation_file)
 
         # Confirm appendment 
-        print(f'\nManufacturer #{index} appended\nName: {manufacturer_name}\nAddress: {manufacturer_data[0]}\Phone Numbers: {manufacturer_data[1]}\nWebsite: {manufacturer_data[2]}\n')
-
+        print(f'\nManufacturer #{index} appended\nName: {manufacturer_name}\nAddress: {manufacturer_data[0]}\nPhone Numbers: {manufacturer_data[1]}\nWebsite: {manufacturer_data[2]}')
+        print(f'Total Completeness: {round((index/halt)*100,4)}%')
 
 
 
@@ -119,12 +119,12 @@ if __name__ == "__main__":
         2. Current Count = 25892 (14915 - 29828) Computer1 - COMPLETE
         3. Current Count = 40830 (29829 - 44742) Computer1 - COMPLETE
         4. Current Count = 55722 (44743 - 59656) Computer1 - COMPLETE
-        5. Current Count = 61873 (59657 - 74570) Computer2
-        6. Current Count = 76761 (74571 - 89484) Computer2
-        7. Current Count = 95261 (89485 - 104398) Computer2
-        8. Current Count = 106651 (104399 - 119313) Computer2
+        5. Current Count = 74570 (59657 - 74570) Computer2 - COMPLETE
+        6. Current Count = 89484 (74571 - 89484) Computer2 - 
+        7. Current Count = 104398 (89485 - 104398) Computer2 - COMPLETE
+        8. Current Count = 119313 (104399 - 119313) Computer2
     '''
-    count = 61873
+    count = 74570
     halt = 74570
     manufacturers_file = 'manufacturers_refined.csv'
 
