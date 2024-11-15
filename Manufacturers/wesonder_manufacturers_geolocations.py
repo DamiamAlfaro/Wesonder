@@ -82,7 +82,7 @@ def csv_to_dataframe_and_iterate(csv_file, count):
     df = pd.read_csv(csv_file)
     
     # Iterate through the file and acquire desired attributes of each row
-    for index, row in df.iloc[count:].head(5).iterrows():
+    for index, row in df.iloc[count:].iterrows():
         spec_num = row["SpecNumber"]
         spec_name = row["SpecName"]
         entire_spec = row["EntireSpec"]
@@ -123,7 +123,7 @@ if __name__ == "__main__":
     manufacturers_file = "all_manufacturers.csv"
 
     # Read the file and update count if needed
-    count = 0
+    count = 114951
     csv_to_dataframe_and_iterate(manufacturers_file, count)
 
 
