@@ -278,7 +278,7 @@ def scraping_each_pb_site(csv_file, main_index, folder_number):
     df = pd.read_csv(csv_file)
 
     # Current iteration within the file
-    count = 323
+    count = 0
     
     # Iterate through each of the individual project links
     for index, row in df.iloc[count:].iterrows():
@@ -320,14 +320,14 @@ if __name__ == "__main__":
 
     '''
     Folder total = 1417
-    Current Iteration Session 1: 5 (0-472)
-    Current Iteration Session 2: 473 (473-944)
-    Current Iteration Session 3: 945 (945-1417)
+    Current Iteration Session 1: 170 (0-1417)
     '''
     treasure_files = os.listdir(treasure_location)
+    for i in range(len(treasure_files)):
+        print(f"{i}: {treasure_files[i]}")
     
     # Counts vary on the file being executed
-    count = 170
+    count = 167
     folder_number = 1 # Based on the session
 
     # Iterate through each csv
