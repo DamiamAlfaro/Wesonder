@@ -26,7 +26,6 @@ def csv_file_appending(headers, content, csv_file, x_coord, y_coord):
         headers[9]:[content[9]],
         headers[10]:[content[10]],
         headers[11]:[content[11]],
-        headers[12]:[content[12]],
         headers[13]:[content[13]],
         'File':[csv_file],
         'X_Coordinates':[x_coord],
@@ -80,13 +79,13 @@ def geolocation_attainment(address_string):
 We will be reading the csv files from the respective folder
 where they are extract, and where the entities are found.
 '''
-def reading_the_csv_files(csv_file, file_number):
+def reading_the_csv_files(csv_file, file_number, file_itself):
     
     # Do your thing
     df = pd.read_csv(csv_file)
 
     # Row number
-    count = 49755
+    count = 50337
     for index, row in df.iloc[count:].iterrows():
 
         # Locate the column headers and content
@@ -102,8 +101,8 @@ def reading_the_csv_files(csv_file, file_number):
         y_coordinate = geolocations[1]
 
         # Append to csv file
-        csv_file_appending(columns_headers,columns_contents,csv_file,x_coordinate,y_coordinate)
-        print(f'Entity #{index}: {columns_contents[0]} - Appended\nFile #{file_number}: {csv_file}\nCoordinates: {geolocations}\n')
+        csv_file_appending(columns_headers,columns_contents,file_itself,x_coordinate,y_coordinate)
+        print(f'Entity #{index}: {columns_contents[0]} - Appended\nFile #{file_number}: {file_itself}\nCoordinates: {geolocations}\n')
 
 
 
@@ -126,5 +125,6 @@ if __name__ == "__main__":
 
     #File number
     count = 27
-    for file in range(count, len(folder_files)):
-        reading_the_csv_files(f'{folder}{folder_files[file]}', file)
+    for file_number in range(count, len(folder_files)):
+        file_itself = folder_files[file_number]
+        reading_the_csv_files(f'{folder}{folder_files[file_number]}', file_number, file_itself)
