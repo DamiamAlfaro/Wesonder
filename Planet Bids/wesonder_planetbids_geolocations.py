@@ -1,5 +1,5 @@
-import pandas as pd
-import requests
+import pandas as pd # type: ignore
+import requests # type: ignore
 import os
 
 
@@ -34,7 +34,7 @@ def csv_file_appending(headers, content, csv_file, x_coord, y_coord):
     })
 
     # Move to csv file
-    df.to_csv('planetbids_geolocations/planetbids_geolocations.csv', mode='a', index=False, header=False)
+    df.to_csv('/Users/damiamalfaro/Downloads/planetbids_geolocations.csv', mode='a', index=False, header=False)
 
 
 
@@ -86,7 +86,7 @@ def reading_the_csv_files(csv_file, file_number):
     df = pd.read_csv(csv_file)
 
     # Row number
-    count = 23793
+    count = 49755
     for index, row in df.iloc[count:].iterrows():
 
         # Locate the column headers and content
@@ -120,11 +120,11 @@ def reading_the_csv_files(csv_file, file_number):
 if __name__ == "__main__":
 
     # Initiate the iteration
-    folder = 'planetbids_entities/'
+    folder = '/Users/damiamalfaro/Desktop/temporary_locations/'
     folder_files = os.listdir(folder)
     folder_files.sort()
-    
-    # File number
-    count = 4
+
+    #File number
+    count = 27
     for file in range(count, len(folder_files)):
         reading_the_csv_files(f'{folder}{folder_files[file]}', file)
