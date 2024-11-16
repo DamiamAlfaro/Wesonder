@@ -28,6 +28,7 @@
                 <li><a href="../objective/" class="navbar-option">Objective</a>
                 <li><a href="../contact/" class="navbar-option">Contact</a>
                 <li><a href="../pricing/" class="navbar-option">Pricing</a>
+                <li><a href="/" class="navbar-option">Functionality</a>
             </ul>
         </div>
     </nav>
