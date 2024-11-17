@@ -228,7 +228,7 @@ function loadData(dataset) {
 
 // Function to load CSV1 data (no filtering)
 function loadCSV1Data() {
-    var csvUrl = 'https://storage.googleapis.com/wesonder_databases/wesonder_frontend/new_refined_dir_entities.csv'; // Replace with actual URL
+    var csvUrl = 'https://storage.googleapis.com/wesonder_databases/wesonder_frontend/obsolete/new_refined_dir_entities.csv'; // Replace with actual URL
     fetch(csvUrl)
         .then(response => response.text())
         .then(csvText => {
@@ -288,7 +288,7 @@ function loadCSV1Data() {
 // Function to load CSV2 data Finally is fucking shwoing
 
 function loadCSV2Data() {
-    var csvUrl = 'https://storage.googleapis.com/wesonder_databases/wesonder_frontend/refined_refined_cslb_geolocations.csv'; // Replace with actual URL
+    var csvUrl = 'https://storage.googleapis.com/wesonder_databases/wesonder_frontend/obsolete/refined_refined_cslb_geolocations.csv'; // Replace with actual URL
 
     fetch(csvUrl)
         .then(response => response.text())
@@ -394,7 +394,7 @@ function filterByLicense() {
 
 // it works mate
 function loadCSV3Data() {
-    var csvUrl = 'https://storage.googleapis.com/wesonder_databases/wesonder_frontend/geolocations_dir_projects.csv'; // Replace with actual URL
+    var csvUrl = 'https://storage.googleapis.com/wesonder_databases/wesonder_frontend/obsolete/geolocations_dir_projects.csv'; // Replace with actual URL
 
     // Show loading indicator
     document.getElementById('loading').style.display = 'block';
