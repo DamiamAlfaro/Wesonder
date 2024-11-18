@@ -85,7 +85,7 @@ def reading_the_csv_files(csv_file, file_number, file_itself):
     df = pd.read_csv(csv_file)
 
     # Row number
-    count = 50337
+    count = 0
     for index, row in df.iloc[count:].iterrows():
 
         # Locate the column headers and content
@@ -124,7 +124,7 @@ if __name__ == "__main__":
     folder_files.sort()
 
     #File number
-    count = 27
+    count = 32
     for file_number in range(count, len(folder_files)):
         file_itself = folder_files[file_number]
         reading_the_csv_files(f'{folder}{folder_files[file_number]}', file_number, file_itself)
