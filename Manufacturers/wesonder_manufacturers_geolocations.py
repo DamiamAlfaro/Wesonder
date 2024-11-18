@@ -123,7 +123,7 @@ if __name__ == "__main__":
     manufacturers_file = "all_manufacturers.csv"
 
     # Read the file and update count if needed
-    count = 114951
+    count = 126052
     csv_to_dataframe_and_iterate(manufacturers_file, count)
 
 
