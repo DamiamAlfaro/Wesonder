@@ -124,7 +124,7 @@ if __name__ == "__main__":
     folder_files.sort()
 
     #File number
-    count = 32
+    count = 51
     for file_number in range(count, len(folder_files)):
         file_itself = folder_files[file_number]
         reading_the_csv_files(f'{folder}{folder_files[file_number]}', file_number, file_itself)
