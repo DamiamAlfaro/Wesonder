@@ -327,7 +327,7 @@ if __name__ == "__main__":
         print(f"{i}: {treasure_files[i]}")
     
     # Counts vary on the file being executed
-    count = 454
+    count = 1332
     folder_number = 1 # Based on the session
 
     # Iterate through each csv
