@@ -28,6 +28,7 @@
 
 </head>
 <body>
+    
 
     <?php 
     
@@ -40,14 +41,14 @@
         $conn = new mysqli($host, $username, $password, $dbname);
         
         // Markers that will later be displayed on the leaflet.js map
-        $markers = [];
+        $mapMarkersScript = "";
         
         
         if ($conn->connect_error) {
             die("Connection failed: " . $conn->connect_error);
         }
         
-        $sql = "SELECT * FROM dir_entities WHERE entity_type IN ('Awarding Body\nType') LIMIT 10";
+        $sql = "SELECT * FROM dir_entities WHERE entity_type IN ('Awarding Body\nType') AND entity_state = 'CA' LIMIT 1000";
         $result = $conn->query($sql);
 
         if ($result->num_rows > 0) {
@@ -57,20 +58,23 @@
                 $entity_county = $row['entity_county'];
                 $x_coordinates = $row['x_coordinates'];
                 $y_coordinates = $row['y_coordinates'];
-                $awarding_body_name = $row['awarding_body_name'];
+                $awarding_body_name = htmlspecialchars($row['awarding_body_name'], ENT_QUOTES);
                 $entity_web_pages = $row['web_pages'];
                 $entity_web_links = $row['web_links'];
                 
-                $markers[] = [
-                    'email' => $entity_email,
-                    'address' => $entity_address,
-                    'county' => $entity_county,
-                    'x_coordinate' => $x_coordinates,
-                    'y_coordinate' => $y_coordinates,
-                    'name' => $awarding_body_name,
-                    'web_pages' => $entity_web_pages,
-                    'web_links' => $entity_web_links
-                ];
+                $string_display = "<strong>Name:</strong> " . $awarding_body_name . "<br><strong>Email: </strong>"
+                . $entity_email . "<br>";
+                
+                
+                $mapMarkersScript .= "
+                    L.circleMarker([$x_coordinates, $y_coordinates], {
+                        radius: 4, // Marker size
+                        color: '#3388ff', // Border color
+                        fillColor: '#3388ff', // Fill color
+                        fillOpacity: 0.5 // Opacity
+                    }).addTo(map)
+                    .bindPopup('$string_display');
+                ";
                 
             }
         } else {
@@ -86,19 +90,24 @@
     <div id="map"></div>
 
     <script>
-        var map = L.map('map').setView([37.7749, -122.4194], 5);
+        var map = L.map('map', {
+            renderer: L.canvas() // Enable Canvas rendering
+        }).setView([37.7749, -122.4194], 5);
 
         L.tileLayer('https://tile.openstreetmap.org/{z}/{x}/{y}.png', {
             maxZoom: 19,
             attribution: '&copy; <a href="http://www.openstreetmap.org/copyright">OpenStreetMap</a>'
         }).addTo(map);
-
-        var markers = <?php echo json_encode($markers); ?>;
         
-        markers.forEach(function(markerData) {
-            var marker = L.marker([markerData.x_coordinate, markerData.y_coordinate]).addTo(map);
-            marker.bindPopup(markerData.name);
-        });
+        L.tileLayer('https://tile.openstreetmap.org/{z}/{x}/{y}.png', {
+            maxZoom: 19,
+            attribution: '&copy; <a href="http://www.openstreetmap.org/copyright">OpenStreetMap</a>'
+        }).addTo(map);
+
+        
+        <?php echo $mapMarkersScript; ?>
+        
+        
         
         
     </script>
