@@ -40,40 +40,63 @@
         // Connect to the database
         $conn = new mysqli($host, $username, $password, $dbname);
         
-        // Markers that will later be displayed on the leaflet.js map
-        $mapMarkersScript = "";
-        
         
         if ($conn->connect_error) {
             die("Connection failed: " . $conn->connect_error);
         }
         
-        $sql = "SELECT * FROM dir_entities WHERE entity_type IN ('Awarding Body\nType') AND entity_state = 'CA' LIMIT 1000";
+        // Markers that will later be displayed on the leaflet.js map
+        $mapMarkersScript = "var markers = L.markerClusterGroup();\n";
+        
+        $sql = "SELECT * FROM dir_awarding_bodies WHERE state = 'CA'";
         $result = $conn->query($sql);
 
         if ($result->num_rows > 0) {
             while ($row = $result->fetch_assoc()) {
-                $entity_email = $row['entity_email'];
-                $entity_address = $row['full_address'];
-                $entity_county = $row['entity_county'];
-                $x_coordinates = $row['x_coordinates'];
-                $y_coordinates = $row['y_coordinates'];
-                $awarding_body_name = htmlspecialchars($row['awarding_body_name'], ENT_QUOTES);
+                
+                // Assign variables based on the headers of the table from MySQL
+                $name = addslashes($row['name']);
+                $email = addslashes($row['email']);
+                $state = addslashes($row['state']);
+                $county = addslashes($row['county']);
+                $address = addslashes($row['full_address']);
+                $x_coordinates = $row['x_coordinate'];
+                $y_coordinates = $row['y_coordinate'];
+                $awarding_body_name = addslashes(htmlspecialchars($row['ab_name'], ENT_QUOTES));
                 $entity_web_pages = $row['web_pages'];
                 $entity_web_links = $row['web_links'];
                 
-                $string_display = "<strong>Name:</strong> " . $awarding_body_name . "<br><strong>Email: </strong>"
-                . $entity_email . "<br>";
+                // Segreate and accommodate the respective webpages for each Awarding body 
+                $web_pages_array = explode(',', $row['web_pages']);
+                $web_links_array = explode(',', $entity_web_links);
+                
+                $webpageHTML = [];
+                foreach ($web_pages_array as $index => $web_page) {
+                    $web_page = trim($web_page);
+                    $web_link = isset($web_links_array[$index]) ? trim($web_links_array[$index]) : '#';
+                    if (!empty($web_page)) {
+                        $webpageHTML[] = "<a href='" . htmlspecialchars($web_link, ENT_QUOTES) . "' target='_blank'>" . htmlspecialchars($web_page, ENT_QUOTES) . "</a>";
+                    }
+                }
+                $webpageHTMLFormatted = implode(', ', $webpageHTML);
+
+                
+                $string_display = "
+                <strong>Name:</strong> $awarding_body_name <br>
+                <strong>Email: </strong> $email <br>
+                <strong>Address: </strong> $address <br>
+                <strong>WebPages: </strong> $webpageHTMLFormatted
+                ";
                 
                 
                 $mapMarkersScript .= "
-                    L.circleMarker([$x_coordinates, $y_coordinates], {
+                    var marker = L.circleMarker([$x_coordinates, $y_coordinates], {
                         radius: 4, // Marker size
                         color: '#3388ff', // Border color
                         fillColor: '#3388ff', // Fill color
                         fillOpacity: 0.5 // Opacity
-                    }).addTo(map)
-                    .bindPopup('$string_display');
+                    }).bindPopup(" . json_encode($string_display) . ");
+                    markers.addLayer(marker);
                 ";
                 
             }
@@ -93,11 +116,6 @@
         var map = L.map('map', {
             renderer: L.canvas() // Enable Canvas rendering
         }).setView([37.7749, -122.4194], 5);
-
-        L.tileLayer('https://tile.openstreetmap.org/{z}/{x}/{y}.png', {
-            maxZoom: 19,
-            attribution: '&copy; <a href="http://www.openstreetmap.org/copyright">OpenStreetMap</a>'
-        }).addTo(map);
         
         L.tileLayer('https://tile.openstreetmap.org/{z}/{x}/{y}.png', {
             maxZoom: 19,
@@ -106,6 +124,7 @@
 
         
         <?php echo $mapMarkersScript; ?>
+        map.addLayer(markers);
         
         
         
