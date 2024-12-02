@@ -25,6 +25,43 @@
     <script src="https://unpkg.com/leaflet.markercluster@1.5.3/dist/leaflet.markercluster.js"></script>
 
     <title>Map Display</title>
+    
+    <style>
+    /* Base cluster style */
+    .marker-cluster {
+        background-clip: padding-box;
+        border-radius: 50%; /* Makes the cluster circular */
+        color: black;
+        text-align: center;
+        font-size: 14px;
+        font-weight: bold;
+        line-height: 40px; /* Align text vertically */
+        cursor: pointer;
+    }
+    
+    /* Small clusters */
+    .marker-cluster-small {
+        background-color: #90ee90; /* Light green */
+        width: 40px;
+        height: 40px;
+    }
+    
+    /* Medium clusters */
+    .marker-cluster-medium {
+        background-color: #ffa500; /* Orange */
+        width: 50px;
+        height: 50px;
+    }
+    
+    /* Large clusters */
+    .marker-cluster-large {
+        background-color: #ff4500; /* Red */
+        width: 60px;
+        height: 60px;
+    }
+    
+    </style>
+
 
 </head>
 <body>
@@ -46,7 +83,32 @@
         }
         
         // Markers that will later be displayed on the leaflet.js map
-        $mapMarkersScript = "var markers = L.markerClusterGroup();\n";
+        $mapMarkersScript = "
+            var markers = L.markerClusterGroup({
+                iconCreateFunction: function(cluster) {
+                    // Calculate the number of markers in the cluster
+                    var childCount = cluster.getChildCount();
+                    
+                    // Define a class based on the number of markers
+                    var c = 'marker-cluster-'; 
+                    if (childCount < 25) {
+                        c += 'small';
+                    } else if (childCount < 350) {
+                        c += 'medium';
+                    } else {
+                        c += 'large';
+                    } 
+        
+                    // Return a custom cluster icon
+                    return new L.DivIcon({ 
+                        html: '<div><span>' + childCount + '</span></div>',
+                        className: 'marker-cluster ' + c, 
+                        iconSize: [40, 40] // Size of the cluster icon
+                    });
+                }
+            });
+        ";
+
         
         $sql = "SELECT * FROM dir_awarding_bodies WHERE state = 'CA'";
         $result = $conn->query($sql);
@@ -91,7 +153,7 @@
                 
                 $mapMarkersScript .= "
                     var marker = L.circleMarker([$x_coordinates, $y_coordinates], {
-                        radius: 4, // Marker size
+                        radius: 6, // Marker size
                         color: '#3388ff', // Border color
                         fillColor: '#3388ff', // Fill color
                         fillOpacity: 0.5 // Opacity
