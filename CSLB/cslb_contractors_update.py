@@ -298,7 +298,7 @@ def obtaining_new_geolocations_and_finalization():
             present_csv_file.at[index, 'X_Coordinate'] = x_coordinate
             present_csv_file.at[index, 'Y_Coordinate'] = y_coordinate
 
-        print(f'{complete_address}: ({x_coordinate},{y_coordinate})')
+        print(f'{complete_address} #{index}: ({x_coordinate},{y_coordinate})')
 
     # Now that we have the geolocation extraction working, and have a complete 
     # dataframe with all of the geolocations, we need to cleanse them. What
@@ -318,18 +318,10 @@ def obtaining_new_geolocations_and_finalization():
 
     print(present_csv_file)
     print(refined_present_csv)
-    
-    
 
     
+
     
-
-
-
-
-
-        
-
 if __name__ == "__main__":
 
     # For aesthetic purposes, we will ask the user which step to 
