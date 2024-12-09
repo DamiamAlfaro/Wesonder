@@ -246,7 +246,7 @@ def obtaining_new_geolocations_attempt2(address_string):
     # coordinates for each of the addressess.
     
     geolocator = Nominatim(user_agent="my_geocoder")
-    location = geolocator.geocode(address_string)
+    location = geolocator.geocode(address_string, timeout=8)
 
     if location:
         lat = location.latitude
