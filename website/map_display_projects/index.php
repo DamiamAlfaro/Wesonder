@@ -47,7 +47,7 @@
 
         $mapMarkersScript = "var markers = L.markerClusterGroup();\n";
 
-        $sql = "SELECT * FROM dir_projects";
+        $sql = "SELECT * FROM dir_projects LIMIT 1000";
         $result = $conn->query($sql);
 
         if ($result->num_rows > 0) {
