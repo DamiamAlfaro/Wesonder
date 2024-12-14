@@ -32,15 +32,36 @@
 <body>
     
     <form id="checkboxForm">
-        <input type="checkbox" name="option1" value="San Diego" onclick="handleCheckboxClick(this)"> Option 1<br>
-        <input type="checkbox" name="option2" value="Los Angeles" onclick="handleCheckboxClick(this)"> Option 2<br>
-        <input type="checkbox" name="option3" value="Riverside" onclick="handleCheckboxClick(this)"> Option 3<br>
+        <input type="checkbox" name="county1" value="San Diego" onclick="handleCheckboxClick(this)"> San Diego<br>
+        <input type="checkbox" name="county2" value="Los Angeles" onclick="handleCheckboxClick(this)"> Los Angeles<br>
+        <input type="checkbox" name="county3" value="Riverside" onclick="handleCheckboxClick(this)"> Riverside<br>
     </form>
 
-    <?php 
+    <?php
     
-        $countySelection = $_POST['countiesSelected'];
-        $countyInQuestion = $countySelection[0];
+        echo "
+            <script type=\"text/javascript\">
+                function handleCheckboxClick(checkbox) {
+                    // Prepare the data to send to the server
+                    const formData = new FormData();
+                    formData.append('checkbox_name', checkbox.name);
+                    formData.append('checkbox_value', checkbox.value);
+                    formData.append('checkbox_checked', checkbox.checked);
+                
+                    // Send the data using AJAX
+                    fetch('project_loading.php', {
+                        method: 'POST',
+                        body: formData
+                    })
+                    .then(response => response.text()) // Change to `.json()` if the server returns JSON
+                    .then(data => {
+                        console.log('Server response:', data);
+                        // You can update the UI dynamically based on the server response here
+                    })
+                    .catch(error => console.error('Error:', error));
+                }
+            </script>
+        ";
     
         $host = "localhost"; 
         $username = "u978864605_wesonder";
@@ -55,7 +76,7 @@
 
         $mapMarkersScript = "var markers = L.markerClusterGroup();\n";
 
-        $sql = "SELECT * FROM dir_projects WHERE county = '$countyInQuestion' LIMIT 1000";
+        $sql = "SELECT * FROM dir_projects LIMIT 100";
         $result = $conn->query($sql);
 
         if ($result->num_rows > 0) {
@@ -118,25 +139,6 @@
             attribution: '&copy; <a href="http://www.openstreetmap.org/copyright">OpenStreetMap</a>'
         }).addTo(map);
         
-        function handleCheckboxClick(checkbox) {
-            // Prepare the data to send to the server
-            const formData = new FormData();
-            formData.append('checkbox_name', checkbox.name);
-            formData.append('checkbox_value', checkbox.value);
-            formData.append('checkbox_checked', checkbox.checked);
-        
-            // Send the data using AJAX
-            fetch('project_loading.php', {
-                method: 'POST',
-                body: formData
-            })
-            .then(response => response.text()) // Change to `.json()` if the server returns JSON
-            .then(data => {
-                console.log('Server response:', data);
-                // You can update the UI dynamically based on the server response here
-            })
-            .catch(error => console.error('Error:', error));
-        }
 
         <?php echo $mapMarkersScript; ?>
         <?php echo $countyCheckBox; ?>
