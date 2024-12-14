@@ -76,18 +76,34 @@
                     var markers = L.markerClusterGroup();
                     
                     projects.forEach(project => {
-                       const project_name = project.project_name;
-                       const x_coordinate = parseFloat(project.x_coordinates);
-                       const y_coordinate = parseFloat(project.y_coordinates);
+                        const project_name = project.project_name;
+                        const awarding_body = project.awarding_body;
+                        const project_id_number = project.project_id_number;
+                        const project_description = project.project_description;
+                        const project_startdate = project.start_date;
+                        const project_finishdate = project.finish_date;
+                        const project_address = project.complete_address;
+                        const x_coordinate = parseFloat(project.x_coordinates);
+                        const y_coordinate = parseFloat(project.y_coordinates);
+                        const project_county = project.county;
+                        
+                        const popupContent = `
+                            <strong>Project Name:</strong> ${project_name}<br>
+                            <strong>Awarding Body:</strong> ${awarding_body}<br>
+                            <strong>Project ID Number:</strong> ${project_id_number}<br>
+                            <strong>Description:</strong> ${project_description}<br>
+                            <strong>Start Date:</strong> ${project_startdate}<br>
+                            <strong>Finish Date:</strong> ${project_finishdate}<br>
+                            <strong>Address:</strong> ${project_address}<br>
+                        `;
                        
-                       var marker = L.circleMarker([x_coordinate, y_coordinate], {
+                        var marker = L.circleMarker([x_coordinate, y_coordinate], {
                             radius: 6, // Marker size
                             color: '#3388ff', // Border color
                             fillColor: '#3388ff', // Fill color
                             fillOpacity: 0.5 // Opacity
-                        }).bindPopup(project_name);
-                        markers.addLayer(marker);
-                       
+                            }).bindPopup(popupContent);
+                            markers.addLayer(marker);
                     });
                     
                     map.addLayer(markers);
