@@ -28,7 +28,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         echo "\r\nWorking Properly\r\n";
     }
     
-    $sql = "SELECT * FROM dir_projects LIMIT 10";
+    $sql = "SELECT * FROM dir_projects WHERE county = '$checkboxValue' LIMIT 10";
     $result = $conn->query($sql);
     
     // Once connected to MySQL, let's implement all of the variables from the table in question, we will need them 
@@ -50,7 +50,19 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             $y_coordinates = $row['y_coordinates'];
             $county = $row['county'];
             
-            echo $project_number . $project_name;
+            $string_display = "
+            <strong>Project Name:</strong> $project_name <br>
+            <strong>Project Number:</strong> $project_number <br>
+            <strong>Awarding Body:</strong> $awarding_body <br>
+            <strong>Address:</strong> $complete_address <br>
+            <strong>Project ID Number:</strong> $project_id_number <br>
+            <strong>Project DIR Number:</strong> $project_dir_number <br>
+            <strong>Description:</strong> $project_description <br>
+            <strong>Start Date:</strong> $start_date <br>
+            <strong>End Date:</strong> $finish_date <br>
+            ";
+            
+            echo $string_display . "\r\n\r\n";
             
         }
     }
@@ -60,7 +72,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
     // Process the checkbox data
     if ($checkboxChecked === 'true') {
-        echo $message . "Checkbox $checkboxName with value $checkboxValue was checked.";
+        echo  "Checkbox $checkboxName with value $checkboxValue was checked.";
         // Add your logic for a checked state here
     } else {
         echo "Checkbox $checkboxName with value $checkboxValue was unchecked.";
