@@ -38,49 +38,7 @@
     </form>
 
     <?php
-    
-        echo "
-            <script type=\"text/javascript\">
-                function handleCheckboxClick(checkbox) {
-                    // Prepare the data to send to the server
-                    const formData = new FormData();
-                    formData.append('checkbox_name', checkbox.name);
-                    formData.append('checkbox_value', checkbox.value);
-                    formData.append('checkbox_checked', checkbox.checked);
-                
-                    // Send the data using AJAX
-                    fetch('project_loading.php', {
-                        method: 'POST',
-                        body: formData
-                    })
-                    .then(response => response.json()) // Change to `.json()` if the server returns JSON
-                    .then(data => {
-                        if (data.status === 'success') {
-                            const projects = data.projects;
-                            console.log(projects);
-                        } else if (data.status === 'unchecked') {
-                            console.log(data.message);
-                        } else {
-                            console.error('Unexpected response:', data);
-                        }
-                    })
-                    .catch(error => console.error('Error:', error));
-                }
-            </script>
-        ";
-    
 
-        $mapMarkersScript = "var markers = L.markerClusterGroup();\n";
-                
-        $mapMarkersScript .= "
-            var marker = L.circleMarker([$x_coordinates, $y_coordinates], {
-                radius: 6, // Marker size
-                color: '#3388ff', // Border color
-                fillColor: '#3388ff', // Fill color
-                fillOpacity: 0.5 // Opacity
-            }).bindPopup(" . json_encode($string_display) . ");
-            markers.addLayer(marker);
-        ";
         
     ?>
     
@@ -97,9 +55,52 @@
             attribution: '&copy; <a href="http://www.openstreetmap.org/copyright">OpenStreetMap</a>'
         }).addTo(map);
         
-
-        <?php echo $mapMarkersScript; ?>
-        // map.addLayer(markers);
+        function handleCheckboxClick(checkbox) {
+            // Prepare the data to send to the server
+            const formData = new FormData();
+            formData.append('checkbox_name', checkbox.name);
+            formData.append('checkbox_value', checkbox.value);
+            formData.append('checkbox_checked', checkbox.checked);
+        
+            // Send the data using AJAX
+            fetch('project_loading.php', {
+                method: 'POST',
+                body: formData
+            })
+            .then(response => response.json()) // Change to `.json()` if the server returns JSON
+            .then(data => {
+                if (data.status === 'success') {
+                    
+                    const projects = data.projects;
+                    
+                    var markers = L.markerClusterGroup();
+                    
+                    projects.forEach(project => {
+                       const project_name = project.project_name;
+                       const x_coordinate = parseFloat(project.x_coordinates);
+                       const y_coordinate = parseFloat(project.y_coordinates);
+                       
+                       var marker = L.circleMarker([x_coordinate, y_coordinate], {
+                            radius: 6, // Marker size
+                            color: '#3388ff', // Border color
+                            fillColor: '#3388ff', // Fill color
+                            fillOpacity: 0.5 // Opacity
+                        }).bindPopup(project_name);
+                        markers.addLayer(marker);
+                       
+                    });
+                    
+                    map.addLayer(markers);
+    
+                } else if (data.status === 'unchecked') {
+                    console.log(data.message);
+                } else {
+                    console.error('Unexpected response:', data);
+                }
+            })
+            .catch(error => console.error('Error:', error));
+        }
+        
         
         
         
