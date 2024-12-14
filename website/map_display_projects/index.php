@@ -30,11 +30,11 @@
 
 </head>
 <body>
-    <form method="POST" action="index.php">
-        San Diego <input type="checkbox" name="countiesSelected[]" value="San Diego">
-        Riverside <input type="checkbox" name="countiesSelected[]" value="Riverside">
-        Orange <input type="checkbox" name="countiesSelected[]" value="Orange">
-        <input type="submit">
+    
+    <form id="checkboxForm">
+        <input type="checkbox" name="option1" value="San Diego" onclick="handleCheckboxClick(this)"> Option 1<br>
+        <input type="checkbox" name="option2" value="Los Angeles" onclick="handleCheckboxClick(this)"> Option 2<br>
+        <input type="checkbox" name="option3" value="Riverside" onclick="handleCheckboxClick(this)"> Option 3<br>
     </form>
 
     <?php 
@@ -99,9 +99,7 @@
                 
                 
             }
-        } else {
-            echo "No results found.";
-        }
+        } else {}
         
         $conn->close();
 
@@ -119,6 +117,26 @@
             maxZoom: 19,
             attribution: '&copy; <a href="http://www.openstreetmap.org/copyright">OpenStreetMap</a>'
         }).addTo(map);
+        
+        function handleCheckboxClick(checkbox) {
+            // Prepare the data to send to the server
+            const formData = new FormData();
+            formData.append('checkbox_name', checkbox.name);
+            formData.append('checkbox_value', checkbox.value);
+            formData.append('checkbox_checked', checkbox.checked);
+        
+            // Send the data using AJAX
+            fetch('project_loading.php', {
+                method: 'POST',
+                body: formData
+            })
+            .then(response => response.text()) // Change to `.json()` if the server returns JSON
+            .then(data => {
+                console.log('Server response:', data);
+                // You can update the UI dynamically based on the server response here
+            })
+            .catch(error => console.error('Error:', error));
+        }
 
         <?php echo $mapMarkersScript; ?>
         <?php echo $countyCheckBox; ?>
