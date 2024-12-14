@@ -30,9 +30,17 @@
 
 </head>
 <body>
-    
+    <form method="POST" action="index.php">
+        San Diego <input type="checkbox" name="countiesSelected[]" value="San Diego">
+        Riverside <input type="checkbox" name="countiesSelected[]" value="Riverside">
+        Orange <input type="checkbox" name="countiesSelected[]" value="Orange">
+        <input type="submit">
+    </form>
 
     <?php 
+    
+        $countySelection = $_POST['countiesSelected'];
+        $countyInQuestion = $countySelection[0];
     
         $host = "localhost"; 
         $username = "u978864605_wesonder";
@@ -47,7 +55,7 @@
 
         $mapMarkersScript = "var markers = L.markerClusterGroup();\n";
 
-        $sql = "SELECT * FROM dir_projects LIMIT 1000";
+        $sql = "SELECT * FROM dir_projects WHERE county = '$countyInQuestion' LIMIT 1000";
         $result = $conn->query($sql);
 
         if ($result->num_rows > 0) {
@@ -113,6 +121,7 @@
         }).addTo(map);
 
         <?php echo $mapMarkersScript; ?>
+        <?php echo $countyCheckBox; ?>
         map.addLayer(markers);
         
         
