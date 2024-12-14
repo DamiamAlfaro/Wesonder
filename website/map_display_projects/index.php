@@ -53,77 +53,35 @@
                         method: 'POST',
                         body: formData
                     })
-                    .then(response => response.text()) // Change to `.json()` if the server returns JSON
+                    .then(response => response.json()) // Change to `.json()` if the server returns JSON
                     .then(data => {
-                        console.log('Server response:', data);
-                        // You can update the UI dynamically based on the server response here
+                        if (data.status === 'success') {
+                            const projects = data.projects;
+                            console.log(projects);
+                        } else if (data.status === 'unchecked') {
+                            console.log(data.message);
+                        } else {
+                            console.error('Unexpected response:', data);
+                        }
                     })
                     .catch(error => console.error('Error:', error));
                 }
             </script>
         ";
     
-        $host = "localhost"; 
-        $username = "u978864605_wesonder";
-        $password = "Elchapillo34?nmddam";
-        $dbname = "u978864605_wesonder";
-        
-        $conn = new mysqli($host, $username, $password, $dbname);
-        
-        if ($conn->connect_error) {
-            die("Connection failed: " . $conn->connect_error);
-        }
 
         $mapMarkersScript = "var markers = L.markerClusterGroup();\n";
-
-        $sql = "SELECT * FROM dir_projects LIMIT 100";
-        $result = $conn->query($sql);
-
-        if ($result->num_rows > 0) {
-            while ($row = $result->fetch_assoc()) {
                 
-                // Assign variables based on the headers of the table from MySQL
-                $project_number = $row['project_number'];
-                $project_name = $row['project_name'];
-                $awarding_body = $row['awarding_body'];
-                $project_id_number = $row['project_id_number'];
-                $project_dir_number = $row['project_dir_number'];
-                $project_description = $row['project_description'];
-                $start_date = $row['date_started'];
-                $finish_date = $row['date_finished'];
-                $complete_address = $row['complete_address'];
-                $x_coordinates = $row['x_coordinates'];
-                $y_coordinates = $row['y_coordinates'];
-                $county = $row['county'];
-                
-                $string_display = "
-                <strong>Project Name:</strong> $project_name <br>
-                <strong>Project Number:</strong> $project_number <br>
-                <strong>Awarding Body:</strong> $awarding_body <br>
-                <strong>Address:</strong> $complete_address <br>
-                <strong>Project ID Number:</strong> $project_id_number <br>
-                <strong>Project DIR Number:</strong> $project_dir_number <br>
-                <strong>Description:</strong> $project_description <br>
-                <strong>Start Date:</strong> $start_date <br>
-                <strong>End Date:</strong> $finish_date <br>
-                ";
-                
-                $mapMarkersScript .= "
-                    var marker = L.circleMarker([$x_coordinates, $y_coordinates], {
-                        radius: 6, // Marker size
-                        color: '#3388ff', // Border color
-                        fillColor: '#3388ff', // Fill color
-                        fillOpacity: 0.5 // Opacity
-                    }).bindPopup(" . json_encode($string_display) . ");
-                    markers.addLayer(marker);
-                ";
-                
-                
-            }
-        } else {}
+        $mapMarkersScript .= "
+            var marker = L.circleMarker([$x_coordinates, $y_coordinates], {
+                radius: 6, // Marker size
+                color: '#3388ff', // Border color
+                fillColor: '#3388ff', // Fill color
+                fillOpacity: 0.5 // Opacity
+            }).bindPopup(" . json_encode($string_display) . ");
+            markers.addLayer(marker);
+        ";
         
-        $conn->close();
-
     ?>
     
 
@@ -141,8 +99,7 @@
         
 
         <?php echo $mapMarkersScript; ?>
-        <?php echo $countyCheckBox; ?>
-        map.addLayer(markers);
+        // map.addLayer(markers);
         
         
         
