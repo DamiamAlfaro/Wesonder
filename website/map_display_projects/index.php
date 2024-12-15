@@ -44,7 +44,7 @@
             box-shadow: 0 2px 5px rgba(0, 0, 0, 0.3); /* Add a slight shadow */
             z-index: 1000; /* Ensure it is above the map */
             height: auto; /* Fixed height */
-            max-height: 500px;
+            max-height: 650px;
             width: 190px; /* Fixed width */
             overflow-y: auto; /* Enable scrolling for vertical overflow */
         }
