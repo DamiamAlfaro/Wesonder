@@ -26,7 +26,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         exit();
     } 
     
-    $sql = "SELECT * FROM dir_projects WHERE county = '$checkboxValue' LIMIT 10";
+    $sql = "SELECT * FROM dir_projects WHERE county = '$checkboxValue'";
     $result = $conn->query($sql);
     
     // Once connected to MySQL, let's implement all of the variables from the table in question, we will need them 
@@ -38,11 +38,9 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     if ($result->num_rows > 0) {
         while ($row = $result->fetch_assoc()) {
             $projects[] = [
-                "project_number" => $row['project_number'],
                 "project_name" => $row['project_name'],
                 "awarding_body" => $row['awarding_body'],
                 "project_id_number" => $row['project_id_number'],
-                "project_dir_number" => $row['project_dir_number'],
                 "project_description" => $row['project_description'],
                 "start_date" => $row['date_started'],
                 "finish_date" => $row['date_finished'],
