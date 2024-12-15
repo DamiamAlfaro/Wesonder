@@ -50,7 +50,13 @@
         }
         
         #checkboxForm input[type="checkbox"] {
+            transform: scale(1.3);
             margin-right: 10px; /* Add spacing between checkbox and label */
+        }
+        
+        #checkboxForm input[type="checkbox"] + label {
+            font-size: 20px; /* Adjust font size */
+            font-family: Optima;
         }
         
     </style>
@@ -61,64 +67,172 @@
 <body>
     
     <form id="checkboxForm">
-        <strong>Select County</strong><br><br>
-        <input type="checkbox" name="county1" value="Alameda" onclick="handleCheckboxClick(this)"> Alameda<br>
-        <input type="checkbox" name="county2" value="Amador" onclick="handleCheckboxClick(this)"> Amador<br>
-        <input type="checkbox" name="county3" value="Butte" onclick="handleCheckboxClick(this)"> Butte<br>
-        <input type="checkbox" name="county4" value="Calaveras" onclick="handleCheckboxClick(this)"> Calaveras<br>
-        <input type="checkbox" name="county5" value="Colusa" onclick="handleCheckboxClick(this)"> Colusa<br>
-        <input type="checkbox" name="county6" value="Contra Costa" onclick="handleCheckboxClick(this)"> Contra Costa<br>
-        <input type="checkbox" name="county7" value="Del Norte" onclick="handleCheckboxClick(this)"> Del Norte<br>
-        <input type="checkbox" name="county8" value="El Dorado" onclick="handleCheckboxClick(this)"> El Dorado<br>
-        <input type="checkbox" name="county9" value="Fresno" onclick="handleCheckboxClick(this)"> Fresno<br>
-        <input type="checkbox" name="county10" value="Glenn" onclick="handleCheckboxClick(this)"> Glenn<br>
-        <input type="checkbox" name="county11" value="Humboldt" onclick="handleCheckboxClick(this)"> Humboldt<br>
-        <input type="checkbox" name="county12" value="Imperial" onclick="handleCheckboxClick(this)"> Imperial<br>
-        <input type="checkbox" name="county13" value="Inyo" onclick="handleCheckboxClick(this)"> Inyo<br>
-        <input type="checkbox" name="county14" value="Kern" onclick="handleCheckboxClick(this)"> Kern<br>
-        <input type="checkbox" name="county15" value="Kings" onclick="handleCheckboxClick(this)"> Kings<br>
-        <input type="checkbox" name="county16" value="Lake" onclick="handleCheckboxClick(this)"> Lake<br>
-        <input type="checkbox" name="county17" value="Lassen" onclick="handleCheckboxClick(this)"> Lassen<br>
-        <input type="checkbox" name="county18" value="Los Angeles" onclick="handleCheckboxClick(this)"> Los Angeles<br>
-        <input type="checkbox" name="county19" value="Madera" onclick="handleCheckboxClick(this)"> Madera<br>
-        <input type="checkbox" name="county20" value="Marin" onclick="handleCheckboxClick(this)"> Marin<br>
-        <input type="checkbox" name="county21" value="Mendocino" onclick="handleCheckboxClick(this)"> Mendocino<br>
-        <input type="checkbox" name="county22" value="Merced" onclick="handleCheckboxClick(this)"> Merced<br>
-        <input type="checkbox" name="county23" value="Modoc" onclick="handleCheckboxClick(this)"> Modoc<br>
-        <input type="checkbox" name="county24" value="Mono" onclick="handleCheckboxClick(this)"> Mono<br>
-        <input type="checkbox" name="county25" value="Monterey" onclick="handleCheckboxClick(this)"> Monterey<br>
-        <input type="checkbox" name="county26" value="Napa" onclick="handleCheckboxClick(this)"> Napa<br>
-        <input type="checkbox" name="county27" value="Nevada" onclick="handleCheckboxClick(this)"> Nevada<br>
-        <input type="checkbox" name="county28" value="Orange" onclick="handleCheckboxClick(this)"> Orange<br>
-        <input type="checkbox" name="county29" value="Placer" onclick="handleCheckboxClick(this)"> Placer<br>
-        <input type="checkbox" name="county30" value="Plumas" onclick="handleCheckboxClick(this)"> Plumas<br>
-        <input type="checkbox" name="county31" value="Riverside" onclick="handleCheckboxClick(this)"> Riverside<br>
-        <input type="checkbox" name="county32" value="Sacramento" onclick="handleCheckboxClick(this)"> Sacramento<br>
-        <input type="checkbox" name="county33" value="San Benito" onclick="handleCheckboxClick(this)"> San Benito<br>
-        <input type="checkbox" name="county34" value="San Bernardino" onclick="handleCheckboxClick(this)"> San Bernardino<br>
-        <input type="checkbox" name="county35" value="San Diego" onclick="handleCheckboxClick(this)"> San Diego<br>
-        <input type="checkbox" name="county36" value="San Francisco" onclick="handleCheckboxClick(this)"> San Francisco<br>
-        <input type="checkbox" name="county37" value="San Joaquin" onclick="handleCheckboxClick(this)"> San Joaquin<br>
-        <input type="checkbox" name="county38" value="San Luis Obispo" onclick="handleCheckboxClick(this)"> San Luis Obispo<br>
-        <input type="checkbox" name="county39" value="San Mateo" onclick="handleCheckboxClick(this)"> San Mateo<br>
-        <input type="checkbox" name="county40" value="Santa Barbara" onclick="handleCheckboxClick(this)"> Santa Barbara<br>
-        <input type="checkbox" name="county41" value="Santa Clara" onclick="handleCheckboxClick(this)"> Santa Clara<br>
-        <input type="checkbox" name="county42" value="Santa Cruz" onclick="handleCheckboxClick(this)"> Santa Cruz<br>
-        <input type="checkbox" name="county43" value="Shasta" onclick="handleCheckboxClick(this)"> Shasta<br>
-        <input type="checkbox" name="county44" value="Sierra" onclick="handleCheckboxClick(this)"> Sierra<br>
-        <input type="checkbox" name="county45" value="Siskiyou" onclick="handleCheckboxClick(this)"> Siskiyou<br>
-        <input type="checkbox" name="county46" value="Solano" onclick="handleCheckboxClick(this)"> Solano<br>
-        <input type="checkbox" name="county47" value="Sonoma" onclick="handleCheckboxClick(this)"> Sonoma<br>
-        <input type="checkbox" name="county48" value="Stanislaus" onclick="handleCheckboxClick(this)"> Stanislaus<br>
-        <input type="checkbox" name="county49" value="Sutter" onclick="handleCheckboxClick(this)"> Sutter<br>
-        <input type="checkbox" name="county50" value="Tehama" onclick="handleCheckboxClick(this)"> Tehama<br>
-        <input type="checkbox" name="county51" value="Tulare" onclick="handleCheckboxClick(this)"> Tulare<br>
-        <input type="checkbox" name="county52" value="Tuolumne" onclick="handleCheckboxClick(this)"> Tuolumne<br>
-        <input type="checkbox" name="county53" value="Ventura" onclick="handleCheckboxClick(this)"> Ventura<br>
-        <input type="checkbox" name="county54" value="Yolo" onclick="handleCheckboxClick(this)"> Yolo<br>
-        <input type="checkbox" name="county55" value="Yuba" onclick="handleCheckboxClick(this)"> Yuba<br>
-
+        <input type="checkbox" id="county1" name="county1" value="Alameda" onclick="handleCheckboxClick(this)">
+        <label for="county1">Alameda</label><br>
+    
+        <input type="checkbox" id="county2" name="county2" value="Amador" onclick="handleCheckboxClick(this)">
+        <label for="county2">Amador</label><br>
+    
+        <input type="checkbox" id="county3" name="county3" value="Butte" onclick="handleCheckboxClick(this)">
+        <label for="county3">Butte</label><br>
+    
+        <input type="checkbox" id="county4" name="county4" value="Calaveras" onclick="handleCheckboxClick(this)">
+        <label for="county4">Calaveras</label><br>
+    
+        <input type="checkbox" id="county5" name="county5" value="Colusa" onclick="handleCheckboxClick(this)">
+        <label for="county5">Colusa</label><br>
+    
+        <input type="checkbox" id="county6" name="county6" value="Contra Costa" onclick="handleCheckboxClick(this)">
+        <label for="county6">Contra Costa</label><br>
+    
+        <input type="checkbox" id="county7" name="county7" value="Del Norte" onclick="handleCheckboxClick(this)">
+        <label for="county7">Del Norte</label><br>
+    
+        <input type="checkbox" id="county8" name="county8" value="El Dorado" onclick="handleCheckboxClick(this)">
+        <label for="county8">El Dorado</label><br>
+    
+        <input type="checkbox" id="county9" name="county9" value="Fresno" onclick="handleCheckboxClick(this)">
+        <label for="county9">Fresno</label><br>
+    
+        <input type="checkbox" id="county10" name="county10" value="Glenn" onclick="handleCheckboxClick(this)">
+        <label for="county10">Glenn</label><br>
+    
+        <input type="checkbox" id="county11" name="county11" value="Humboldt" onclick="handleCheckboxClick(this)">
+        <label for="county11">Humboldt</label><br>
+    
+        <input type="checkbox" id="county12" name="county12" value="Imperial" onclick="handleCheckboxClick(this)">
+        <label for="county12">Imperial</label><br>
+    
+        <input type="checkbox" id="county13" name="county13" value="Inyo" onclick="handleCheckboxClick(this)">
+        <label for="county13">Inyo</label><br>
+    
+        <input type="checkbox" id="county14" name="county14" value="Kern" onclick="handleCheckboxClick(this)">
+        <label for="county14">Kern</label><br>
+    
+        <input type="checkbox" id="county15" name="county15" value="Kings" onclick="handleCheckboxClick(this)">
+        <label for="county15">Kings</label><br>
+    
+        <input type="checkbox" id="county16" name="county16" value="Lake" onclick="handleCheckboxClick(this)">
+        <label for="county16">Lake</label><br>
+    
+        <input type="checkbox" id="county17" name="county17" value="Lassen" onclick="handleCheckboxClick(this)">
+        <label for="county17">Lassen</label><br>
+    
+        <input type="checkbox" id="county18" name="county18" value="Los Angeles" onclick="handleCheckboxClick(this)">
+        <label for="county18">Los Angeles</label><br>
+    
+        <input type="checkbox" id="county19" name="county19" value="Madera" onclick="handleCheckboxClick(this)">
+        <label for="county19">Madera</label><br>
+    
+        <input type="checkbox" id="county20" name="county20" value="Marin" onclick="handleCheckboxClick(this)">
+        <label for="county20">Marin</label><br>
+    
+        <input type="checkbox" id="county21" name="county21" value="Mendocino" onclick="handleCheckboxClick(this)">
+        <label for="county21">Mendocino</label><br>
+    
+        <input type="checkbox" id="county22" name="county22" value="Merced" onclick="handleCheckboxClick(this)">
+        <label for="county22">Merced</label><br>
+    
+        <input type="checkbox" id="county23" name="county23" value="Modoc" onclick="handleCheckboxClick(this)">
+        <label for="county23">Modoc</label><br>
+    
+        <input type="checkbox" id="county24" name="county24" value="Mono" onclick="handleCheckboxClick(this)">
+        <label for="county24">Mono</label><br>
+    
+        <input type="checkbox" id="county25" name="county25" value="Monterey" onclick="handleCheckboxClick(this)">
+        <label for="county25">Monterey</label><br>
+    
+        <input type="checkbox" id="county26" name="county26" value="Napa" onclick="handleCheckboxClick(this)">
+        <label for="county26">Napa</label><br>
+    
+        <input type="checkbox" id="county27" name="county27" value="Nevada" onclick="handleCheckboxClick(this)">
+        <label for="county27">Nevada</label><br>
+    
+        <input type="checkbox" id="county28" name="county28" value="Orange" onclick="handleCheckboxClick(this)">
+        <label for="county28">Orange</label><br>
+    
+        <input type="checkbox" id="county29" name="county29" value="Placer" onclick="handleCheckboxClick(this)">
+        <label for="county29">Placer</label><br>
+    
+        <input type="checkbox" id="county30" name="county30" value="Plumas" onclick="handleCheckboxClick(this)">
+        <label for="county30">Plumas</label><br>
+    
+        <input type="checkbox" id="county31" name="county31" value="Riverside" onclick="handleCheckboxClick(this)">
+        <label for="county31">Riverside</label><br>
+    
+        <input type="checkbox" id="county32" name="county32" value="Sacramento" onclick="handleCheckboxClick(this)">
+        <label for="county32">Sacramento</label><br>
+    
+        <input type="checkbox" id="county33" name="county33" value="San Benito" onclick="handleCheckboxClick(this)">
+        <label for="county33">San Benito</label><br>
+    
+        <input type="checkbox" id="county34" name="county34" value="San Bernardino" onclick="handleCheckboxClick(this)">
+        <label for="county34">San Bernardino</label><br>
+    
+        <input type="checkbox" id="county35" name="county35" value="San Diego" onclick="handleCheckboxClick(this)">
+        <label for="county35">San Diego</label><br>
+    
+        <input type="checkbox" id="county36" name="county36" value="San Francisco" onclick="handleCheckboxClick(this)">
+        <label for="county36">San Francisco</label><br>
+    
+        <input type="checkbox" id="county37" name="county37" value="San Joaquin" onclick="handleCheckboxClick(this)">
+        <label for="county37">San Joaquin</label><br>
+    
+        <input type="checkbox" id="county38" name="county38" value="San Luis Obispo" onclick="handleCheckboxClick(this)">
+        <label for="county38">San Luis Obispo</label><br>
+    
+        <input type="checkbox" id="county39" name="county39" value="San Mateo" onclick="handleCheckboxClick(this)">
+        <label for="county39">San Mateo</label><br>
+    
+        <input type="checkbox" id="county40" name="county40" value="Santa Barbara" onclick="handleCheckboxClick(this)">
+        <label for="county40">Santa Barbara</label><br>
+    
+        <input type="checkbox" id="county41" name="county41" value="Santa Clara" onclick="handleCheckboxClick(this)">
+        <label for="county41">Santa Clara</label><br>
+    
+        <input type="checkbox" id="county42" name="county42" value="Santa Cruz" onclick="handleCheckboxClick(this)">
+        <label for="county42">Santa Cruz</label><br>
+    
+        <input type="checkbox" id="county43" name="county43" value="Shasta" onclick="handleCheckboxClick(this)">
+        <label for="county43">Shasta</label><br>
+    
+        <input type="checkbox" id="county44" name="county44" value="Sierra" onclick="handleCheckboxClick(this)">
+        <label for="county44">Sierra</label><br>
+    
+        <input type="checkbox" id="county45" name="county45" value="Siskiyou" onclick="handleCheckboxClick(this)">
+        <label for="county45">Siskiyou</label><br>
+    
+        <input type="checkbox" id="county46" name="county46" value="Solano" onclick="handleCheckboxClick(this)">
+        <label for="county46">Solano</label><br>
+    
+        <input type="checkbox" id="county47" name="county47" value="Sonoma" onclick="handleCheckboxClick(this)">
+        <label for="county47">Sonoma</label><br>
+    
+        <input type="checkbox" id="county48" name="county48" value="Stanislaus" onclick="handleCheckboxClick(this)">
+        <label for="county48">Stanislaus</label><br>
+    
+        <input type="checkbox" id="county49" name="county49" value="Sutter" onclick="handleCheckboxClick(this)">
+        <label for="county49">Sutter</label><br>
+    
+        <input type="checkbox" id="county50" name="county50" value="Tehama" onclick="handleCheckboxClick(this)">
+        <label for="county50">Tehama</label><br>
+    
+        <input type="checkbox" id="county51" name="county51" value="Tulare" onclick="handleCheckboxClick(this)">
+        <label for="county51">Tulare</label><br>
+    
+        <input type="checkbox" id="county52" name="county52" value="Tuolumne" onclick="handleCheckboxClick(this)">
+        <label for="county52">Tuolumne</label><br>
+    
+        <input type="checkbox" id="county53" name="county53" value="Ventura" onclick="handleCheckboxClick(this)">
+        <label for="county53">Ventura</label><br>
+    
+        <input type="checkbox" id="county54" name="county54" value="Yolo" onclick="handleCheckboxClick(this)">
+        <label for="county54">Yolo</label><br>
+    
+        <input type="checkbox" id="county55" name="county55" value="Yuba" onclick="handleCheckboxClick(this)">
+        <label for="county55">Yuba</label><br>
     </form>
+
 
     <?php
 
