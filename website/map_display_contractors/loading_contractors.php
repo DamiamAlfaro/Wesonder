@@ -40,7 +40,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             $contractors[] = [
                 "license_number" => $row['license_number'],
                 "business_type" => $row['business_type'],
-                "contractor_name" => $row['name'],
+                "contractor_name" => $row['contractor_name'],
                 "county" => $row['county'],
                 "phone_number" => $row['phone_number'],
                 "issue_date" => $row['issue_date'],
