@@ -26,7 +26,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         exit();
     } 
     
-    $sql = "SELECT * FROM cslb_contractors WHERE county = '$checkboxValue' LIMIT 100";
+    $sql = "SELECT * FROM cslb_contractors WHERE classifications LIKE '%$checkboxValue' AND state = 'CA'";
     $result = $conn->query($sql);
     
     // Once connected to MySQL, let's implement all of the variables from the table in question, we will need them 
@@ -67,21 +67,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     }
     exit();
             
-    //         $string_display = "
-    //         <strong>Project Name:</strong> $project_name <br>
-    //         <strong>Project Number:</strong> $project_number <br>
-    //         <strong>Awarding Body:</strong> $awarding_body <br>
-    //         <strong>Address:</strong> $complete_address <br>
-    //         <strong>Project ID Number:</strong> $project_id_number <br>
-    //         <strong>Project DIR Number:</strong> $project_dir_number <br>
-    //         <strong>Description:</strong> $project_description <br>
-    //         <strong>Start Date:</strong> $start_date <br>
-    //         <strong>End Date:</strong> $finish_date <br>
-    //         ";
-            
-            
-    //     }
-    // }
     
     
 
