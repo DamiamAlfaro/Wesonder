@@ -433,7 +433,38 @@
                         
                         const contractors = data.contractors;
                         
-                        var markers = L.markerClusterGroup();
+                        var markers = L.markerClusterGroup({
+                            iconCreateFunction: function(cluster) {
+                                // Get the count of markers in the cluster
+                                var count = cluster.getChildCount();
+                        
+                                // Define border and fill colors dynamically
+                                var clusterFillColor = count < 10 ? '#68c4cc' : count < 50 ? '#ffa500' : '#ff5733'; // Fill colors
+                                var clusterBorderColor = count < 10 ? '#1f5572' : count < 50 ? '#cc8400' : '#b53324'; // Border colors
+                        
+                                // Create the custom cluster icon
+                                return L.divIcon({
+                                    html: `
+                                        <div style="
+                                            background-color: ${clusterFillColor}; 
+                                            border: 3px solid ${clusterBorderColor}; 
+                                            border-radius: 50%; 
+                                            color: black; 
+                                            text-align: center; 
+                                            line-height: 35px; 
+                                            width: 35px; 
+                                            height: 35px;
+                                            font-weight: bold;
+                                            font-size: 13px;
+                                        ">
+                                            ${count}
+                                        </div>`,
+                                    className: 'cluster-icon',
+                                    iconSize: [20, 20] // Size of the cluster icon
+                                });
+                            }
+                        });
+
                         
                         contractors.forEach(contractor => {
                             const license_number = contractor.license_number;
@@ -459,9 +490,9 @@
                             `;
                            
                             var marker = L.circleMarker([x_coordinates, y_coordinates], {
-                                radius: 6, // Marker size
-                                color: '#3388ff', // Border color
-                                fillColor: '#3388ff', // Fill color
+                                radius: 7, // Marker size
+                                color: '#1f5572', // Border color
+                                fillColor: '#68c4cc', // Fill color
                                 fillOpacity: 0.5 // Opacity
                                 }).bindPopup(popupContent);
                                 markers.addLayer(marker);
