@@ -47,6 +47,8 @@
             max-height: 650px;
             width: 240px; /* Fixed width */
             overflow-y: auto; /* Enable scrolling for vertical overflow */
+            font-size: 18px;
+            font-family: Optima;
         }
         
         #licenseForm input[type="checkbox"] {
@@ -67,6 +69,15 @@
 <body>
     
     <form id="licenseForm">
+        
+        <strong>Select Construction License</strong><br><br>
+        
+        <input type="checkbox" id="license1" name="license1" value="A" onclick="LicenseCheckboxingClick(this)">
+        <label for="license1">A - General Engineering Contractor</label><br><br>
+        
+        <input type="checkbox" id="license1" name="license1" value="B" onclick="LicenseCheckboxingClick(this)">
+        <label for="license1">B - General Building Contractor</label><br><br>
+        
         <input type="checkbox" id="license1" name="license1" value="C2" onclick="LicenseCheckboxingClick(this)">
         <label for="license1">C-2 - Insulation and Acoustical Contractor</label><br><br>
     
