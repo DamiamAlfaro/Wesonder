@@ -164,7 +164,7 @@ def geolocation_acquisition(csv_file):
 
     for index, row in main_df.iterrows():
 
-        percentage_progress = (round(index/len(main_df),4))*100
+        percentage_progress = (index/len(main_df))*100
         
         complete_address = row['CompleteAddress']
         coordinates = obtaining_new_geolocations_attempt1(complete_address)
@@ -187,7 +187,7 @@ def geolocation_acquisition(csv_file):
             main_df.at[index, 'X_Coordinates'] = x_coordinate
             main_df.at[index, 'Y_Coordinates'] = y_coordinate
 
-        print(f'Iteration #{index} - {percentage_progress}%\n{complete_address}: ({x_coordinate},{y_coordinate})')
+        print(f'Iteration #{index} - {round(percentage_progress,2)}%\n{complete_address}: ({x_coordinate},{y_coordinate})')
 
     main_df.to_csv('some_geolocations_dvbe.csv',index=False)
 
