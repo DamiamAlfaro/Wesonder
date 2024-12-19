@@ -4,7 +4,7 @@
     <meta charset="UTF-8"/>
     <meta name="author" content="Damiam Alfaro"/>
     <meta name="description" content="WESONDER Map Display"/>
-    <link rel="icon" href="https://wesonder.sfo3.cdn.digitaloceanspaces.com/pictures/potential_favicon_2.png" type="image/x-icon"/>
+    <link rel="icon" href="" type="image/x-icon"/>
     <link href="../style.css" rel="stylesheet" type="text/css">
 
     <!-- Leaflet CSS -->
@@ -27,6 +27,13 @@
     <title>Map Display</title>
     
     <style>
+    
+    #map {
+        height: 100vh;
+        width: 100%;
+        position: relative;
+    }
+    
     /* Base cluster style */
     .marker-cluster {
         background-clip: padding-box;
@@ -68,7 +75,7 @@
     
 
     <?php 
-    
+        
         $host = "localhost"; 
         $username = "u978864605_wesonder";
         $password = "Elchapillo34?nmddam";
