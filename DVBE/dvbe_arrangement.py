@@ -194,6 +194,21 @@ def geolocation_acquisition(csv_file):
 
 
 
+'''
+Using this function, we will segregate the addresses that were not found initially
+from the functions above. First, we will allocate all of the non-found geolocations
+into a different csv file to use other methods to find them.
+'''
+def geolocation_segregation(csv_file):
+    
+    # As mentioned, the only goal with this function is to segregate the locations
+    # with the ones of which the location was not found, a simple action that can
+    # be taken by a few lines of code. Yeah, I just don't know what to write here.
+    # I just like how big paragraphs look.
+
+    df = pd.read_csv(csv_file)
+    df_segregated = df[df['X_Coordinates'] == 0]
+    df_segregated.to_csv('non_found_dvbe_geolocations.csv',index=False)
 
 
 
@@ -208,6 +223,8 @@ if __name__ == '__main__':
 
     first_csv_file_dvbe_initial = 'latest_dvbes.csv'
     second_csv_file_refined_without_geolocations = 'refined_latest_dvbe.csv'
+    third_csv_file_segregation = 'some_geolocations_dvbe.csv'
+
     step = int(input('Step: '))
 
     match step:
@@ -232,6 +249,18 @@ if __name__ == '__main__':
             # to find the same geolocation using Nominatim.
 
             geolocation_acquisition(second_csv_file_refined_without_geolocations)
+
+        case 3:
+
+            # Step 3 will be splitted between two programs, the first one is the one you find this code in, that
+            # is, the program that will segregate the non-found locations, find the respective location for those
+            # locations, and then concanate them with the existing locations, however, the problem is that most
+            # of the locations are P.O. boxes, which means that we need to create a program that webscrapes the 
+            # location of all of the Postal Offices in California, which I believe is a good database to publish
+            # publicly in one of the portals perhaps.
+
+            geolocation_segregation(third_csv_file_segregation)
+
 
 
 
