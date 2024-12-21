@@ -8,13 +8,38 @@ from selenium.webdriver.support import expected_conditions as EC
 
 
 
+'''
+Using the following function we will store the post office's attributes into a csv file
+in order to access it later. The question is, how should the arrangement of columns be
+within the file?
+'''
+def allocate_post_offices_within_csv(attributes_list):
+    
+    # Just a simple allocation into the csv file. The headers of the file are the 
+    # following: OfficeName, OfficeAddress, OfficeDistance, OfficeWebPage, 
+    # ZipCodeUsed, OfficeNoInZip.
+
+    df = pd.DataFrame({
+        "OfficeName":[attributes_list[4]],
+        "OfficeAddress":[attributes_list[5]],
+        "OfficeDistance":[attributes_list[2]],
+        "OfficeWebPage":[attributes_list[3]],
+        "ZipCodeUsed":[attributes_list[1]],
+        "OfficeNoInZip":[attributes_list[0]]
+    })
+
+    df.to_csv('california_post_offices.csv',index=False,header=False, mode='a')
+
+
+    
+
 
 
 '''
 This function will collect the attributes of each of the post offices. The idea
 is to utilize this function for every zip code within the 50-chunk lists.
 '''
-def collection_of_post_offices_attributes(driver):
+def collection_of_post_offices_attributes(driver, zip_code):
 
     # Now that we've accomplished the searching functionality, we need to collect
     # what we came for: the addresses. We have a 6-second window to collect them,
@@ -26,40 +51,51 @@ def collection_of_post_offices_attributes(driver):
 
     addresses_results_list = driver.find_element(By.ID,"poloResults")
     individual_post_offices = addresses_results_list.find_elements(By.TAG_NAME,"li")
-    post_offices = []
-    for individual_post_office in individual_post_offices:
+    for individual_post_office in range(len(individual_post_offices)):
 
         post_office_attributes = []
+
+        print(f"Office #{individual_post_office}")
+        post_office_attributes.append(individual_post_office)
+
+        print(f"Zip Code: {zip_code}")
+        post_office_attributes.append(zip_code)
         
-        distance_from_zip_code = individual_post_office.find_element(
+        distance_from_zip_code = individual_post_offices[individual_post_office].find_element(
             By.CLASS_NAME,"result-details-distance"
         ).text.split(
             ' '
         )[0]
         post_office_attributes.append(distance_from_zip_code)
+        print(f'Distance: {distance_from_zip_code}')
 
-        post_office_info_link = individual_post_office.find_element(
+        post_office_info_link = individual_post_offices[individual_post_office].find_element(
             By.TAG_NAME,'a'
         ).get_attribute('href')
         post_office_attributes.append(post_office_info_link)
+        print(f'Post Office Webpage: {post_office_info_link}')
 
-        post_office_name = individual_post_office.find_element(
+
+        post_office_name = individual_post_offices[individual_post_office].find_element(
             By.CLASS_NAME,"result-details-link"
         ).text
         post_office_attributes.append(post_office_name)
+        print(f'Post Office Name: {post_office_name}')
 
-        post_office_address_element1, post_office_address_element2 = individual_post_office.find_element(
+
+        post_office_address_element1, post_office_address_element2 = individual_post_offices[individual_post_office].find_element(
             By.CLASS_NAME,"result-details-address"
-        ).text, individual_post_office.find_element(
+        ).text, individual_post_offices[individual_post_office].find_element(
             By.CLASS_NAME,"result-details-secondary"
         ).text
         post_office_address = f'{post_office_address_element1}, {post_office_address_element2}'
         post_office_attributes.append(post_office_address)
+        print(f"Address: {post_office_address}\n")
 
-        post_offices.append(post_office_attributes)
+        allocate_post_offices_within_csv(post_office_attributes)
+    
+    
 
-        print(post_office_address)
-    print(len(individual_post_offices))
 
 
 
@@ -69,32 +105,34 @@ search for the respective zip code, webscrap the results, and allocate them
 into a csv file which will be containing all of the post offices actual addressess.
 This function will only do 50 searches for 50 different zip codes.
 '''
-def webscraping_post_offices_using_zipcodes(zip_codes_list):
+def webscraping_post_offices_using_zipcodes(zip_codes_list, main_count, total_zip_codes):
     
     # First, we will open the session, then use the 50 zip codes as input in the
     # respective space for input within the website, after that, we will extract the 
     # addresses attributes into another function for csv allocation. After the 50 
     # sized iteration, we will close the session, and start with the remaining 
-    # zip codes.
+    # zip codes. The variable 'subcount' is, as mentioned, meant to serve as 
+    # index locator in case a halt occurs. In this case, this count is not inputed
+    # via input(), but manually within the code. 
 
+    subcount = 0
     post_office_locator_website_url = 'https://tools.usps.com/locations/'
     driver = webdriver.Chrome()
     driver.get(post_office_locator_website_url)
     time.sleep(4)
 
-    for zip_code in zip_codes_list:
+    for zip_code in range(len(zip_codes_list[subcount:])):
 
         # Let's go step by step: The first step is locate the input text box within the 
         # website, assign a value, and search for it. We need to give it a few seconds
         # after the operation has been executed.
 
-        zip_code = str(zip_code)
-
+        string_zip_code = str(zip_codes_list[zip_code])
         input_value_box = WebDriverWait(driver, 10).until(
             EC.element_to_be_clickable((By.ID,"searchMainType"))
         )
         input_value_box.clear()
-        input_value_box.send_keys(zip_code)
+        input_value_box.send_keys(string_zip_code)
         search_button = WebDriverWait(driver, 10).until(
             EC.element_to_be_clickable((By.ID, "searchPOLO"))
         )
@@ -103,9 +141,14 @@ def webscraping_post_offices_using_zipcodes(zip_codes_list):
 
         # The second step is to collect the post office attributes, and allocate them
         # into a neat csv file for later use, after that, we will restart the iteration
-        # within the zip_code list with length 50.
-
-        collection_of_post_offices_attributes(driver)
+        # within the zip_code list with length 50. We like to visualize progress, so we 
+        # display the percentage completed.
+        
+        collection_of_post_offices_attributes(driver, string_zip_code)
+        percentage_completed = round((zip_code/total_zip_codes) * 100,2)
+        print(
+            f'Main Count: {main_count}\nSubcount: {zip_code} collected.\nPercentage Completed: {percentage_completed}%'
+        )
 
         # The third step is to change the search bar in the website. In order to do so,
         # we will erase the existing zip_code string, input the new zip_code string,
@@ -139,13 +182,15 @@ def iterating_each_zip_code_list(csv_file, count):
     
     # I don't think I need to explain myself twice... Perhaps, I will stop
     # filling paragraphs with repeated statements or nonsense; paragraphs
-    # will only be written if necessary.
+    # will only be written if necessary. The variables 'count' and 'chunked_list'
+    # are meant to be indicators of index location in case a halt within the 
+    # program occurs.
 
     df = pd.read_csv(csv_file,low_memory=False)
     zip_codes_list = list(df['ZipCode'])
     chunked_lists = [zip_codes_list[i:i+50] for i in range(0, len(zip_codes_list), 50)]
-    for chunked_list in chunked_lists:
-        webscraping_post_offices_using_zipcodes(chunked_list)
+    for chunked_list in range(len(chunked_lists[count:])):
+        webscraping_post_offices_using_zipcodes(chunked_lists[chunked_list], chunked_list, len(zip_codes_list))
     
     
     
