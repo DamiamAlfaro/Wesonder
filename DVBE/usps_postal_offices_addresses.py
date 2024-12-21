@@ -105,7 +105,7 @@ search for the respective zip code, webscrap the results, and allocate them
 into a csv file which will be containing all of the post offices actual addressess.
 This function will only do 50 searches for 50 different zip codes.
 '''
-def webscraping_post_offices_using_zipcodes(zip_codes_list, main_count, total_zip_codes):
+def webscraping_post_offices_using_zipcodes(zip_codes_list, main_count, total_current_zip_codes, all_zip_codes):
     
     # First, we will open the session, then use the 50 zip codes as input in the
     # respective space for input within the website, after that, we will extract the 
@@ -115,17 +115,21 @@ def webscraping_post_offices_using_zipcodes(zip_codes_list, main_count, total_zi
     # index locator in case a halt occurs. In this case, this count is not inputed
     # via input(), but manually within the code. 
 
-    subcount = 0
+    subcount = 3
     post_office_locator_website_url = 'https://tools.usps.com/locations/'
     driver = webdriver.Chrome()
     driver.get(post_office_locator_website_url)
     time.sleep(4)
 
-    for zip_code in range(len(zip_codes_list[subcount:])):
+    for zip_code in range(subcount, len(zip_codes_list)):
 
         # Let's go step by step: The first step is locate the input text box within the 
         # website, assign a value, and search for it. We need to give it a few seconds
-        # after the operation has been executed.
+        # after the operation has been executed. Also, we will use the initial zip
+        # code list in order to display percentage completed overall using the index()
+        # functionality.
+
+        overall_zip_code_position = all_zip_codes.index(zip_codes_list[zip_code])
 
         string_zip_code = str(zip_codes_list[zip_code])
         input_value_box = WebDriverWait(driver, 10).until(
@@ -145,10 +149,12 @@ def webscraping_post_offices_using_zipcodes(zip_codes_list, main_count, total_zi
         # display the percentage completed.
         
         collection_of_post_offices_attributes(driver, string_zip_code)
-        percentage_completed = round((zip_code/total_zip_codes) * 100,2)
+        sub_percentage_completed = round((zip_code/total_current_zip_codes) * 100,2)
+        overall_percentage_completed = round((overall_zip_code_position/len(all_zip_codes))*100,2)
         print(
-            f'Main Count: {main_count}\nSubcount: {zip_code} collected.\nPercentage Completed: {percentage_completed}%'
+            f'Main Count: {main_count}\nSubcount: {zip_code} collected.\nSub-Percentage Completed: {sub_percentage_completed}%'
         )
+        print(f"Overall-Percentage Completed: {overall_percentage_completed}%")
 
         # The third step is to change the search bar in the website. In order to do so,
         # we will erase the existing zip_code string, input the new zip_code string,
@@ -189,8 +195,13 @@ def iterating_each_zip_code_list(csv_file, count):
     df = pd.read_csv(csv_file,low_memory=False)
     zip_codes_list = list(df['ZipCode'])
     chunked_lists = [zip_codes_list[i:i+50] for i in range(0, len(zip_codes_list), 50)]
-    for chunked_list in range(len(chunked_lists[count:])):
-        webscraping_post_offices_using_zipcodes(chunked_lists[chunked_list], chunked_list, len(zip_codes_list))
+    for chunked_list in range(count,len(chunked_lists)):
+
+        
+        webscraping_post_offices_using_zipcodes(chunked_lists[chunked_list], 
+                                                chunked_list, 
+                                                len(chunked_lists[chunked_list]),
+                                                zip_codes_list)
     
     
     
