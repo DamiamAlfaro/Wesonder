@@ -199,24 +199,29 @@ if __name__ == "__main__":
     # also use an additional file to check if a location is found within the title of the
     # owner inside the planetbids site.
 
-    planetbids_sites_csv_file = 'planetbids_sites.csv'
-    
 
-    step = int(input('Step: '))
+    try: 
+        planetbids_sites_csv_file = 'planetbids_sites.csv'
+        
 
-    match step:
+        step = int(input('Step: '))
 
-        case 1:
+        match step:
 
-            # The one and only step to do here is to iterate through each of the planetbids sites,
-            # scroll a few scrolls down in order to acquire all of the active bids, collect their
-            # date information, acquire the geolocation of the respective city on planetbids 
-            # displayed on their title (yes, only the city, we cannot have the exact address.), and
-            # store it into a csv file with geolocations in order to be quickly displayed. The 
-            # following function will have several more functions in usage as well.
+            case 1:
 
-            count = int(input('Count: '))
-            planetbids_sites_iteration(planetbids_sites_csv_file, count)
+                # The one and only step to do here is to iterate through each of the planetbids sites,
+                # scroll a few scrolls down in order to acquire all of the active bids, collect their
+                # date information, acquire the geolocation of the respective city on planetbids 
+                # displayed on their title (yes, only the city, we cannot have the exact address.), and
+                # store it into a csv file with geolocations in order to be quickly displayed. The 
+                # following function will have several more functions in usage as well.
+
+                count = int(input('Count: '))
+                planetbids_sites_iteration(planetbids_sites_csv_file, count)
+
+    except:
+        print("Gone")
 
 
 
