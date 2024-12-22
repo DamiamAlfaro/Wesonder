@@ -173,11 +173,12 @@ def planetbids_sites_iteration(csv_file, count):
         
         awarding_body = row['AwardingBody']
         weblink = row['WebLink']
+        print(f'Current Iteration: {index}')
 
         try:
             planetbids_active_bids_webscraping(weblink, awarding_body)
             percentage_completed = round((index/len(df)) * 100, 2)
-            print(f'Percentage Completed: {percentage_completed}%\n')
+            print(f'\nPercentage Completed: {percentage_completed}%\n')
 
         except:
             print(f'\n{awarding_body}: None\n')
@@ -204,7 +205,7 @@ if __name__ == "__main__":
         planetbids_sites_csv_file = 'planetbids_sites.csv'
         
 
-        step = int(input('Step: '))
+        step = int(input('Step: ')) # 545
 
         match step:
 
