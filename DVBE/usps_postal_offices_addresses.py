@@ -377,7 +377,38 @@ def post_offices_geolocations_cleaning(csv_file):
 
 
 
+'''
+We will modify and expand our stockpile of zip codes for the post offices, I cannot belive that some
+of the zip codes under the address column are not even found under the ZipCodeUsed column, which is
+supposed to be the column that contains all zip_codes in California...
+'''
+def zip_code_stockpile_expansion(csv_file):
+    
+    # As showed by my frustration, I cannot believe that some of the zip codes on the addresses do not 
+    # correlate with the zip code column which is supposed to be the column with all of the zip codes of
+    # California, can you believe that? And to my inconvenience, the zip codes are nine-digit zip codes...
+    # But honestly, I am not even mad, the more I problems I solve, the more I improve at my art style: 
+    # Coding and Writing.
 
+    df = pd.read_csv(csv_file, low_memory=False)
+    df['ExtraZipCode'] = df['ExtraZipCode'].astype('str')
+
+    for index, row in df.iterrows():
+    
+        address = row['OfficeAddress']
+
+        new_zip_code = address.split(" ")[-1]
+
+        if new_zip_code.split('-'):
+            new_zip_code = new_zip_code.split('-')[0]
+        
+        else:
+            pass
+
+        df.at[index, 'ExtraZipCode'] = new_zip_code
+
+
+    df.to_csv('ultimate_california_post_offices.csv',index=False)
 
 
 
@@ -396,6 +427,7 @@ if __name__ == '__main__':
     refined_california_post_offices = 'refined_california_post_offices.csv'
     cleansed_california_post_offices = 'finalized_california_post_offices.csv'
     final_california_post_offices = 'final_california_post_offices.csv'
+    ultimate_california_post_offices = 'ultimate_california_post_offices.csv'
     
 
     step = int(input('Step: '))
@@ -442,6 +474,16 @@ if __name__ == '__main__':
             # following one.
 
             post_offices_geolocations_cleaning(cleansed_california_post_offices)
+
+        case 5:
+
+            # Step 5: Additional Zip Codes: I just realized that some of the zip codes under the columns
+            # 'ZipCodeUsed in the post offices are not the same as the actual zip code of the address of
+            # the post office, what's worse, there are zip codes under the addresses that are not found 
+            # in the 'ZipCodeUsed' column, and what's even worse, some are fucking nine-digits... Let's
+            # fucking fix that.
+
+            zip_code_stockpile_expansion(final_california_post_offices)
 
 
 
