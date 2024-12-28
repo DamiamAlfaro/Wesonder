@@ -358,7 +358,6 @@ def planetbids_site_county_and_geolocation(planetbids_sites, count):
             
         except:
             print(f'\nSomething occurred at {index} - {awarding_body}\n')
-            break
 
         
         
