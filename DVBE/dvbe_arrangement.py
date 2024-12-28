@@ -213,6 +213,42 @@ def geolocation_segregation(csv_file):
 
 
 
+'''
+Segregating the non-found addressess, yes, that's it...yes, I need a function for that...
+'''
+def non_found_addresses_segregation(csv_file):
+
+    df = pd.read_csv(csv_file,low_memory=False)
+    df_segregated = df[df['X_Coordinates'] == 0]
+    df_segregated.to_csv('segregated_dvbe.csv',index=False)
+
+
+    
+
+
+
+
+
+'''
+The rules are simple, we will simply assign a post office geolocation to all the
+non-found addresses based on their zip code value, plain and simple...
+'''
+def non_found_addresses_correlation(non_found_entities, post_offices_file):
+    
+    df_entities = pd.read_csv(non_found_entities,low_memory=False)
+    df_post_offices = pd.read_csv(post_offices_file,low_memory=False)
+
+    for index, row in df_entities.iterrows():
+
+        zip_code = row['ZipCode']
+
+
+
+
+
+
+
+
 if __name__ == '__main__':
     
     # The goal with this program is to make some adjustments and crucial changes to the
@@ -224,6 +260,8 @@ if __name__ == '__main__':
     first_csv_file_dvbe_initial = 'latest_dvbes.csv'
     second_csv_file_refined_without_geolocations = 'refined_latest_dvbe.csv'
     third_csv_file_segregation = 'some_geolocations_dvbe.csv'
+    non_found_addresses = 'segregated_dvbe.csv'
+    post_offices_file = 'final_california_post_offices.csv'
 
     step = int(input('Step: '))
 
@@ -260,6 +298,24 @@ if __name__ == '__main__':
             # publicly in one of the portals perhaps.
 
             geolocation_segregation(third_csv_file_segregation)
+
+        case 4:
+
+            # Step 4: Non-found Segregation: we are about to segregate all of the dvbe addresses that were
+            # not found, i.e. without geolocations. The goal of this is to segregate them into a different
+            # file, correlate the respective geolocation of the nearby post offices with the function 
+            # below, and then concanate the files.
+
+            non_found_addresses_segregation(third_csv_file_segregation)
+
+        case 5:
+
+            # Step 5: DVBE Addresses Correlation: using the Post Offices, we are going to correlate
+            # all of the non-found addresses geolocations with Post Offices geolocations based on
+            # each respective's zip code. Perhaps we can utilize this database to associate non-found
+            # addresses of other mechanisms...
+
+            non_found_addresses_correlation(non_found_addresses, post_offices_file)
 
 
 
