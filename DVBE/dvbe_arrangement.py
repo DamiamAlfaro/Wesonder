@@ -1,4 +1,5 @@
 import pandas as pd
+import numpy as np
 import requests
 from pathlib import Path
 from geopy.geocoders import Nominatim #type: ignore
@@ -214,18 +215,35 @@ def geolocation_segregation(csv_file):
 
 
 '''
-Segregating the non-found addressess, yes, that's it...yes, I need a function for that...
+Segregating the non-found addressess, yes, that's it...yes, I need a function for that... Also,
+I forgot to mention that we will fix the zip_code column, I don't want to use nine-digit zip
+codes, but five-digit zip codes.
 '''
 def non_found_addresses_segregation(csv_file):
 
+    # The real question here is, why do I need a function for this? Well, because I like order...
+    # If you do not map everything in your life, eventually the parts of your life that you
+    # did not map are going to become dependant on forces outside yours, you will not have control
+    # but other people or circumstances will dictate the state of such parts. However, it is not
+    # only about mapping, but also acting on the mapping itself... Of course, one cannot map 
+    # every single part of one's life, as there isn't enough time to manage all of them properly,
+    # this is where one asks oneself: "what is really important, what do I want to have control upon?"...
+
     df = pd.read_csv(csv_file,low_memory=False)
     df_segregated = df[df['X_Coordinates'] == 0]
-    df_segregated.to_csv('segregated_dvbe.csv',index=False)
-
-
     
+    for index, row in df_segregated.iterrows():
 
+        zip_code = row['PostalCode']
+        
+        if zip_code.split("-"):
+            df_segregated.at[index,'PostalCode'] = zip_code.split("-")[0]
 
+        else:
+            pass
+    
+    df_segregated.to_csv('segregated_dvbe.csv',index=False)
+        
 
 
 
@@ -234,13 +252,45 @@ The rules are simple, we will simply assign a post office geolocation to all the
 non-found addresses based on their zip code value, plain and simple...
 '''
 def non_found_addresses_correlation(non_found_entities, post_offices_file):
+
+    # If you want to write less, then write less functions... I just realized that I enjoy writing
+    # while coding; those two are my favorite things to do in this mundane life, those too make me
+    # enjoy this mundane life, they seem to my agents of art materialization...
     
     df_entities = pd.read_csv(non_found_entities,low_memory=False)
     df_post_offices = pd.read_csv(post_offices_file,low_memory=False)
 
-    for index, row in df_entities.iterrows():
+    count = 0
 
-        zip_code = row['ZipCode']
+    for index, row in df_entities.iterrows():
+        
+        zip_code = row['PostalCode']
+
+        if zip_code in df_post_offices['ZipCodeUsed'].values:
+            
+            index_position = np.where(df_post_offices['ZipCodeUsed'].values == zip_code)[0][0]
+            respective_x_coordinate = df_post_offices['X_Coordinates'].iloc[index_position]
+            respective_y_coordinate = df_post_offices['Y_Coordinates'].iloc[index_position]
+            
+            df_entities.at[index, 'X_Coordinates'] = respective_x_coordinate
+            df_entities.at[index, 'Y_Coordinates'] = respective_y_coordinate
+        
+        elif zip_code in df_post_offices['ExtraZipCode'].values:
+
+            index_position = np.where(df_post_offices['ExtraZipCode'].values == zip_code)[0][0]
+            respective_x_coordinate = df_post_offices['X_Coordinates'].iloc[index_position]
+            respective_y_coordinate = df_post_offices['Y_Coordinates'].iloc[index_position]
+            
+            df_entities.at[index, 'X_Coordinates'] = respective_x_coordinate
+            df_entities.at[index, 'Y_Coordinates'] = respective_y_coordinate
+
+
+        else:
+            count += 1
+    
+    print(df_entities, count)
+
+            
 
 
 
@@ -261,7 +311,7 @@ if __name__ == '__main__':
     second_csv_file_refined_without_geolocations = 'refined_latest_dvbe.csv'
     third_csv_file_segregation = 'some_geolocations_dvbe.csv'
     non_found_addresses = 'segregated_dvbe.csv'
-    post_offices_file = 'final_california_post_offices.csv'
+    ultimate_california_post_offices = 'ultimate_california_post_offices.csv'
 
     step = int(input('Step: '))
 
@@ -315,7 +365,7 @@ if __name__ == '__main__':
             # each respective's zip code. Perhaps we can utilize this database to associate non-found
             # addresses of other mechanisms...
 
-            non_found_addresses_correlation(non_found_addresses, post_offices_file)
+            non_found_addresses_correlation(non_found_addresses, ultimate_california_post_offices)
 
 
 
