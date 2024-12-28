@@ -348,12 +348,12 @@ def planetbids_site_county_and_geolocation(planetbids_sites, count):
     df = pd.read_csv(planetbids_sites, low_memory=False)
     total_rows = len(df)
 
-    for index, row in df.iloc[count:].head(1).iterrows():
+    for index, row in df.iloc[count:].iterrows():
 
         url = row['WebLink']
         awarding_body = row['AwardingBody']
         try:
-            print(f'\nPercentage Completed: {round((index/total_rows)*100,2)}%')
+            print(f'\nIteration #{index}\nPercentage Completed: {round((index/total_rows)*100,2)}%')
             acquiring_county_of_bid(url, awarding_body)
             
         except:
