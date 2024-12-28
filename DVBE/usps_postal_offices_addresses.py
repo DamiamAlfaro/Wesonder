@@ -1,5 +1,8 @@
 import pandas as pd
 import time
+import requests
+from pathlib import Path
+from geopy.geocoders import Nominatim
 from selenium import webdriver 
 from selenium.webdriver.common.by import By
 from selenium.webdriver.support.ui import WebDriverWait
@@ -97,8 +100,6 @@ def collection_of_post_offices_attributes(driver, zip_code):
     
 
 
-
-
 '''
 Using the zip code string, we will go to the Post Office Locator website and
 search for the respective zip code, webscrap the results, and allocate them 
@@ -115,7 +116,7 @@ def webscraping_post_offices_using_zipcodes(zip_codes_list, main_count, total_cu
     # index locator in case a halt occurs. In this case, this count is not inputed
     # via input(), but manually within the code. 
 
-    subcount = 3
+    subcount = 32
     post_office_locator_website_url = 'https://tools.usps.com/locations/'
     driver = webdriver.Chrome()
     driver.get(post_office_locator_website_url)
@@ -163,20 +164,7 @@ def webscraping_post_offices_using_zipcodes(zip_codes_list, main_count, total_cu
         input_value_box.clear()
         time.sleep(4)
 
-
-
-        
-        
-        
-
-
-
-
-
     
-
-
-
 
 
 '''
@@ -203,11 +191,190 @@ def iterating_each_zip_code_list(csv_file, count):
                                                 len(chunked_lists[chunked_list]),
                                                 zip_codes_list)
     
-    
-    
 
+
+
+'''
+As explained, we will refine the addresses under the OfficeAddress column in order to
+assure a bigger probability of geolocation find. And you know what, let's remove the
+additional zip code digits. 
+'''
+def post_offices_refinement(csv_file):
+    
+    df = pd.read_csv(csv_file,low_memory=False)
+
+    # We will utilize the split(' ') & index methodolgy in order to alter the strings
+    # of each address. There are patterns, such as the zip code being the last item
+    # of such list, and the state (which has to remain in capital letters) is the 
+    # penultimate item.
+
+    for index, row in df.iterrows():
         
+        address_string = row['OfficeAddress']
+        split_methodology = address_string.split(" ")
+        zip_code = split_methodology[-1].split("-")[0]
+        state = split_methodology[-2]
+        address_again = " ".join(split_methodology[:-2]).title()
+        refined_address_string = f'{address_again} {state} {zip_code}'
         
+        df.at[index, 'OfficeAddress'] = refined_address_string
+
+    df.to_csv('refined_california_post_offices.csv',index=False)
+
+
+
+
+'''
+Geolocations are great. We will obtain the geolocations, extract them,
+allocate them into the file, cleanse it, and then concatenate the file with the previously
+one.
+'''
+def obtaining_new_geolocations_attempt1(address_string):
+    
+    # To start off, we need to import the Geolocation functionality. Once imported, we
+    # will iterate through the new_cslb_entities.csv file and obtain the respective addresses.
+    # There is a dilemma about the addresses withouth Geolocations, whether we discard them
+    # or find an alternate solution to them. The only solution might be another Geolocation
+    # library, but it depends on how many of them are not found.
+
+    geolocation_source = "https://geocoding.geo.census.gov/geocoder/locations/onelineaddress"
+    params = {
+        'address': address_string,
+        'benchmark': 'Public_AR_Current', 
+        'vintage': '4', 
+        'format': 'json'
+    }
+
+    # We will attempt to find the geolocation based on the address string, if the
+    # geolocation is not found, we will set it up to zeros. If it is found,
+    # we will output the coordinates and correlate them to the parent function
+    # in order to unite them with their file source.
+
+    try:
+        response = requests.get(geolocation_source, params=params)
+        data = response.json()
+
+        if data.get("result") and data["result"].get("addressMatches"):
+            match = data["result"]["addressMatches"][0]
+            lat = match["coordinates"]["y"]
+            lon = match["coordinates"]["x"]
+            return lat, lon
+        else:
+            lat = 0
+            lon = 0
+            return lat, lon
+        
+    
+    except Exception as e:
+        print(f"Error geocoding address '{address_string}': {e}")
+        lat = 0
+        lon = 0
+        return lat, lon
+
+
+
+
+'''
+Using Nominatim, we will try to find the addresses that were not found in the
+first attempt, we can copy the same structure as the function above in order to
+allow this function to be used within an iteration.
+'''
+def obtaining_new_geolocations_attempt2(address_string):
+    
+    # This is the second attempt to find an address using Nominatim. We will
+    # be using the same methodology as with attempt 1; the output of this
+    # function will either be a pair of zeros, or the geolocation
+    # coordinates for each of the addressess.
+    
+    geolocator = Nominatim(user_agent="my_geocoder")
+    location = geolocator.geocode(address_string, timeout=8)
+
+    if location:
+        lat = location.latitude
+        lon = location.longitude
+        return lat, lon
+    else:
+        lat = 0
+        lon = 0
+        return lat, lon
+
+
+
+
+'''
+Utilizing the double geolocation acquisition method we will acquire the geolocations for
+all of the post offices in California. One thing to mention is that we need to adjust
+all of the zip codes, currently they use the nine digit system instead of the standard five
+digit system.
+'''
+def post_offices_geolocations_acquisition(csv_file):
+
+    main_df = pd.read_csv(csv_file, low_memory=False)
+
+    for index, row in main_df.iterrows():
+
+        percentage_progress = (index/len(main_df))*100
+        
+        complete_address = row['OfficeAddress']
+        coordinates = obtaining_new_geolocations_attempt1(complete_address)
+        x_coordinate = coordinates[0]
+        y_coordinate = coordinates[1]
+
+        # We need to check if the geocoordinates were found, to do so I recommend checking if
+        # the coordinate (either X, or Y) is 0, which if you take a peek above, a zero represents
+        # a failed acquisition. Regardless of which attempt was successful, if any, the result
+        # will inevitably be allocated into the dataframe within the respective X and Y columns.
+
+        if x_coordinate == 0 or y_coordinate == 0:
+            second_attempt = obtaining_new_geolocations_attempt2(str(complete_address))
+            x_coordinate = second_attempt[0]
+            y_coordinate = second_attempt[1]
+            main_df.at[index, 'X_Coordinates'] = x_coordinate
+            main_df.at[index, 'Y_Coordinates'] = y_coordinate
+
+        else:
+            main_df.at[index, 'X_Coordinates'] = x_coordinate
+            main_df.at[index, 'Y_Coordinates'] = y_coordinate
+
+        print(f'Iteration #{index} - {round(percentage_progress,2)}%\n{complete_address}: ({x_coordinate},{y_coordinate})\n')
+
+    main_df.to_csv('finalized_california_post_offices.csv',index=False)
+
+
+
+
+
+'''
+As mentioned, we will just cleansing the csv file. Actually, I want to add a new functionality
+to the following function: check if there is at least one post office for every zip code in
+order to assure funcionality. 
+'''
+def post_offices_geolocations_cleaning(csv_file):
+    
+    # The goal is to check if a zip code has at least one post office with a found
+    # geolocation, the way we find this is by assigning a new list that will serve as
+    # a detector; if a zip code is not in the list, the zip code gets appended to the 
+    # list, then, if the zip code is within the list and the x_coordinate value is
+    # above zero (i.e. it exists), the zip code gets removed from the list. Otherwise
+    # the zip code stays in the list and reveals itself as a malfunction.
+
+    df = pd.read_csv(csv_file,low_memory=False)
+
+    zip_code_check_list = []
+
+    for zip_code, group in df.groupby('ZipCodeUsed'):
+        if all(group['X_Coordinates'] == 0):
+            zip_code_check_list.append(zip_code)
+
+
+    # Now we can continue with the cleansen, after all, every single post office with an
+    # unique zip code is going to have a respective post office geolocation associated with
+    # the office location.
+
+    df_cleansed = df[df['X_Coordinates'] != 0]
+    df_cleansed.to_csv('final_california_post_offices.csv',index=False)
+
+
 
 
 
@@ -225,6 +392,11 @@ if __name__ == '__main__':
     # official street address.
 
     california_zip_codes = 'california_zip_codes.csv'
+    california_post_offices = 'california_post_offices.csv'
+    refined_california_post_offices = 'refined_california_post_offices.csv'
+    cleansed_california_post_offices = 'finalized_california_post_offices.csv'
+    final_california_post_offices = 'final_california_post_offices.csv'
+    
 
     step = int(input('Step: '))
 
@@ -234,9 +406,8 @@ if __name__ == '__main__':
 
             # Step 1: File Iteration, the first step is to iterate through the non_found_geolocations 
             # file and locate the zip code column, and use the values under such column as inputs
-            # in the Post Office Locator website in order to webscrap the results. 
-
-            # Step 2: Chunk Size Webscraping I have a plan: We are going to try two approaches, 
+            # in the Post Office Locator website in order to webscrap the results. Additionally;
+            # Chunk Size Webscraping. I have a plan: We are going to try two approaches, 
             # the first one is to webscrap the post office addresses in a single selenium session 
             # in chunks, i.e. we will webscrap all the addresses using 50 zip codes, close the 
             # session, and do it again with the following 50 zip codes, in case something fails. 
@@ -245,4 +416,32 @@ if __name__ == '__main__':
             
             count = int(input('Count: '))
             iterating_each_zip_code_list(california_zip_codes, count)
+
+        case 2:
+
+            # Step 2: Address Cleanup, we will be cleaning the OfficeAddress column within the 
+            # post offices addresses. Which changes? The adjustment from 9-digit zip codes to
+            # 5-digit zip codes for instance. Not only that, but we will also make the address
+            # strings into Title mode, just in case.
+
+            post_offices_refinement(california_post_offices)
+    
+        case 3:
+
+            # Step 3: Geolocation Acquisitions: as usual, we will find the geolocations of the
+            # different Post Offices. We will utilize the double acquisition approach of using
+            # the U.S. Geolocation service along with Nominatim.
+
+            post_offices_geolocations_acquisition(california_post_offices)
+
+        case 4:
+
+            # Step 4: Geolocation Cleansing: this is a small step, we will just remove all of the
+            # Post Offices without Geolocations since there is a high possibility that if a post
+            # office was not found within the zip code in question, we can always reference the 
+            # following one.
+
+            post_offices_geolocations_cleaning(cleansed_california_post_offices)
+
+
 
