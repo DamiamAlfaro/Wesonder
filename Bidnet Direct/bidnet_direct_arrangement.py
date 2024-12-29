@@ -91,6 +91,9 @@ def bidnet_direct_google_search(string_name):
 
         driver.quit()
 
+        if len(google_result_links) == 0:
+            google_result_links = ['none']
+
         return google_result_links
     
     except:
@@ -207,10 +210,5 @@ if __name__ == "__main__":
             # that we are including bidnet direct as a source of bids, thereby expanding our repertoire
             # of real-time bids.
 
-            count = int(input('Count: '))
+            count = int(input('Count: ')) # 682
             bidnet_direct_instances_allocation(awarding_bodies_file, count)
-
-
-
-
-
