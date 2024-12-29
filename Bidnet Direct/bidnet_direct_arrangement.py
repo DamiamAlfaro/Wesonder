@@ -93,6 +93,8 @@ def bidnet_direct_google_search(string_name):
             else:
                 google_result_links.append(link_itself)
 
+    driver.quit()
+
     return google_result_links
 
 
@@ -166,7 +168,7 @@ def bidnet_direct_instances_allocation(csv_file,count):
 
         allocation_into_csv_file(list_of_attributes)
         print(f'Iteration #{index}\nPercentage Completed: {round((index/total_rows)*100,2)}')
-        print(f'Awarding Body: {entity_name}\nLink: {link}')
+        print(f'Awarding Body: {entity_name}\nLink: {link}\n')
 
 
 
