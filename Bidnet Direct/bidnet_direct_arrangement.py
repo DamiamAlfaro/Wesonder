@@ -74,28 +74,28 @@ def bidnet_direct_google_search(string_name):
     
     # Using the string name, we will search for the respective bidnet direct site.
      
-    driver = webdriver.Chrome()
-    searchable_string = f'bidnet direct {string_name}'
-    driver.get("https://google.co.in/search?q=" + searchable_string)
-    time.sleep(4)
- 
-    google_results = WebDriverWait(driver,5).until(
-            EC.presence_of_element_located((By.ID,"search")))
-    google_result_page = google_results.find_elements(By.XPATH,"//a[@jsname='UWckNb']")
-    google_result_links = []        
-    for a_tag in google_result_page:
-        link_itself = a_tag.get_attribute("href")
-        if link_itself.endswith(".pdf"):
-            pass
-        elif 'bidnetdirect.com/' in link_itself:
-            if 'solicitations' in link_itself or 'open-bids' in link_itself or 'participating-buyers' in link_itself or len(link_itself.split('/')) > 3:
-                pass
-            else:
+    try:
+        driver = webdriver.Chrome()
+        searchable_string = f'bidnet direct {string_name}'
+        driver.get("https://google.co.in/search?q=" + searchable_string)
+        time.sleep(4)
+    
+        google_results = WebDriverWait(driver,10).until(
+                EC.presence_of_element_located((By.ID,"search")))
+        google_result_page = google_results.find_elements(By.XPATH,"//a[@jsname='UWckNb']")
+        google_result_links = []        
+        for a_tag in google_result_page:
+            link_itself = a_tag.get_attribute("href")
+            if 'bidnetdirect.com/' in link_itself:
                 google_result_links.append(link_itself)
 
-    driver.quit()
+        driver.quit()
 
-    return google_result_links
+        return google_result_links
+    
+    except:
+
+        return ['none']
 
 
 
@@ -138,9 +138,7 @@ def bidnet_direct_instances_allocation(csv_file,count):
         entity_registration_end_date = row['EntityRegistrationEndDate']
         entity_dba = row['EntityDBA']
         entity_county = row['EntityCounty']
-        link = bidnet_direct_google_search(entity_name)
-        if len(link) == 0:
-            link = 'none'
+        link = bidnet_direct_google_search(entity_name)[0]
 
         list_of_attributes = [
             entity_name,
@@ -167,7 +165,7 @@ def bidnet_direct_instances_allocation(csv_file,count):
         
 
         allocation_into_csv_file(list_of_attributes)
-        print(f'Iteration #{index}\nPercentage Completed: {round((index/total_rows)*100,2)}')
+        print(f'Iteration #{index}\nPercentage Completed: {round((index/total_rows)*100,2)}%')
         print(f'Awarding Body: {entity_name}\nLink: {link}\n')
 
 
