@@ -1,5 +1,6 @@
 import pandas as pd
 import time
+import os
 import requests
 from pathlib import Path
 from geopy.geocoders import Nominatim
@@ -34,7 +35,6 @@ def allocate_post_offices_within_csv(attributes_list):
     df.to_csv('california_post_offices.csv',index=False,header=False, mode='a')
 
 
-    
 
 
 
@@ -116,7 +116,7 @@ def webscraping_post_offices_using_zipcodes(zip_codes_list, main_count, total_cu
     # index locator in case a halt occurs. In this case, this count is not inputed
     # via input(), but manually within the code. 
 
-    subcount = 32
+    subcount = 0
     post_office_locator_website_url = 'https://tools.usps.com/locations/'
     driver = webdriver.Chrome()
     driver.get(post_office_locator_website_url)
@@ -195,7 +195,7 @@ def iterating_each_zip_code_list(csv_file, count):
 
 
 '''
-As explained, we will refine the addresses under the OfficeAddress column in order to
+Step 2: As explained, we will refine the addresses under the OfficeAddress column in order to
 assure a bigger probability of geolocation find. And you know what, let's remove the
 additional zip code digits. 
 '''
@@ -221,6 +221,37 @@ def post_offices_refinement(csv_file):
 
     df.to_csv('refined_california_post_offices.csv',index=False)
 
+
+
+
+'''
+Using the following function we will store the post office attributes into a csv file
+in order to access it later. The question is, how should the arrangement of columns be
+within the file?
+'''
+def allocate_attributes_within_csv(attributes_list):
+    
+    # Just a simple allocation into the csv file. The headers of the file are the 
+    # following: AwardingBody, WebLink, County, X_Coordinates, and Y_Coordinates.
+    
+    file_name = 'finalized_california_post_offices.csv'
+
+    df = pd.DataFrame({
+        "OfficeName":[attributes_list[0]],
+        "OfficeAddress":[attributes_list[1]],
+        "OfficeDistance":[attributes_list[2]],
+        "OfficeWebPage":[attributes_list[3]],
+        "ZipCodeUsed":[attributes_list[4]],
+        "OfficeNoInZip":[attributes_list[5]],
+        "X_Coordinate":[attributes_list[6]],
+        "Y_Coordinate":[attributes_list[7]]
+    })
+
+    if not os.path.isfile(file_name):
+        df.to_csv(file_name, index=False, header=True, mode='w')
+
+    else:
+        df.to_csv(file_name, index=False, header=False, mode='a')
 
 
 
@@ -307,15 +338,22 @@ all of the post offices in California. One thing to mention is that we need to a
 all of the zip codes, currently they use the nine digit system instead of the standard five
 digit system.
 '''
-def post_offices_geolocations_acquisition(csv_file):
+def post_offices_geolocations_acquisition(csv_file,count):
 
     main_df = pd.read_csv(csv_file, low_memory=False)
 
-    for index, row in main_df.iterrows():
+    for index, row in main_df.iloc[count:].iterrows():
 
         percentage_progress = (index/len(main_df))*100
         
+        office_name = row['OfficeName']
         complete_address = row['OfficeAddress']
+        distance = row['OfficeDistance']
+        webpage = row['OfficeWebPage']
+        zip_code = row['ZipCodeUsed']
+        zip_code_number = row['OfficeNoInZip']
+
+
         coordinates = obtaining_new_geolocations_attempt1(complete_address)
         x_coordinate = coordinates[0]
         y_coordinate = coordinates[1]
@@ -329,16 +367,22 @@ def post_offices_geolocations_acquisition(csv_file):
             second_attempt = obtaining_new_geolocations_attempt2(str(complete_address))
             x_coordinate = second_attempt[0]
             y_coordinate = second_attempt[1]
-            main_df.at[index, 'X_Coordinates'] = x_coordinate
-            main_df.at[index, 'Y_Coordinates'] = y_coordinate
 
-        else:
-            main_df.at[index, 'X_Coordinates'] = x_coordinate
-            main_df.at[index, 'Y_Coordinates'] = y_coordinate
+        list_of_attributes = [
+            office_name,
+            complete_address,
+            distance,
+            webpage,
+            zip_code,
+            zip_code_number,
+            x_coordinate,
+            y_coordinate
+        ]
+
+        allocate_attributes_within_csv(list_of_attributes)    
 
         print(f'Iteration #{index} - {round(percentage_progress,2)}%\n{complete_address}: ({x_coordinate},{y_coordinate})\n')
 
-    main_df.to_csv('finalized_california_post_offices.csv',index=False)
 
 
 
@@ -425,7 +469,7 @@ if __name__ == '__main__':
     california_zip_codes = 'california_zip_codes.csv'
     california_post_offices = 'california_post_offices.csv'
     refined_california_post_offices = 'refined_california_post_offices.csv'
-    cleansed_california_post_offices = 'finalized_california_post_offices.csv'
+    geolocations_post_offices = 'finalized_california_post_offices.csv'
     final_california_post_offices = 'final_california_post_offices.csv'
     ultimate_california_post_offices = 'ultimate_california_post_offices.csv'
     
@@ -464,7 +508,8 @@ if __name__ == '__main__':
             # different Post Offices. We will utilize the double acquisition approach of using
             # the U.S. Geolocation service along with Nominatim.
 
-            post_offices_geolocations_acquisition(california_post_offices)
+            count = int(input('Count: '))
+            post_offices_geolocations_acquisition(refined_california_post_offices, count)
 
         case 4:
 
@@ -473,7 +518,7 @@ if __name__ == '__main__':
             # office was not found within the zip code in question, we can always reference the 
             # following one.
 
-            post_offices_geolocations_cleaning(cleansed_california_post_offices)
+            post_offices_geolocations_cleaning(geolocations_post_offices)
 
         case 5:
 
