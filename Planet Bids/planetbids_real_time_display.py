@@ -322,7 +322,28 @@ def acquiring_county_of_bid(url, awarding_body):
             
         
 
+'''
+If a link doesn't work, I want to know why, and perhaps attempt its webscraping extraction
+differently. This is why I will dedicate a function to all the faulty planetbids websites
+in order to include them differently, either it works, or it works.
+'''
+def faulty_county_of_bid(url,awarding_body):
+    
+    # Just a simple allocation into the csv file. The headers of the file are the 
+    # following: AwardingBody, WebLink, County, X_Coordinates, and Y_Coordinates.
+    
+    file_name = 'faulty_planetbids.csv'
 
+    df = pd.DataFrame({
+        "AwardingBody":[url],
+        "WebLink":[awarding_body]
+    })
+
+    if not os.path.isfile(file_name):
+        df.to_csv(file_name, index=False, header=True, mode='w')
+
+    else:
+        df.to_csv(file_name, index=False, header=False, mode='a')
 
 
 
@@ -358,6 +379,8 @@ def planetbids_site_county_and_geolocation(planetbids_sites, count):
             
         except:
             print(f'\nSomething occurred at {index} - {awarding_body}\n')
+            faulty_county_of_bid(url, awarding_body)
+            
 
         
         
