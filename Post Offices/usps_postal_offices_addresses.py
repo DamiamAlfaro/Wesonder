@@ -32,8 +32,8 @@ def allocate_post_offices_within_csv(attributes_list):
         "OfficeNoInZip":[attributes_list[0]]
     })
 
-    df.to_csv('california_post_offices.csv',index=False,header=False, mode='a')
-
+    #df.to_csv('california_post_offices.csv',index=False,header=False, mode='a')
+    df.to_csv('temporary_post_offices.csv',index=False,header=False,mode='a')
 
 
 
@@ -413,7 +413,9 @@ def post_offices_geolocations_cleaning(csv_file):
 
     # Now we can continue with the cleansen, after all, every single post office with an
     # unique zip code is going to have a respective post office geolocation associated with
-    # the office location.
+    # the office location. This is where we print the zip_code_check_list in order to see
+    # which zip codes are missing a geolocation, and find them using manual google maps along
+    # with the respective address.
 
     df_cleansed = df[df['X_Coordinates'] != 0]
     df_cleansed.to_csv('final_california_post_offices.csv',index=False)
@@ -457,6 +459,10 @@ def zip_code_stockpile_expansion(csv_file):
 
 
 
+
+
+
+
 if __name__ == '__main__':
     
     # The goal of this program is to develop a webscraping mechanisms that has the aim to
@@ -464,14 +470,18 @@ if __name__ == '__main__':
     # mechanism will be used to correlate DVBE firms (and perhaps any other address) that
     # geolocations cannot be easily found using conventional methods. As you might know,
     # it is hard to find P.O. boxes coordinates since they are not technically an
-    # official street address.
+    # official street address. It is worth mentioning that we will have an additional file
+    # (sometimes empty, sometimes not) for california zip_codes, we will utilize it to find
+    # miscellaneous post offices for certain zip codes for other mechanisms or programs.
 
-    california_zip_codes = 'california_zip_codes.csv'
-    california_post_offices = 'california_post_offices.csv'
-    refined_california_post_offices = 'refined_california_post_offices.csv'
-    geolocations_post_offices = 'finalized_california_post_offices.csv'
-    final_california_post_offices = 'final_california_post_offices.csv'
-    ultimate_california_post_offices = 'ultimate_california_post_offices.csv'
+    california_zip_codes = 'california_zip_codes.csv' # Step 1 Input 
+    temporary_california_zip_codes = 'temporary_file.csv'
+
+    california_post_offices = 'california_post_offices.csv' # Step 1 Output - Step 2 Input
+    refined_california_post_offices = 'refined_california_post_offices.csv' # Step 2 Output - Step 3 Input
+    geolocations_post_offices = 'finalized_california_post_offices.csv' # Step 3 Output - Step 4 Input
+    final_california_post_offices = 'final_california_post_offices.csv' # Step 4 Output - Step 5 Input
+    ultimate_california_post_offices = 'ultimate_california_post_offices.csv' # Step 5 Outout - Final Output
     
 
     step = int(input('Step: '))
@@ -480,7 +490,7 @@ if __name__ == '__main__':
 
         case 1:
 
-            # Step 1: File Iteration, the first step is to iterate through the non_found_geolocations 
+            # Step 1 - File Iteration: The first step is to iterate through the non_found_geolocations 
             # file and locate the zip code column, and use the values under such column as inputs
             # in the Post Office Locator website in order to webscrap the results. Additionally;
             # Chunk Size Webscraping. I have a plan: We are going to try two approaches, 
@@ -491,11 +501,11 @@ if __name__ == '__main__':
             # mix Beautiful Soup and Selenium...
             
             count = int(input('Count: '))
-            iterating_each_zip_code_list(california_zip_codes, count)
+            iterating_each_zip_code_list(temporary_california_zip_codes, count)
 
         case 2:
 
-            # Step 2: Address Cleanup, we will be cleaning the OfficeAddress column within the 
+            # Step 2 - Address Cleanup: We will be cleaning the OfficeAddress column within the 
             # post offices addresses. Which changes? The adjustment from 9-digit zip codes to
             # 5-digit zip codes for instance. Not only that, but we will also make the address
             # strings into Title mode, just in case.
@@ -504,7 +514,7 @@ if __name__ == '__main__':
     
         case 3:
 
-            # Step 3: Geolocation Acquisitions: as usual, we will find the geolocations of the
+            # Step 3 - Geolocation Acquisitions: As usual, we will find the geolocations of the
             # different Post Offices. We will utilize the double acquisition approach of using
             # the U.S. Geolocation service along with Nominatim.
 
@@ -513,7 +523,7 @@ if __name__ == '__main__':
 
         case 4:
 
-            # Step 4: Geolocation Cleansing: this is a small step, we will just remove all of the
+            # Step 4 - Geolocation Cleansing: This is a small step, we will just remove all of the
             # Post Offices without Geolocations since there is a high possibility that if a post
             # office was not found within the zip code in question, we can always reference the 
             # following one.
@@ -522,7 +532,7 @@ if __name__ == '__main__':
 
         case 5:
 
-            # Step 5: Additional Zip Codes: I just realized that some of the zip codes under the columns
+            # Step 5 - Additional Zip Codes: I just realized that some of the zip codes under the columns
             # 'ZipCodeUsed in the post offices are not the same as the actual zip code of the address of
             # the post office, what's worse, there are zip codes under the addresses that are not found 
             # in the 'ZipCodeUsed' column, and what's even worse, some are fucking nine-digits... Let's
