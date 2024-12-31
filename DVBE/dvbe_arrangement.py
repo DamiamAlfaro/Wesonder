@@ -199,28 +199,16 @@ def geolocation_acquisition(csv_file):
 Using this function, we will segregate the addresses that were not found initially
 from the functions above. First, we will allocate all of the non-found geolocations
 into a different csv file to use other methods to find them.
+Segregating the non-found addressess, yes, that's it...yes, I need a function for that... Also,
+I forgot to mention that we will fix the zip_code column, I don't want to use nine-digit zip
+codes, but five-digit zip codes.
 '''
-def geolocation_segregation(csv_file):
+def geolocation_segregation_and_fix(csv_file):
     
     # As mentioned, the only goal with this function is to segregate the locations
     # with the ones of which the location was not found, a simple action that can
     # be taken by a few lines of code. Yeah, I just don't know what to write here.
     # I just like how big paragraphs look.
-
-    df = pd.read_csv(csv_file)
-    df_segregated = df[df['X_Coordinates'] == 0]
-    df_segregated.to_csv('non_found_dvbe_geolocations.csv',index=False)
-
-
-
-
-'''
-Segregating the non-found addressess, yes, that's it...yes, I need a function for that... Also,
-I forgot to mention that we will fix the zip_code column, I don't want to use nine-digit zip
-codes, but five-digit zip codes.
-'''
-def non_found_addresses_segregation(csv_file):
-
     # The real question here is, why do I need a function for this? Well, because I like order...
     # If you do not map everything in your life, eventually the parts of your life that you
     # did not map are going to become dependant on forces outside yours, you will not have control
@@ -229,40 +217,46 @@ def non_found_addresses_segregation(csv_file):
     # every single part of one's life, as there isn't enough time to manage all of them properly,
     # this is where one asks oneself: "what is really important, what do I want to have control upon?"...
 
-    df = pd.read_csv(csv_file,low_memory=False)
+    df = pd.read_csv(csv_file)
+    
+    df['PostalCode'] = df['PostalCode'].astype(str).str.split("-").str[0]
+
+    df_cleaned = df[df['X_Coordinates'] != 0]
+    df_cleaned.to_csv('found_dvbe_geolocations.csv',index=False)
+
     df_segregated = df[df['X_Coordinates'] == 0]
-    
-    for index, row in df_segregated.iterrows():
+    df_segregated.to_csv('non_found_dvbe_geolocations.csv',index=False)
 
-        zip_code = row['PostalCode']
         
-        if zip_code.split("-"):
-            df_segregated.at[index,'PostalCode'] = zip_code.split("-")[0]
-
-        else:
-            pass
-    
-    df_segregated.to_csv('segregated_dvbe.csv',index=False)
-        
-
 
 
 '''
 The rules are simple, we will simply assign a post office geolocation to all the
 non-found addresses based on their zip code value, plain and simple...
 '''
-def non_found_addresses_correlation(non_found_entities, post_offices_file):
+def dvbe_concatenation(found_dvbe_entities, non_found_dvbe_entities, post_offices_file):
 
     # If you want to write less, then write less functions... I just realized that I enjoy writing
     # while coding; those two are my favorite things to do in this mundane life, those too make me
-    # enjoy this mundane life, they seem to my agents of art materialization...
-    
-    df_entities = pd.read_csv(non_found_entities,low_memory=False)
+    # enjoy this mundane life, they seem to my agents of art materialization... 
+    # The code below checks if there are faulty zip codes. The reason why there might be faulty zip
+    # codes is because zip codes from dvbe entities from the dvbe file might not be found in the
+    # zip code column of the post_offices file, i.e. we might be lacking post_offices addresses.
+    # In this case, there are 7 zip codes that are faulty from the post_office_addresses file, which
+    # we will find manually, just for this time as we will most likely utilize such file for other
+    # addresses that we cannot find and use the post office address for an alternative. If the faulty
+    # zip code list is not extensive, do them manually.
+
+    df_found_entities = pd.read_csv(found_dvbe_entities,low_memory=False)
+    df_non_found_entities = pd.read_csv(non_found_dvbe_entities,low_memory=False)
+    df_non_found_entities['X_Coordinates'] = df_non_found_entities['X_Coordinates'].astype(float)
+    df_non_found_entities['Y_Coordinates'] = df_non_found_entities['Y_Coordinates'].astype(float)
+
     df_post_offices = pd.read_csv(post_offices_file,low_memory=False)
 
-    count = 0
+    faulty_zip_codes = []
 
-    for index, row in df_entities.iterrows():
+    for index, row in df_non_found_entities.iterrows():
         
         zip_code = row['PostalCode']
 
@@ -272,8 +266,8 @@ def non_found_addresses_correlation(non_found_entities, post_offices_file):
             respective_x_coordinate = df_post_offices['X_Coordinates'].iloc[index_position]
             respective_y_coordinate = df_post_offices['Y_Coordinates'].iloc[index_position]
             
-            df_entities.at[index, 'X_Coordinates'] = respective_x_coordinate
-            df_entities.at[index, 'Y_Coordinates'] = respective_y_coordinate
+            df_non_found_entities.at[index, 'X_Coordinates'] = respective_x_coordinate
+            df_non_found_entities.at[index, 'Y_Coordinates'] = respective_y_coordinate
         
         elif zip_code in df_post_offices['ExtraZipCode'].values:
 
@@ -281,14 +275,19 @@ def non_found_addresses_correlation(non_found_entities, post_offices_file):
             respective_x_coordinate = df_post_offices['X_Coordinates'].iloc[index_position]
             respective_y_coordinate = df_post_offices['Y_Coordinates'].iloc[index_position]
             
-            df_entities.at[index, 'X_Coordinates'] = respective_x_coordinate
-            df_entities.at[index, 'Y_Coordinates'] = respective_y_coordinate
-
+            df_non_found_entities.at[index, 'X_Coordinates'] = respective_x_coordinate
+            df_non_found_entities.at[index, 'Y_Coordinates'] = respective_y_coordinate
 
         else:
-            count += 1
+            faulty_zip_codes.append(zip_code)
+
+    concatenated_dataframes = pd.concat([df_found_entities, df_non_found_entities])
+    concatenated_dataframes.to_csv('finalized_dvbe_entities.csv',index=False)
+
+
     
-    print(df_entities, count)
+    
+    
 
             
 
@@ -307,65 +306,82 @@ if __name__ == '__main__':
     # the 'Keywords' column with CSLB license titles via Linguistic Patterns. The initial
     # file can be found in google cloud.
 
-    first_csv_file_dvbe_initial = 'latest_dvbes.csv'
-    second_csv_file_refined_without_geolocations = 'refined_latest_dvbe.csv'
-    third_csv_file_segregation = 'some_geolocations_dvbe.csv'
-    non_found_addresses = 'segregated_dvbe.csv'
-    ultimate_california_post_offices = 'ultimate_california_post_offices.csv'
-
+    ultimate_california_post_offices = 'ultimate_california_post_offices.csv' # Imported from usps_postal_offices_addresses.py - Step 4 Input
+    first_csv_file_dvbe_initial = 'latest_dvbes.csv' # Step 1 Input
+    second_csv_file_refined_without_geolocations = 'refined_latest_dvbe.csv' # Step 2 Input - Step 1 Output
+    third_csv_file_segregation_and_fix = 'some_geolocations_dvbe.csv' # Step 3 Input - Step 2 Output
+    found_dvbe_locations = 'found_dvbe_geolocations.csv' # Step 4 Input - Step 3 Output
+    non_found_dvbe_locations = 'non_found_dvbe_geolocations.csv' # Step 4 Input - Step 3 Output
+    
     step = int(input('Step: '))
 
     match step:
 
         case 1:
             
-            # Step 1: Complete Address Creation, the first step will be creation of a 'CompleteAddress' column. We need to create
+            # Step 1 - Complete Address Creation: The first step will be creation of a 'CompleteAddress' column. We need to create
             # a column to include the complete addresses. Currently, the addresses are splitted 
             # into 5 columns, we need to put the values of each of those 5 columns into a single
             # column in order for the geofinder to find the geolocation coordinates. After that, 
             # we will output a new file containing such column, in which we will use to find the
             # geolocations directly with.
+
+            # Files Input:
+            # 1) latest_dvbes.csv
+
+            # Files Output:
+            # 1) refined_latest_dvbe.csv
             
             complete_address_column_creation(first_csv_file_dvbe_initial)
 
         case 2:
 
-            # Step 2: Geolocation Acquisition, as the title goes, we will be acquiring the respective geolocations
+            # Step 2 - Geolocation Acquisition: As the title goes, we will be acquiring the respective geolocations
             # for eveyry value under the 'CompleteAddress' columns of the file. We will utilize the freely 
             # available functionality of the U.S. Census Bureau. Thanks U.S. However, unfortunately this functionality
             # isn't complete accurate. If the geolocation was not found, within the same iteration, we will attempt
             # to find the same geolocation using Nominatim.
 
+            # Files Input:
+            # 1) refined_latest_dvbe.csv
+
+            # Files Output:
+            # 1) some_geolocations_dvbe.csv
+
             geolocation_acquisition(second_csv_file_refined_without_geolocations)
 
         case 3:
 
-            # Step 3 will be splitted between two programs, the first one is the one you find this code in, that
-            # is, the program that will segregate the non-found locations, find the respective location for those
-            # locations, and then concanate them with the existing locations, however, the problem is that most
-            # of the locations are P.O. boxes, which means that we need to create a program that webscrapes the 
-            # location of all of the Postal Offices in California, which I believe is a good database to publish
-            # publicly in one of the portals perhaps.
+            # Step 3 - Address Segregation and Fixing: we will not only segregate the rows containing addresses that 
+            # were not found by Step 2, but we will also fix the zip codes from the PostalCode Column, some of them 
+            # contain nine-digit zip codes, which makes it more confusing. We will be creating two files here, one with 
+            # the found addresses, the clean one, and one for the non-found addresses. The latter will be used for 
+            # post office-address correlation in the following step.
 
-            geolocation_segregation(third_csv_file_segregation)
+            # Files Input:
+            # 1) some_geolocations_dvbe.csv
+
+            # Files Output:
+            # 1) found_dvbe_geolocations.csv
+            # 2) non_found_dvbe_geolocations.csv
+
+            geolocation_segregation_and_fix(third_csv_file_segregation_and_fix)
 
         case 4:
 
-            # Step 4: Non-found Segregation: we are about to segregate all of the dvbe addresses that were
-            # not found, i.e. without geolocations. The goal of this is to segregate them into a different
-            # file, correlate the respective geolocation of the nearby post offices with the function 
-            # below, and then concanate the files.
-
-            non_found_addresses_segregation(third_csv_file_segregation)
-
-        case 5:
-
-            # Step 5: DVBE Addresses Correlation: using the Post Offices, we are going to correlate
+            # Step 4: DVBE Addresses Correlation: using the Post Offices, we are going to correlate
             # all of the non-found addresses geolocations with Post Offices geolocations based on
             # each respective's zip code. Perhaps we can utilize this database to associate non-found
             # addresses of other mechanisms...
 
-            non_found_addresses_correlation(non_found_addresses, ultimate_california_post_offices)
+            # Files Input:
+            # 1) found_dvbe_geolocations.csv
+            # 2) non_found_dvbe_geolocations.csv
+
+            # Files Out:
+            # 1) finalized_dvbe_entities.csv
+
+            dvbe_concatenation(found_dvbe_locations, non_found_dvbe_locations, ultimate_california_post_offices)
 
 
 
