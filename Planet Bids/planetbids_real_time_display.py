@@ -65,6 +65,8 @@ to 1) get the name of the town/city/county associated with the weblink, and
 2) acquire the data information for the active bids within the weblink in question.
 '''
 def planetbids_active_bids_webscraping(url, awarding_body):
+
+    time.sleep(4)
     
     driver = webdriver.Chrome()
     driver.get(url)
@@ -296,6 +298,7 @@ def acquiring_county_of_bid(url, awarding_body):
     # an additional function we will store all of the values into a csv file for each iteration in
     # order to forbid progress from being lost.
 
+
     driver = webdriver.Chrome()
     driver.get(url)
     time.sleep(5)
@@ -318,6 +321,8 @@ def acquiring_county_of_bid(url, awarding_body):
 
     county_geolocation_acquisition(county,url,awarding_body)
 
+    driver.quit()
+
 
             
         
@@ -332,7 +337,7 @@ def faulty_county_of_bid(url,awarding_body):
     # Just a simple allocation into the csv file. The headers of the file are the 
     # following: AwardingBody, WebLink, County, X_Coordinates, and Y_Coordinates.
     
-    file_name = 'faulty_planetbids.csv'
+    file_name = 'faulty_planetbids_sites.csv'
 
     df = pd.DataFrame({
         "AwardingBody":[url],
@@ -446,18 +451,3 @@ if __name__ == "__main__":
 
             count = int(input('Count: '))
             planetbids_site_county_and_geolocation(planetbids_sites_csv_file, count)
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
