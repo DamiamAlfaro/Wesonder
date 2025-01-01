@@ -200,8 +200,10 @@ def allocate_attributes_within_csv(attributes_list):
     
     # Just a simple allocation into the csv file. The headers of the file are the 
     # following: AwardingBody, WebLink, County, X_Coordinates, and Y_Coordinates.
+    # Adjust comment/variable name below accordingly:
     
-    file_name = 'refined_planetbids_sites.csv'
+    #file_name = 'refined_planetbids_sites.csv'
+    file_name = 'regurgitation_refined_planetbids_sites.csv'
 
     df = pd.DataFrame({
         "AwardingBody":[attributes_list[0]],
@@ -336,12 +338,14 @@ def faulty_county_of_bid(url,awarding_body):
     
     # Just a simple allocation into the csv file. The headers of the file are the 
     # following: AwardingBody, WebLink, County, X_Coordinates, and Y_Coordinates.
+    # Adjust comment/variable name below accordingly:
     
-    file_name = 'faulty_planetbids_sites.csv'
+    #file_name = 'faulty_planetbids_sites.csv'
+    file_name = 'regurgitation_faulty_planetbids_sites.csv'
 
     df = pd.DataFrame({
-        "AwardingBody":[url],
-        "WebLink":[awarding_body]
+        "WebLink":[url],
+        "AwardingBody":[awarding_body]
     })
 
     if not os.path.isfile(file_name):
@@ -421,8 +425,10 @@ if __name__ == "__main__":
     # also use an additional file to check if a location is found within the title of the
     # owner inside the planetbids site.
 
-    planetbids_sites_csv_file = 'planetbids_sites.csv'
-    active_bids_planetbids = 'real_time_planetbids_bids.csv'
+    planetbids_sites_csv_file = 'planetbids_sites.csv' # Step 1 Input
+    active_bids_planetbids = 'real_time_planetbids_bids.csv' # Step 4 Input - Step 1 Output
+    refined_planetbids_sites = 'refined_planetbids_sites.csv' # Step 3 Input - Step 2 Output
+    faulty_planetbids_sites = 'faulty_planetbids_sites.csv' # Step 3 Input - Step 2 Output
     
 
     step = int(input('Step: ')) 
@@ -438,6 +444,12 @@ if __name__ == "__main__":
             # store it into a csv file with geolocations in order to be quickly displayed. The 
             # following function will have several more functions in usage as well.
 
+            # Files Input:
+            # 1) planetbids_sites.csv
+
+            # Files Output:
+            # 1) real_time_planetbids_bids.csv
+
             count = int(input('Count: '))
             planetbids_sites_iteration(planetbids_sites_csv_file, count)
 
@@ -449,5 +461,38 @@ if __name__ == "__main__":
             # where the website is located, apparently (and I might be mistaken) the County section for every
             # bid is the same, so let's test that hypothesis with this step.
 
+            # Files Input:
+            # 1) planetbids_sites.csv 
+
+            # Files Output:
+            # 1) refined_planetbids_sites.csv
+            # 2) faulty_planetbids_sites.csv
+
+            count = int(input('Count: '))
+            planetbids_site_county_and_geolocation(planetbids_sites_csv_file, count, step)
+
+        case 3:
+
+            # Step 3 - Regurgitation Iteration: One of the output files from the function above is a two-column
+            # csv file containing the planetbids urls that were faulty in the previous session, let's try to 
+            # iterate through them once more. Just make sure you change the respective files based on whether
+            # the operation is a regurgitation or not.
+
+            # Files Input:
+            # 1) The regurgitation of faulty_planetbids_sites.csv
+
+            # Files Output:
+            # 1) The regurgitation of faulty_planetbids_sites.csv from the previous step.
+            # 2) The regurgitation of faulty_planetbids_sites.csv from the previous step.
+            
             count = int(input('Count: '))
             planetbids_site_county_and_geolocation(planetbids_sites_csv_file, count)
+
+        case 4:
+
+            # Step 4 - Discrepancy Correlation: This isn't really a step, but it is necessary nonentheless. We will
+            # check to see if all of the real-time bids have a correlation to at least one of the awarding bodies from
+            # the refined_planetbids_sites.csv from Step 2 is found the respective real-time column of awarding body of 
+            # the file. Basically, to check that all real-time bids are correlated between files via AwardingBody column.
+
+            pass
