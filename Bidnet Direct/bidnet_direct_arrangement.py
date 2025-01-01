@@ -546,6 +546,7 @@ def the_actual_bidnet_direct_webscraping(url, county, x_coord, y_coord):
             'none','none','none',
             'none','none','none'
         ]
+        print(f'Awarding Body: {awarding_body_name}\nURL: {url}\nCounty: {county}\nFAULTY')
         bidnet_direct_bids_into_csv(solicitation_attributes_list)
     
     except Exception as exe:
