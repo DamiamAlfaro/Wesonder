@@ -1,7 +1,9 @@
 import pandas as pd
 import requests
+import numpy as np
 import time
 import os
+from geopy.geocoders import Nominatim
 from selenium import webdriver 
 from selenium.webdriver.common.by import By
 from selenium.webdriver.support.ui import WebDriverWait
@@ -178,11 +180,82 @@ def bidnet_direct_instances_allocation(csv_file,count):
 
 
 '''
-Function within Step 3: County Search, here it is intendent
+Using the following function we will store the planetbids bid attributes into a csv file
+in order to access it later. The question is, how should the arrangement of columns be
+within the file?
 '''
-def county_finder_based_on_municipality(place):
+def allocate_attributes_within_csv(attributes_list):
     
-    driver = webdriver.Chrome()
+    # Just a simple allocation into the csv file. The headers of the file are the 
+    # following: AwardingBody, WebLink, County, X_Coordinates, and Y_Coordinates.
+    # Adjust comment/variable name below accordingly:
+    
+    file_name = 'functional_bidnet_direct_sites.csv'
+
+    df = pd.DataFrame({
+        "BidNetDirectUrl":[attributes_list[0]],
+        "County":[attributes_list[1]],
+        "X_Coordinates":[attributes_list[2]],
+        "Y_Coordinates":[attributes_list[3]]
+    })
+
+    if not os.path.isfile(file_name):
+        df.to_csv(file_name, index=False, header=True, mode='w')
+
+    else:
+        df.to_csv(file_name, index=False, header=False, mode='a')
+
+
+
+
+'''
+Using Nominatim, we will try to find the addresses that were not found in the
+first attempt, we can copy the same structure as the function above in order to
+allow this function to be used within an iteration.
+'''
+def obtaining_new_geolocations_attempt2(address_string):
+    
+    # This is the second attempt to find an address using Nominatim. We will
+    # be using the same methodology as with attempt 1; the output of this
+    # function will either be a pair of zeros, or the geolocation
+    # coordinates for each of the addressess.
+    
+    geolocator = Nominatim(user_agent="my_geocoder")
+    location = geolocator.geocode(address_string, timeout=8)
+
+    if location:
+        lat = location.latitude
+        lon = location.longitude
+        return lat, lon
+    else:
+        lat = 0
+        lon = 0
+        return lat, lon
+
+
+
+
+'''
+Using this function, we will extract the geolocation of each of the counties found on the function
+below, after that, we will store the data into a csv file by the dragged variables which will 
+serve as additional datums.
+'''
+def county_geolocation_acquisition(county, url):
+    
+    # The first step is to use the function above to locate the county geolocation, after that we
+    # need to take the newly found geolocation, along with the other attributes into a csv file
+    # in order to continoulsy build the newly refined planetbids_sites.csv file that will contain
+    # the counties, and the geolocations of each county.
+
+    county_string = f'{county} County, California'
+    geolocations = obtaining_new_geolocations_attempt2(county_string)
+    x_coordinate = geolocations[0]
+    y_coordinate = geolocations[1]
+    list_of_attributes = [url, county, x_coordinate, y_coordinate]
+
+    allocate_attributes_within_csv(list_of_attributes)
+
+    print(f'URL: {url}\nCounty: {county}\nGeolocations: ({x_coordinate},{y_coordinate})')
 
 
 
@@ -246,12 +319,6 @@ def awarding_bodies_bidnet_direct_sites(csv_file):
         else:
             pass
 
-    print(len(useful_urls))
-    print(len(urls_with_foreign_urls))
-
-
-
-
     all_useful_url_instances = []
     unique_urls = []
     respective_counties = []
@@ -266,14 +333,62 @@ def awarding_bodies_bidnet_direct_sites(csv_file):
 
         if url_string in useful_urls and url_string not in unique_urls:
 
-            if pd.isnull(county_in_question):
-                pass
-
             unique_urls.append(url_string)
             respective_counties.append(county_in_question)
             
-    print(len(all_useful_url_instances))
-    print(len(unique_urls))
+
+    counties_based_on_index = [[] for _ in range(len(unique_urls))]
+    another_unique_url_list = []
+
+    for instance in all_useful_url_instances:
+        if instance[0] in unique_urls and instance[1] not in counties_based_on_index[unique_urls.index(instance[0])]:
+            counties_based_on_index[unique_urls.index(instance[0])].append(instance[1])
+            if instance[0] not in another_unique_url_list:
+                another_unique_url_list.append(instance[0])
+    
+    
+    single_county_list = []
+    for county_list in counties_based_on_index:
+        if pd.isna(county_list[0]) and len(county_list) > 1:
+            single_county_list.append(county_list[1])
+        else:
+            single_county_list.append(county_list[0])
+
+
+    # 6) I am just going to allocate each county manually, then utilize the county geolocator finder from
+    # the planetbids program in order to allocate a respective geolocation to each functional bidnet direct
+    # url webpage just to be able to map it later on. The code above is cool, experimental, but we need results
+    # fast here, so I will cut some time from theory and allocate it into practice. In order to acquire the
+    # functional_bidnet_direct_sites_undone.csv file just make the lists above a data frame.
+
+    functional_bidnet_direct_file_undone = 'functional_bidnet_direct_sites_undone.csv'
+    df_sites = pd.read_csv(functional_bidnet_direct_file_undone)
+
+    for index, row in df_sites.iterrows():
+
+        county = row['County']
+        url = row['BidNetDirectUrl']
+
+        county_geolocation_acquisition(county, url)
+
+
+
+
+    
+        
+   
+        
+
+            
+    
+    
+
+    
+    
+
+
+    
+
         
 
 
@@ -354,6 +469,11 @@ if __name__ == "__main__":
 
             # Files Input: 
             # 1) bidnet_direct_awarding_bodies.csv
+
+            # Files Output:
+            # 1) functional_bidnet_direct_sites_undone.csv
+            # 2) functional_bidnet_direct_sites.csv
+            # 3) additional_bidnet_direct_singular_sites.csv
 
             awarding_bodies_bidnet_direct_sites(bidnet_direct_awarding_bodies)
 
