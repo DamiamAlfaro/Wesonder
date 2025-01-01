@@ -319,6 +319,19 @@ def awarding_bodies_bidnet_direct_sites(csv_file):
         else:
             pass
 
+
+    # 6) We are going to create a file for the urls_with_foreign_urls in order to analyse it later on. We don't really need
+    # its content, but it will interesting to get additional publishing sites, it might not hurt to do a case study on
+    # those as well. In order to keep them and before they put down the bidnet direct sites, we will allocate the foreign
+    # urls into a csv file via webscraping. But that will be another function, first let's allocate them within a separate 
+    # csv file.
+
+    df_foreign = pd.DataFrame({
+        "ForeignBidnetDirectURLs":urls_with_foreign_urls,
+    })
+    df_foreign.to_csv('additional_bidnet_direct_singular_sites.csv',index=False)
+    
+
     all_useful_url_instances = []
     unique_urls = []
     respective_counties = []
@@ -355,7 +368,7 @@ def awarding_bodies_bidnet_direct_sites(csv_file):
             single_county_list.append(county_list[0])
 
 
-    # 6) I am just going to allocate each county manually, then utilize the county geolocator finder from
+    # 7) I am just going to allocate each county manually, then utilize the county geolocator finder from
     # the planetbids program in order to allocate a respective geolocation to each functional bidnet direct
     # url webpage just to be able to map it later on. The code above is cool, experimental, but we need results
     # fast here, so I will cut some time from theory and allocate it into practice. In order to acquire the
