@@ -486,7 +486,7 @@ if __name__ == "__main__":
             # 2) The regurgitation of faulty_planetbids_sites.csv from the previous step.
             
             count = int(input('Count: '))
-            planetbids_site_county_and_geolocation(planetbids_sites_csv_file, count)
+            planetbids_site_county_and_geolocation(faulty_planetbids_sites, count)
 
         case 4:
 
