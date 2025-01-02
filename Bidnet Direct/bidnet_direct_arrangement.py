@@ -269,6 +269,7 @@ that we ought to use such pattern study to approach the most optimal solution ou
 '''
 def awarding_bodies_bidnet_direct_sites(csv_file):
     
+
     # First we need to analyze the differences, discrepancies from each of the urls. Of course, we will 
     # isolate the functional ones for further study after we deal with the chaos of the remaining bidnet
     # direct urls. Solve them and sort them properly, then we can initiate the webscraping for each functional
@@ -536,9 +537,6 @@ def the_actual_bidnet_direct_webscraping(url, county, x_coord, y_coord):
 
             bidnet_direct_bids_into_csv(solicitation_attributes_list)
 
-            
-
-
     except AttributeError as exe:
         solicitation_attributes_list = [
             awarding_body_name, url,county,
@@ -556,23 +554,17 @@ def the_actual_bidnet_direct_webscraping(url, county, x_coord, y_coord):
     
 
 
-
-
-
-
-
-
-
-
 '''
 Step 4: The real work begins. Let's webscrap based on the links from the functional file, and acquire the
 same attributes of each page accordingly.
 '''
 def bidnet_direct_real_time_webscraping(csv_file):
     
+
     # The first step is to of course, assign a selenium session... Perhaps Beautifulsoup could work here,
     # bidnet direct seem to be non-javascript, but I might be wrong, so let's try both of them out. Of course
     # in the course of attempts, we will figure out the variables we want to extract from each session.
+
 
     df = pd.read_csv(csv_file)
     total_rows = len(df)
@@ -591,6 +583,82 @@ def bidnet_direct_real_time_webscraping(csv_file):
 
 
 
+'''
+Part of Step 5: A mere integration into a csv file, nothing more, nothing less...
+'''
+def allocating_foreign_url_into_csv(list_of_attributes):
+    
+    # Just a simple allocation into the csv file. The headers of the file are the 
+    # following: InitialURL, and ForeignURL.
+    # Adjust comment/variable name below accordingly:
+    
+    file_name = 'foreign_bid_sources_from_bidnet.csv'
+
+    df = pd.DataFrame({
+        "InitialURL":[list_of_attributes[0]],
+        "ForeignURL":[list_of_attributes[1]]
+    })
+
+    if not os.path.isfile(file_name):
+        df.to_csv(file_name, index=False, header=True, mode='w')
+
+    else:
+        df.to_csv(file_name, index=False, header=False, mode='a')
+
+
+'''
+Part of Step 5: Again, due to organization purposes, we will dedicate an entire function block to this 
+functionality of webscraping with beautiful soup.
+'''
+def webscraping_foreign_bidnet_url(url):
+
+
+    # The same as others...
+
+
+    response = requests.get(url)
+    soup = BeautifulSoup(response.content,'html.parser')
+
+    try:
+        content_block = soup.find('div',class_='content-block')
+        filter_div_element = content_block.find('div')
+        another_filter_div_element = filter_div_element.find_all('div')[1].find_all('div',class_='mets-field')
+        foreign_link = another_filter_div_element[6].find('div',class_='mets-field-body').find('a').get('href')
+
+        return foreign_link
+    
+    except:
+
+        return 'none'    
+    
+
+
+
+'''
+Step 5: The acquisition of foreign urls from bidnet direct bids. From step 3, we were able to collect
+an additional csv file containing individual solicitation webpages, wherein you can find foreign
+urls from the main source bid distributor.
+'''
+def foreign_bidnet_urls_acquisition(csv_file, count):
+
+    
+    # Using the fantastic Beautifulsoup functionality, we are going to webscrap the foregin url found in each
+    # solicitation webpage from the file. I am assuming that all webpages carry the same web structure, and 
+    # if that's not the case, we will allocate a respective Except statement for such scenarios.
+
+
+    df = pd.read_csv(csv_file)
+    total_rows = len(df)
+
+    for index, row in df.iloc[count:].head(10).iterrows():
+        
+        url = row['ForeignBidnetDirectURLs']
+        foreign_url = webscraping_foreign_bidnet_url(url)
+        list_of_attributes = [url,foreign_url]
+        allocating_foreign_url_into_csv(list_of_attributes)
+        print(f'\nIteration #{index} - Percentage Completed: {round((index/total_rows)*100,2)}%')
+        print(f'Foreign Link: {foreign_url}')
+
 
 
 
@@ -599,14 +667,17 @@ def bidnet_direct_real_time_webscraping(csv_file):
 
 if __name__ == "__main__":
     
+
     # The goal of this program is to acquire a database, similar to the one for planetbids, of all of the 
     # awarding bodies and their respective bidnet direct websites. This will expand our real-time bid
     # display stockpile by including not only the planetbids bids, but also the bidnet direct bids.
+    
     
     dir_entities_file = 'dir_entities_refined.csv' # Step 1 Input 
     awarding_bodies_file = 'awarding_body_entities.csv' # Step 2 Input - Step 1 Output
     bidnet_direct_awarding_bodies = 'bidnet_direct_awarding_bodies.csv' # Step 3 Input - Step 2 Output
     funtional_bidnet_direct_sites = 'functional_bidnet_direct_sites.csv' # Step 4 Input - Step 3 Output
+    additional_bidnet_direct_sites = 'additional_bidnet_direct_singular_sites.csv' # Step 5 Input - Step 3 Output
 
     step = int(input('Step: '))
 
@@ -629,6 +700,7 @@ if __name__ == "__main__":
 
         case 2:
 
+
             # Step 2 - Google Search: Using each value under the awarding bodies, we will do google 
             # searches to find each awarding body's bidnet direct affiliation. I realized that there
             # isn't many bidnet direct affiliations, by any will help. What matters here is the fact
@@ -641,10 +713,12 @@ if __name__ == "__main__":
             # Files Output:
             # 2) bidnet_direct_awarding_bodies.csv
 
+
             count = int(input('Count: '))
             bidnet_direct_instances_allocation(awarding_bodies_file, count)
 
         case 3:
+
 
             # Step 3 - Bidnet Direct URLs: We've collected the respective google results for each awarding
             # body bidnet direct website connection, we have them on a file. There seems to be multiple types
@@ -662,9 +736,11 @@ if __name__ == "__main__":
             # 2) functional_bidnet_direct_sites.csv
             # 3) additional_bidnet_direct_singular_sites.csv
 
+
             awarding_bodies_bidnet_direct_sites(bidnet_direct_awarding_bodies)
 
         case 4:
+
 
             # Step 4 - Real Time Webscraping: Using the functional bidnet direct sites we will iterate through
             # each and acquire the information regarding every single active bid, just how we did with the real
@@ -674,7 +750,31 @@ if __name__ == "__main__":
             # Files Input:
             # 1) functional_bidnet_direct_sites.csv
 
+            # Files Output:
+            # 1) real_time_bidnet_direct_bids.csv
+
+
             bidnet_direct_real_time_webscraping(funtional_bidnet_direct_sites)
+
+        case 5:
+
+
+            # Step 5 - Foreign URLs Acquisition: Based on the patterns from the bidnet urls, there is a type of
+            # url that contains another url in their respective webspage, this another ulr links to the initial bid 
+            # publication location, that is, the awarding body's main publication platform from which the bid in
+            # bidnet direct is derived from. Although we might be doing this for knowledge sake, we aim for the 
+            # program to reveal new sources of bid, perhaps new avenues to enhance and refine WESONDER, or not at
+            # all. Nonetheless, we will get those foreign urls.
+
+            # Files Input:
+            # 1) additional_bidnet_direct_singular_sites.csv
+
+            # Files Output:
+            # 1) refined_additional_bidnet_direct_singular_sites.csv
+
+
+            count = int(input('Count: '))
+            foreign_bidnet_urls_acquisition(additional_bidnet_direct_sites, count)
 
 
 
