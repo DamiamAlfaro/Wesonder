@@ -650,7 +650,7 @@ def foreign_bidnet_urls_acquisition(csv_file, count):
     df = pd.read_csv(csv_file)
     total_rows = len(df)
 
-    for index, row in df.iloc[count:].head(10).iterrows():
+    for index, row in df.iloc[count:].iterrows():
         
         url = row['ForeignBidnetDirectURLs']
         foreign_url = webscraping_foreign_bidnet_url(url)
@@ -770,7 +770,7 @@ if __name__ == "__main__":
             # 1) additional_bidnet_direct_singular_sites.csv
 
             # Files Output:
-            # 1) refined_additional_bidnet_direct_singular_sites.csv
+            # 1) foreign_bid_sources_from_bidnet.csv
 
 
             count = int(input('Count: '))
