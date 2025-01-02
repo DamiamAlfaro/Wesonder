@@ -12,9 +12,38 @@ from geopy.geocoders import Nominatim
 
 
 '''
+If the Multi-Browser Functionality does not work, we want to know why, and check the links that did not
+work out for some reason. We already know the links that do not work for certain, so every other link
+must work, no matter what.
+'''
+def planetbids_bids_faulty_real_time_extraction(list_of_attributes):
+
+    # The headers for the csv file are the following: AwardingBody, PlanetbidsABLink, County,
+    # X_Coordinates, and Y_Coordinates. This is only for future refinement purposes.
+
+    file_name = 'faulty_real_time_planetbids_bids.csv'
+        
+    df = pd.DataFrame({
+        "AwardingBody": [list_of_attributes[0]],
+        "PlanetbidsABLink": [list_of_attributes[1]],
+        "County": [list_of_attributes[2]],
+        "X_Coordinates": [list_of_attributes[3]],
+        "Y_Coordinates": [list_of_attributes[4]],
+    })
+
+    if not os.path.isfile(file_name):
+        df.to_csv(file_name, index=False, header=True, mode='w')
+
+    else:
+        df.to_csv(file_name, index=False, header=False, mode='a')
+
+
+
+
+'''
 As usual, we will allocate the attributes of each bid into a csv file for later usage.
 '''
-def attributes_into_csv(list_of_attributes):
+def planetbids_bid_attributes_into_csv(list_of_attributes):
 
     # The headers for the csv file are the following: AwardingBody, PlanetbidsABLink, County,
     # X_Coordinates, Y_Coordinates, DatePosted, BidName, SolicitationNumber, DueDate, DueTime,
@@ -163,7 +192,7 @@ def planetbids_active_bids_webscraping(url, awarding_body, county, x_coord, y_co
                     list_of_attributes.append(planetbids_bid_link)
                     print(f'Bid Link: {planetbids_bid_link}')
 
-                    attributes_into_csv(list_of_attributes)
+                    planetbids_bid_attributes_into_csv(list_of_attributes)
 
                 else:
                     pass
@@ -183,6 +212,8 @@ def planetbids_active_bids_webscraping(url, awarding_body, county, x_coord, y_co
 
     else:
         print("All browser attempts failed.")
+        attributes_of_faulty_link = [url, awarding_body, county, x_coord, y_coord]
+        planetbids_bids_faulty_real_time_extraction(attributes_of_faulty_link)
 
 
 
