@@ -75,9 +75,9 @@ def planetbids_active_bids_webscraping(url, awarding_body, county, x_coord, y_co
 
     browsers = [
         ("Chrome", lambda: webdriver.Chrome()),
-        ("Firefox", lambda: webdriver.Firefox()),
-        ("Safari", lambda: webdriver.Safari()),
-        ("Edge", lambda: webdriver.Edge())
+        ("Edge", lambda: webdriver.Edge()),
+        ("Firefox", lambda: webdriver.Firefox())
+        
     ]
 
     driver = None
@@ -451,6 +451,7 @@ if __name__ == "__main__":
     refined_planetbids_sites = 'refined_planetbids_sites.csv' # Step 3 & 1 Input - Step 2 Output
     faulty_planetbids_sites = 'faulty_planetbids_sites.csv' # Step 3 Input - Step 2 Output
     
+    start_time = time.time()
 
     step = int(input('Step: ')) 
 
@@ -517,4 +518,8 @@ if __name__ == "__main__":
             planetbids_site_county_and_geolocation(faulty_planetbids_sites, count)
 
 
+    end_time = time.time()
+
+    total_execution_time = end_time - start_time
+    print(f'{round(total_execution_time,2)} seconds ')
         
