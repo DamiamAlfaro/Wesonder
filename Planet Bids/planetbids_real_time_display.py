@@ -1,6 +1,7 @@
 import pandas as pd
 import time
 import os
+import selenium
 from selenium import webdriver 
 from selenium.webdriver.common.by import By
 from selenium.webdriver.support.ui import WebDriverWait
@@ -233,7 +234,7 @@ def planetbids_sites_iteration(csv_file, count):
     df = pd.read_csv(csv_file,low_memory=False)
     total_rows = len(df)
 
-    for index, row in df.iloc[count:].head(5).iterrows():
+    for index, row in df.iloc[count:].iterrows():
         
         awarding_body = row['AwardingBody']
         weblink = row['WebLink']
@@ -463,6 +464,39 @@ def planetbids_site_county_and_geolocation(planetbids_sites, count):
 
 
 
+'''
+Part of Step 4: This is going to be the testing area, where we try different webscraping functionalities
+and choose what best fit us, our time, and our resources.
+'''
+def enhanced_webscraping_testing(url):
+
+
+    # Testing area...
+
+
+    driver = webdriver.Chrome()
+
+
+
+'''
+Step 4: We are going to use webscrap technologies, especifically Selenium Grid and Selenium remote
+webdriver sessions, as well as docker to optimize the intake of information from the web.
+'''
+def enhanced_planetbids_webscraping(csv_file):
+    
+    
+    # The same area where we iterate...
+
+
+    df = pd.read_csv(csv_file)
+
+    for index, row in df.iloc[count:].head(5).iterrows():
+
+        url = row['WebLink']
+
+        print(url)
+        
+
 
 
 
@@ -476,6 +510,8 @@ if __name__ == "__main__":
     # from "real-time" since right now is not technically real time, but delayed. We will 
     # also use an additional file to check if a location is found within the title of the
     # owner inside the planetbids site.
+
+    print(selenium.__version__)
 
     planetbids_sites_csv_file = 'planetbids_sites.csv' # Step 1 Input
     active_bids_planetbids = 'real_time_planetbids_bids.csv' # Step 4 Input - Step 1 Output
@@ -548,9 +584,31 @@ if __name__ == "__main__":
             count = int(input('Count: '))
             planetbids_site_county_and_geolocation(faulty_planetbids_sites, count)
 
+        case 4:
+
+            
+            # Step 4 - Enhanced Webscraping: We are going to utilize different webscraping techniques in order to
+            # try to enhance, optimize, and hasten webscraping with multiple selenium sessions. This might decrease
+            # our amount of time it takes to approach different webscraping techniques, and who knows, it might
+            # lead to a new way of doing things.
+
+            # Files Input:
+            # 1) refined_planetbids_sites.csv
+
+
+            enhanced_planetbids_webscraping(refined_planetbids_sites)
+
+
+
+
+
+    # I just want to check the statistics later on, perhaps we can even build something here
+    # to see how our code speed improves, worsens, or remains the same over time. Or even get 
+    # the statistics of the proportional results between lines of code and execution time. We
+    # will see...
 
     end_time = time.time()
 
     total_execution_time = end_time - start_time
-    print(f'{round(total_execution_time,2)} seconds ')
+    print(f'\nTook {round(total_execution_time,2)} seconds to execute this code\n')
         
