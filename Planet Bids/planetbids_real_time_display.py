@@ -468,17 +468,30 @@ def planetbids_site_county_and_geolocation(planetbids_sites, count):
 
 '''
 Part of Step 4: This is going to be the testing area, where we try different webscraping functionalities
-and choose what best fit us, our time, and our resources.
+and choose what best fit us, our time, and our resources. New methodologies in order to grow mon ami.
 '''
 def enhanced_webscraping_html(url):
 
 
     # Testing area... Apparently it is better if we parse the html content into strings, rather than
-    # opening the selenium session itself.
+    # opening the selenium session itself. The Selenium Grid functionality is quite fast, which is 
+    # why we are going to implement a WebDriverWait step below in order to secure position within
+    # the webdriver session is completed once we find the <tbody> element, which is where all bids
+    # are located.
 
     options = webdriver.ChromeOptions()
     driver = webdriver.Remote(command_executor="http://localhost:4444", options=options)
     driver.get(url)
+    try:
+        WebDriverWait(driver, 10).until(
+            EC.presence_of_element_located((By.TAG_NAME,'tbody'))
+        )
+    
+    except:
+        print('nope')
+        driver.quit()
+        return None
+    
     html = driver.page_source
     driver.quit()
     return html
@@ -500,9 +513,85 @@ def html_parsing(html_content):
 
 
     data = HTMLParser(html_content)
-    planetbids_site_title = data.css_first('h4').text(strip=True)
+    tbody = data.css_first('tbody')
+    tr_elements = tbody.css('tr')
+    total_active_bids = 0
 
-    return planetbids_site_title
+    for individual_tr_element in range(len(tr_elements)):
+
+
+        # For every active bid that we find, we are going to split its text form string
+        # by empty spaces in order to acquire each information attribute about the bid.
+        # We can calculate the dates ourselves later, right now we just need the important
+        # attributes such as solicitation number, due date, due time, date posted, its link,
+        # and its submission format. We will need to break down the <tr> elements into 
+        # individual <td> elements and assign each index to a value. Like I said, stratification
+        # process. 
+
+        # List of attributes order:
+        # 1) AwardingBody
+        # 2) PlanetbidsABLink
+        # 3) County
+        # 4) X_Coordinates
+        # 5) Y_Coordinates
+        # 6) DatePosted
+        # 7) BidName
+        # 8) SolicitationNumber
+        # 9) DueDate
+        # 10) DueTime
+        # 11) SubmissionMethod
+        # 12) BidUrl
+
+
+        individual_tr_element_string = tr_elements[individual_tr_element].text(strip=True)
+
+        if 'Bidding' in individual_tr_element_string:
+
+
+            total_active_bids += 1
+            print(f"\nBid #{individual_tr_element}")
+            pass
+
+        #             link_rowattribute = tr_elements[individual_tr_element].get_attribute('rowattribute')
+        #             planetbids_bid_link = f'https://vendors.planetbids.com/portal/{unique_planetbids_site_id_number}/bo/bo-detail/{link_rowattribute}'
+
+        #             td_elements = tr_elements[individual_tr_element].find_elements(By.TAG_NAME,'td')
+        #             date_posted = td_elements[0].text
+        #             list_of_attributes.append(date_posted)
+        #             print(f"Date Posted: {date_posted}")
+
+        #             bid_name = td_elements[1].text
+        #             list_of_attributes.append(bid_name)
+        #             print(f"Bid Name: {bid_name}")
+
+        #             solicitation_number = td_elements[2].text
+        #             list_of_attributes.append(solicitation_number)
+        #             print(f"Solicitation Number: {solicitation_number}")
+
+        #             due_date = td_elements[3].text.split(" ")[0]
+        #             list_of_attributes.append(due_date)
+        #             print(f"Due Date: {due_date}")
+
+        #             due_time = td_elements[3].text.split(" ")[1]
+        #             list_of_attributes.append(due_time)
+        #             print(f"Due Time: {due_time}")
+
+        #             submission_method = td_elements[6].text
+        #             list_of_attributes.append(submission_method)
+        #             print(f"Submission Method: {submission_method}")
+
+        #             list_of_attributes.append(planetbids_bid_link)
+        #             print(f'Bid Link: {planetbids_bid_link}')
+
+        #             planetbids_bid_attributes_into_csv(list_of_attributes)
+
+        #         else:
+        #             pass
+
+        #     print(f'\n{awarding_body} Total Active Bids = {total_active_bids}')
+
+
+    return len(tr_elements)
 
 
 
@@ -519,13 +608,22 @@ def enhanced_planetbids_webscraping(csv_file, count):
 
 
     df = pd.read_csv(csv_file)
-    urls = df['WebLink'].values.tolist()[:10]
 
-    with concurrent.futures.ThreadPoolExecutor(max_workers=4) as executor:
-        results = list(executor.map(enhanced_webscraping_html,urls))
+    for index, row in df.iloc[count:].head(2).iterrows():
 
-    for res in results:
-        print(html_parsing(res))
+        url = row['WebLink']
+
+        print(html_parsing(enhanced_webscraping_html(url)))
+
+
+
+    # urls = df['WebLink'].values.tolist()[:10]
+
+    # with concurrent.futures.ThreadPoolExecutor(max_workers=4) as executor:
+    #     results = list(executor.map(enhanced_webscraping_html,urls))
+
+    # for res in results:
+    #     print(html_parsing(res))
 
         
         
