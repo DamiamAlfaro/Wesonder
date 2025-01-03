@@ -2,6 +2,8 @@ import pandas as pd
 import time
 import os
 import selenium
+import sys
+import numpy as np
 import concurrent.futures
 from selectolax.parser import HTMLParser
 from selenium import webdriver 
@@ -462,7 +464,71 @@ def planetbids_site_county_and_geolocation(planetbids_sites, count):
         except:
             print(f'\nSomething occurred at {index} - {awarding_body}\n')
             faulty_county_of_bid(url, awarding_body)
-            
+
+
+
+
+'''
+Part of Step 4: If the Multi-Browser Functionality does not work, we want to know why, and check the 
+links that did not work out for some reason. We already know the links that do not work for certain, 
+so every other link must work, no matter what.
+'''
+def faulty_multi_browser_to_csv(list_of_attributes):
+
+    # The headers for the csv file are the following: AwardingBody, PlanetbidsABLink, County,
+    # X_Coordinates, and Y_Coordinates. This is only for future refinement purposes.
+
+    file_name = 'faulty_real_time_planetbids_bids.csv'
+        
+    df = pd.DataFrame({
+        "AwardingBody": [list_of_attributes[0]],
+        "PlanetbidsABLink": [list_of_attributes[1]],
+        "County": [list_of_attributes[2]],
+        "X_Coordinates": [list_of_attributes[3]],
+        "Y_Coordinates": [list_of_attributes[4]],
+    })
+
+    if not os.path.isfile(file_name):
+        df.to_csv(file_name, index=False, header=True, mode='w')
+
+    else:
+        df.to_csv(file_name, index=False, header=False, mode='a')
+
+
+
+
+'''
+Part of Step 4: As usual, we will allocate the attributes of each bid into a csv file for 
+later usage.
+'''
+def multi_browser_to_csv(list_of_attributes):
+
+    # The headers for the csv file are the following: AwardingBody, PlanetbidsABLink, County,
+    # X_Coordinates, Y_Coordinates, DatePosted, BidName, SolicitationNumber, DueDate, DueTime,
+    # SubmissionMethod, and BidUrl.
+
+    file_name = 'testing_real_time_planetbids_bids.csv'
+        
+    df = pd.DataFrame({
+        "AwardingBody": [list_of_attributes[0]],
+        "PlanetbidsUrl": [list_of_attributes[1]],
+        "County": [list_of_attributes[2]],
+        "X_Coordinates": [list_of_attributes[3]],
+        "Y_Coordinates": [list_of_attributes[4]],
+        "ActiveBidLink": [list_of_attributes[5]],
+        "DatePosted": [list_of_attributes[6]],
+        "BidName": [list_of_attributes[7]],
+        "SolicitationNumber": [list_of_attributes[8]],
+        "DueDate": [list_of_attributes[9]],
+        "DueTime": [list_of_attributes[10]],
+        "SubmissionMethod": [list_of_attributes[11]],
+    })
+
+    if not os.path.isfile(file_name):
+        df.to_csv(file_name, index=False, header=True, mode='w')
+
+    else:
+        df.to_csv(file_name, index=False, header=False, mode='a')
 
 
 
@@ -494,7 +560,7 @@ def enhanced_webscraping_html(url):
     
     html = driver.page_source
     driver.quit()
-    return html
+    return html,url
 
 
 
@@ -503,7 +569,7 @@ def enhanced_webscraping_html(url):
 Part of Step 4: Apparently parsing the html content yields better strings when it comes to webscraping
 with selenium, let's try that.
 '''
-def html_parsing(html_content):
+def html_parsing(function_input):
 
     
     # Like I said, testing area. We are going to assimilate the functionality from Step 1, we are
@@ -511,11 +577,17 @@ def html_parsing(html_content):
     # accordingly, nothing is going to change, except for the way we webscrap the code, the storage
     # mechanism will remain.
 
-
+    html_content = function_input[0]
     data = HTMLParser(html_content)
+
+    current_planetbids_url = function_input[1]
+    unique_planetbids_site_id_number = str(current_planetbids_url).split('/')[4]
+
     tbody = data.css_first('tbody')
     tr_elements = tbody.css('tr')
     total_active_bids = 0
+
+    list_of_attributes_main = []
 
     for individual_tr_element in range(len(tr_elements)):
 
@@ -529,69 +601,76 @@ def html_parsing(html_content):
         # process. 
 
         # List of attributes order:
-        # 1) AwardingBody
-        # 2) PlanetbidsABLink
-        # 3) County
-        # 4) X_Coordinates
-        # 5) Y_Coordinates
-        # 6) DatePosted
-        # 7) BidName
-        # 8) SolicitationNumber
-        # 9) DueDate
-        # 10) DueTime
-        # 11) SubmissionMethod
-        # 12) BidUrl
+        # 1) PlanetbidsActiveBidLink
+        # 2) DatePosted
+        # 3) BidName
+        # 4) SolicitationNumber
+        # 5) DueDate
+        # 6) DueTime
+        # 7) SubmissionMethod
+        # 8) AwardingBodyPlanetbidsLink
 
+        # The following variable is the string containing all attributes of the bid within the bid tabulation. This
+        # will be our main variable to extract all of the attributes from.
 
         individual_tr_element_string = tr_elements[individual_tr_element].text(strip=True)
 
+        # If the word 'Bidding' is found within the bid string, then we can extract all of the attributes of the
+        # active bid.
+
         if 'Bidding' in individual_tr_element_string:
 
+            list_of_attributes = []
 
+            # Not really a variable, but it is good to display the number of bid we are dealing with
             total_active_bids += 1
             print(f"\nBid #{individual_tr_element}")
-            pass
 
-        #             link_rowattribute = tr_elements[individual_tr_element].get_attribute('rowattribute')
-        #             planetbids_bid_link = f'https://vendors.planetbids.com/portal/{unique_planetbids_site_id_number}/bo/bo-detail/{link_rowattribute}'
+            # 1) PlanetbidsActiveBidLink
+            link_rowattribute = tr_elements[individual_tr_element].attributes.get('rowattribute')
+            planetbids_bid_link = f'https://vendors.planetbids.com/portal/{unique_planetbids_site_id_number}/bo/bo-detail/{link_rowattribute}'
+            print(f'Active Bid URL: {planetbids_bid_link}')
 
-        #             td_elements = tr_elements[individual_tr_element].find_elements(By.TAG_NAME,'td')
-        #             date_posted = td_elements[0].text
-        #             list_of_attributes.append(date_posted)
-        #             print(f"Date Posted: {date_posted}")
+            # 2) DatePosted, the td_elements variable is similar to the individual_tr_element_string because it contains 
+            # multiple useful information segregated by html elements and/or css classes.
+            td_elements = tr_elements[individual_tr_element].css('td')
+            date_posted = td_elements[0].text(strip=True)
+            print(f'Date Posted {date_posted}')
 
-        #             bid_name = td_elements[1].text
-        #             list_of_attributes.append(bid_name)
-        #             print(f"Bid Name: {bid_name}")
+            # 3) BidName
+            bid_name = td_elements[1].text(strip=True)
+            print(f'Bid Name: {bid_name}')
 
-        #             solicitation_number = td_elements[2].text
-        #             list_of_attributes.append(solicitation_number)
-        #             print(f"Solicitation Number: {solicitation_number}")
+            # 4) SolicitationNumber
+            solicitation_number = td_elements[2].text(strip=True)
+            print(f'Solicitation #: {solicitation_number}')
 
-        #             due_date = td_elements[3].text.split(" ")[0]
-        #             list_of_attributes.append(due_date)
-        #             print(f"Due Date: {due_date}")
+            # 5) DueDate
+            due_date = td_elements[3].text(strip=True).split(" ")[0]
+            print(f'Due Date: {due_date}')
 
-        #             due_time = td_elements[3].text.split(" ")[1]
-        #             list_of_attributes.append(due_time)
-        #             print(f"Due Time: {due_time}")
+            # 6) DueTime
+            due_time = td_elements[3].text(strip=True).split(" ")[1]
+            print(f'Due Time: {due_time}')
 
-        #             submission_method = td_elements[6].text
-        #             list_of_attributes.append(submission_method)
-        #             print(f"Submission Method: {submission_method}")
+            # 7) SubmissionMethod
+            submission_method = td_elements[6].text(strip=True)
+            print(f'Submission Method: {submission_method}')
 
-        #             list_of_attributes.append(planetbids_bid_link)
-        #             print(f'Bid Link: {planetbids_bid_link}')
+            list_of_attributes = [
+                planetbids_bid_link,
+                date_posted,
+                bid_name,
+                solicitation_number,
+                due_date,
+                due_time,
+                submission_method,
+            ]
 
-        #             planetbids_bid_attributes_into_csv(list_of_attributes)
-
-        #         else:
-        #             pass
-
-        #     print(f'\n{awarding_body} Total Active Bids = {total_active_bids}')
+            list_of_attributes_main.extend(list_of_attributes)
 
 
-    return len(tr_elements)
+    return list_of_attributes_main
 
 
 
@@ -608,22 +687,41 @@ def enhanced_planetbids_webscraping(csv_file, count):
 
 
     df = pd.read_csv(csv_file)
+    urls = df['WebLink'].values.tolist()[count:4]
+    remaining_attributes = df[['AwardingBody','WebLink','County','X_Coordinates','Y_Coordinates']]
 
-    for index, row in df.iloc[count:].head(2).iterrows():
+    # The following attributes have to be included somehow:
 
-        url = row['WebLink']
+        # 1) AwardingBody
+        # 2) County
+        # 3) X_Coordinates
+        # 4) Y_Coordinates
 
-        print(html_parsing(enhanced_webscraping_html(url)))
+    with concurrent.futures.ThreadPoolExecutor(max_workers=4) as executor:
+        results = list(executor.map(enhanced_webscraping_html,urls))
+
+    for res in range(len(results)):
+        extra_attributes = remaining_attributes.loc[res].values.tolist()
+        
+        # The following two lists are going to be appended to the respective csv file in question.
+        # Perhaps we can even build (if we have time) a way to see if there were faulty planetbids
+        # urls, we need to check the effectiveness of this Multi-Browser functionality.
+        
+        extra_attributes_converted = [float(x) if isinstance(x, (np.float64, float)) else x for x in extra_attributes]
+        webscraping_values = html_parsing(results[res])
+
+        extra_attributes_converted.extend(webscraping_values)
+
+        if len(extra_attributes_converted) > 5:
+            multi_browser_to_csv(extra_attributes_converted)
+            print(extra_attributes_converted)
+
+        else:
+            print(f'{extra_attributes_converted[0]} has 0 active bids\n')
+            print(extra_attributes_converted)
 
 
-
-    # urls = df['WebLink'].values.tolist()[:10]
-
-    # with concurrent.futures.ThreadPoolExecutor(max_workers=4) as executor:
-    #     results = list(executor.map(enhanced_webscraping_html,urls))
-
-    # for res in results:
-    #     print(html_parsing(res))
+        print('=====================================')
 
         
         
