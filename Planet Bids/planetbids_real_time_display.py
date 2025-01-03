@@ -2,6 +2,8 @@ import pandas as pd
 import time
 import os
 import selenium
+import concurrent.futures
+from selectolax.parser import HTMLParser
 from selenium import webdriver 
 from selenium.webdriver.common.by import By
 from selenium.webdriver.support.ui import WebDriverWait
@@ -468,13 +470,41 @@ def planetbids_site_county_and_geolocation(planetbids_sites, count):
 Part of Step 4: This is going to be the testing area, where we try different webscraping functionalities
 and choose what best fit us, our time, and our resources.
 '''
-def enhanced_webscraping_testing(url):
+def enhanced_webscraping_html(url):
 
 
-    # Testing area...
+    # Testing area... Apparently it is better if we parse the html content into strings, rather than
+    # opening the selenium session itself.
+
+    options = webdriver.ChromeOptions()
+    driver = webdriver.Remote(command_executor="http://localhost:4444", options=options)
+    driver.get(url)
+    html = driver.page_source
+    driver.quit()
+    return html
 
 
-    driver = webdriver.Chrome()
+
+
+'''
+Part of Step 4: Apparently parsing the html content yields better strings when it comes to webscraping
+with selenium, let's try that.
+'''
+def html_parsing(html_content):
+
+    
+    # Like I said, testing area. We are going to assimilate the functionality from Step 1, we are
+    # going to find those Selenium Attributes within the html code, and allocate them into a csv file
+    # accordingly, nothing is going to change, except for the way we webscrap the code, the storage
+    # mechanism will remain.
+
+
+    data = HTMLParser(html_content)
+    planetbids_site_title = data.css_first('h4').text(strip=True)
+
+    return planetbids_site_title
+
+
 
 
 
@@ -482,19 +512,22 @@ def enhanced_webscraping_testing(url):
 Step 4: We are going to use webscrap technologies, especifically Selenium Grid and Selenium remote
 webdriver sessions, as well as docker to optimize the intake of information from the web.
 '''
-def enhanced_planetbids_webscraping(csv_file):
+def enhanced_planetbids_webscraping(csv_file, count):
     
     
     # The same area where we iterate...
 
 
     df = pd.read_csv(csv_file)
+    urls = df['WebLink'].values.tolist()[:10]
 
-    for index, row in df.iloc[count:].head(5).iterrows():
+    with concurrent.futures.ThreadPoolExecutor(max_workers=4) as executor:
+        results = list(executor.map(enhanced_webscraping_html,urls))
 
-        url = row['WebLink']
+    for res in results:
+        print(html_parsing(res))
 
-        print(url)
+        
         
 
 
@@ -510,8 +543,6 @@ if __name__ == "__main__":
     # from "real-time" since right now is not technically real time, but delayed. We will 
     # also use an additional file to check if a location is found within the title of the
     # owner inside the planetbids site.
-
-    print(selenium.__version__)
 
     planetbids_sites_csv_file = 'planetbids_sites.csv' # Step 1 Input
     active_bids_planetbids = 'real_time_planetbids_bids.csv' # Step 4 Input - Step 1 Output
@@ -596,7 +627,8 @@ if __name__ == "__main__":
             # 1) refined_planetbids_sites.csv
 
 
-            enhanced_planetbids_webscraping(refined_planetbids_sites)
+            count = int(input('Count: '))
+            enhanced_planetbids_webscraping(refined_planetbids_sites, count)
 
 
 
