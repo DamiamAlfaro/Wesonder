@@ -4,13 +4,18 @@ import os
 import time
 import concurrent.futures
 from selenium.webdriver.common.by import By
+from queue import Queue
 from selenium.webdriver.support.ui import WebDriverWait
 from selenium.webdriver.support import expected_conditions as EC
 from selenium import webdriver
 from selectolax.parser import HTMLParser
 
+start_time = time.time()
+
 count_faulty = 0
 count_correct = 0
+
+faulty_urls = Queue()
 
 '''
 Part of Step 4: If the Multi-Browser Functionality does not work, we want to know why, and check the 
@@ -95,7 +100,7 @@ def enhanced_webscraping_html(url):
     time.sleep(1)
     driver.get(url)
     try:
-        WebDriverWait(driver, 15).until(
+        WebDriverWait(driver, 12).until(
             EC.presence_of_element_located((By.TAG_NAME,'tbody'))
         )
         count_correct += 1
@@ -106,6 +111,7 @@ def enhanced_webscraping_html(url):
     except:
         count_faulty += 1
         print(f'#{count_faulty} - Faulty: {url}')
+        faulty_urls.put(url)
         driver.quit()
         faulty_multi_browser_to_csv(url)
         return None
@@ -221,7 +227,12 @@ def html_parsing(function_input):
 
 
 
+def concurrent_futures_functionality(urls):
+    
+    with concurrent.futures.ThreadPoolExecutor(max_workers=8) as executor:
+        results = list(executor.map(enhanced_webscraping_html,urls))
 
+    return results
 
 '''
 Step 4: We are going to use webscrap technologies, especifically Selenium Grid and Selenium remote
@@ -245,63 +256,69 @@ def enhanced_planetbids_webscraping(csv_file, count):
         3) X_Coordinates
         4) Y_Coordinates
     '''
-        
-    with concurrent.futures.ThreadPoolExecutor(max_workers=12) as executor:
-        results = list(executor.map(enhanced_webscraping_html,urls))
-
-    for res in range(len(results)):
-        extra_attributes = remaining_attributes.loc[res].values.tolist()
-        
-        '''
-        # The following two lists are going to be appended to the respective csv file in question.
-        # Perhaps we can even build (if we have time) a way to see if there were faulty planetbids
-        # urls, we need to check the effectiveness of this Multi-Browser functionality.
-        '''
-
-        extra_attributes_converted = [float(x) if isinstance(x, (np.float64, float)) else x for x in extra_attributes]
-
-        try:
-            webscraping_values = html_parsing(results[res])
-
-            extra_attributes_converted.extend(webscraping_values)
-
-            if len(extra_attributes_converted) > 5:
-                multi_browser_to_csv(extra_attributes_converted)
-                print(extra_attributes_converted)
-
-            else:
-                print(f'{extra_attributes_converted[0]} has 0 active bids\n')
-                print(extra_attributes_converted)
-
-
-        except TypeError:
-            pass
-
-
-
-
-
-
-if __name__ == "__main__":
-
-    '''
-    I want to run some statistics here, if we are going to utilize this Multi-Browser funtionality
-    which is faulty, and not due to our set up (at least that's what we want to believe), but 
-    because of the functionality of planetbids, apparently after a few concurrent sessions, the
-    sites do not work anymore, then startworking once again. I cannot figure why that is...
-    '''
     
-    start_time = time.time()
+    while urls or not faulty_urls.empty():
 
-    planetbids_sites_csv = "refined_planetbids_sites.csv"
-    print('\nWEB SCRAPER\n')
-    count = int(input('Count: '))
-    enhanced_planetbids_webscraping(planetbids_sites_csv, count)
+        results = concurrent_futures_functionality(urls)
+        
 
-    end_time = time.time()
+        for res in range(len(results)):
+            extra_attributes = remaining_attributes.loc[res].values.tolist()
+            
+            '''
+            # The following two lists are going to be appended to the respective csv file in question.
+            # Perhaps we can even build (if we have time) a way to see if there were faulty planetbids
+            # urls, we need to check the effectiveness of this Multi-Browser functionality.
+            '''
 
-    total_execution_time = end_time - start_time
-    print(f'\nTook {round(total_execution_time,2)} seconds to execute this code\n')
+            extra_attributes_converted = [float(x) if isinstance(x, (np.float64, float)) else x for x in extra_attributes]
+
+            try:
+                webscraping_values = html_parsing(results[res])
+                extra_attributes_converted.extend(webscraping_values)
+
+                if len(extra_attributes_converted) > 5:
+                    multi_browser_to_csv(extra_attributes_converted)
+
+                else:
+                    print(f'{extra_attributes_converted[0]} has 0 active bids\n')
+
+
+            except:
+                pass
+        
+        urls = []
+        while not faulty_urls.empty():
+            urls.append(faulty_urls.get())
+
+        if not urls:
+            print('It worked')
+            break
+
+
+
+
+
+
+
+'''
+I want to run some statistics here, if we are going to utilize this Multi-Browser funtionality
+which is faulty, and not due to our set up (at least that's what we want to believe), but 
+because of the functionality of planetbids, apparently after a few concurrent sessions, the
+sites do not work anymore, then startworking once again. I cannot figure why that is...
+'''
+
+
+
+planetbids_sites_csv = "refined_planetbids_sites.csv"
+print('\nWEB SCRAPER\n')
+count = int(input('Count: '))
+enhanced_planetbids_webscraping(planetbids_sites_csv, count)
+
+end_time = time.time()
+
+total_execution_time = end_time - start_time
+print(f'\nTook {round(total_execution_time,2)} seconds to execute this code\n')
 
 
 
