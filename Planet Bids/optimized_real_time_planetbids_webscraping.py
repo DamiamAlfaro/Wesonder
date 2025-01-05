@@ -1,6 +1,7 @@
 import pandas as pd
 import numpy as np
 import os
+import time
 import concurrent.futures
 from selenium.webdriver.common.by import By
 from selenium.webdriver.support.ui import WebDriverWait
@@ -8,8 +9,8 @@ from selenium.webdriver.support import expected_conditions as EC
 from selenium import webdriver
 from selectolax.parser import HTMLParser
 
-
-
+count_faulty = 0
+count_correct = 0
 
 '''
 Part of Step 4: If the Multi-Browser Functionality does not work, we want to know why, and check the 
@@ -42,9 +43,11 @@ later usage.
 '''
 def multi_browser_to_csv(list_of_attributes):
 
+    '''
     # The headers for the csv file are the following: AwardingBody, PlanetbidsABLink, County,
     # X_Coordinates, Y_Coordinates, DatePosted, BidName, SolicitationNumber, DueDate, DueTime,
     # SubmissionMethod, and BidUrl.
+    '''
 
     file_name = 'testing_real_time_planetbids_bids.csv'
         
@@ -77,30 +80,37 @@ and choose what best fit us, our time, and our resources. New methodologies in o
 '''
 def enhanced_webscraping_html(url):
 
+    '''
+    Testing area... Apparently it is better if we parse the html content into strings, rather than
+    opening the selenium session itself. The Selenium Grid functionality is quite fast, which is 
+    why we are going to implement a WebDriverWait step below in order to secure position within
+    the webdriver session is completed once we find the <tbody> element, which is where all bids
+    are located.
+    '''
 
-    # Testing area... Apparently it is better if we parse the html content into strings, rather than
-    # opening the selenium session itself. The Selenium Grid functionality is quite fast, which is 
-    # why we are going to implement a WebDriverWait step below in order to secure position within
-    # the webdriver session is completed once we find the <tbody> element, which is where all bids
-    # are located.
+    global count_faulty, count_correct
 
     options = webdriver.ChromeOptions()
     driver = webdriver.Remote(command_executor="http://localhost:4444", options=options)
+    time.sleep(1)
     driver.get(url)
     try:
         WebDriverWait(driver, 15).until(
             EC.presence_of_element_located((By.TAG_NAME,'tbody'))
         )
+        count_correct += 1
+        print(
+            f'#{count_correct} - Working: {url}'
+        )
     
     except:
-        print(f'\nFaulty: {url}\n')
+        count_faulty += 1
+        print(f'#{count_faulty} - Faulty: {url}')
         driver.quit()
         faulty_multi_browser_to_csv(url)
         return None
     
-    print(
-        f'Working: {url}'
-    )
+    
     html = driver.page_source
     driver.quit()
     return html,url
@@ -114,11 +124,12 @@ with selenium, let's try that.
 '''
 def html_parsing(function_input):
 
-    
-    # Like I said, testing area. We are going to assimilate the functionality from Step 1, we are
-    # going to find those Selenium Attributes within the html code, and allocate them into a csv file
-    # accordingly, nothing is going to change, except for the way we webscrap the code, the storage
-    # mechanism will remain.
+    '''
+    Like I said, testing area. We are going to assimilate the functionality from Step 1, we are
+    going to find those Selenium Attributes within the html code, and allocate them into a csv file
+    accordingly, nothing is going to change, except for the way we webscrap the code, the storage
+    mechanism will remain.
+    '''
 
     html_content = function_input[0]
     data = HTMLParser(html_content)
@@ -134,28 +145,29 @@ def html_parsing(function_input):
 
     for individual_tr_element in range(len(tr_elements)):
 
+        '''
+        For every active bid that we find, we are going to split its text form string
+        by empty spaces in order to acquire each information attribute about the bid.
+        We can calculate the dates ourselves later, right now we just need the important
+        attributes such as solicitation number, due date, due time, date posted, its link,
+        and its submission format. We will need to break down the <tr> elements into 
+        individual <td> elements and assign each index to a value. Like I said, stratification
+        process. 
 
-        # For every active bid that we find, we are going to split its text form string
-        # by empty spaces in order to acquire each information attribute about the bid.
-        # We can calculate the dates ourselves later, right now we just need the important
-        # attributes such as solicitation number, due date, due time, date posted, its link,
-        # and its submission format. We will need to break down the <tr> elements into 
-        # individual <td> elements and assign each index to a value. Like I said, stratification
-        # process. 
+        List of attributes order:
+        1) PlanetbidsActiveBidLink
+        2) DatePosted
+        3) BidName
+        4) SolicitationNumber
+        5) DueDate
+        6) DueTime
+        7) SubmissionMethod
+        8) AwardingBodyPlanetbidsLink
 
-        # List of attributes order:
-        # 1) PlanetbidsActiveBidLink
-        # 2) DatePosted
-        # 3) BidName
-        # 4) SolicitationNumber
-        # 5) DueDate
-        # 6) DueTime
-        # 7) SubmissionMethod
-        # 8) AwardingBodyPlanetbidsLink
-
-        # The following variable is the string containing all attributes of the bid within the bid tabulation. This
-        # will be our main variable to extract all of the attributes from.
-
+        The following variable is the string containing all attributes of the bid within the bid tabulation. This
+        will be our main variable to extract all of the attributes from.
+        '''
+        
         individual_tr_element_string = tr_elements[individual_tr_element].text(strip=True)
 
         # If the word 'Bidding' is found within the bid string, then we can extract all of the attributes of the
@@ -230,26 +242,30 @@ def enhanced_planetbids_webscraping(csv_file, count):
 
 
     df = pd.read_csv(csv_file)
-    urls = df['WebLink'].values.tolist()[count:]
+    urls = df['WebLink'].values.tolist()[count:1000]
     remaining_attributes = df[['AwardingBody','WebLink','County','X_Coordinates','Y_Coordinates']]
 
-    # The following attributes have to be included somehow:
+    '''
+    The following attributes have to be included somehow:
 
-        # 1) AwardingBody
-        # 2) County
-        # 3) X_Coordinates
-        # 4) Y_Coordinates
-
-    with concurrent.futures.ThreadPoolExecutor(max_workers=9) as executor:
+        1) AwardingBody
+        2) County
+        3) X_Coordinates
+        4) Y_Coordinates
+    '''
+        
+    with concurrent.futures.ThreadPoolExecutor(max_workers=10) as executor:
         results = list(executor.map(enhanced_webscraping_html,urls))
 
     for res in range(len(results)):
         extra_attributes = remaining_attributes.loc[res].values.tolist()
         
+        '''
         # The following two lists are going to be appended to the respective csv file in question.
         # Perhaps we can even build (if we have time) a way to see if there were faulty planetbids
         # urls, we need to check the effectiveness of this Multi-Browser functionality.
-        
+        '''
+
         extra_attributes_converted = [float(x) if isinstance(x, (np.float64, float)) else x for x in extra_attributes]
         webscraping_values = html_parsing(results[res])
 
@@ -273,9 +289,26 @@ def enhanced_planetbids_webscraping(csv_file, count):
 
 if __name__ == "__main__":
 
+    '''
+    I want to run some statistics here, if we are going to utilize this Multi-Browser funtionality
+    which is faulty, and not due to our set up (at least that's what we want to believe), but 
+    because of the functionality of planetbids, apparently after a few concurrent sessions, the
+    sites do not work anymore, then startworking once again. I cannot figure why that is...
+    '''
+    
+    start_time = time.time()
+
     planetbids_sites_csv = "refined_planetbids_sites.csv"
+    print('\nWEB SCRAPER\n')
     count = int(input('Count: '))
     enhanced_planetbids_webscraping(planetbids_sites_csv, count)
+
+    end_time = time.time()
+
+    total_execution_time = end_time - start_time
+    print(f'\nTook {round(total_execution_time,2)} seconds to execute this code\n')
+
+
 
 
 
