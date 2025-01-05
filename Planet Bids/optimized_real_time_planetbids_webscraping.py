@@ -62,13 +62,14 @@ def multi_browser_to_csv(list_of_attributes):
         "County": [list_of_attributes[2]],
         "X_Coordinates": [list_of_attributes[3]],
         "Y_Coordinates": [list_of_attributes[4]],
-        "ActiveBidLink": [list_of_attributes[5]],
-        "DatePosted": [list_of_attributes[6]],
-        "BidName": [list_of_attributes[7]],
-        "SolicitationNumber": [list_of_attributes[8]],
-        "DueDate": [list_of_attributes[9]],
-        "DueTime": [list_of_attributes[10]],
-        "SubmissionMethod": [list_of_attributes[11]],
+        "NewAwardingBody":[list_of_attributes[5]],
+        "ActiveBidLink": [list_of_attributes[6]],
+        "DatePosted": [list_of_attributes[7]],
+        "BidName": [list_of_attributes[8]],
+        "SolicitationNumber": [list_of_attributes[9]],
+        "DueDate": [list_of_attributes[10]],
+        "DueTime": [list_of_attributes[11]],
+        "SubmissionMethod": [list_of_attributes[12]],
     })
 
     if not os.path.isfile(file_name):
@@ -100,7 +101,7 @@ def enhanced_webscraping_html(url):
     time.sleep(1)
     driver.get(url)
     try:
-        WebDriverWait(driver, 12).until(
+        WebDriverWait(driver, 15).until(
             EC.presence_of_element_located((By.TAG_NAME,'tbody'))
         )
         count_correct += 1
@@ -143,6 +144,7 @@ def html_parsing(function_input):
     current_planetbids_url = function_input[1]
     unique_planetbids_site_id_number = str(current_planetbids_url).split('/')[4]
 
+    new_awarding_body = data.css_first('h4').text(strip=True)
     tbody = data.css_first('tbody')
     tr_elements = tbody.css('tr')
     total_active_bids = 0
@@ -211,6 +213,7 @@ def html_parsing(function_input):
             submission_method = td_elements[6].text(strip=True)
 
             list_of_attributes = [
+                new_awarding_body,
                 planetbids_bid_link,
                 date_posted,
                 bid_name,
@@ -229,7 +232,7 @@ def html_parsing(function_input):
 
 def concurrent_futures_functionality(urls):
     
-    with concurrent.futures.ThreadPoolExecutor(max_workers=8) as executor:
+    with concurrent.futures.ThreadPoolExecutor(max_workers=12) as executor:
         results = list(executor.map(enhanced_webscraping_html,urls))
 
     return results
@@ -245,7 +248,7 @@ def enhanced_planetbids_webscraping(csv_file, count):
 
 
     df = pd.read_csv(csv_file)
-    urls = df['WebLink'].values.tolist()[count:1200]
+    urls = df['WebLink'].values.tolist()[count:]
     remaining_attributes = df[['AwardingBody','WebLink','County','X_Coordinates','Y_Coordinates']]
 
     '''
@@ -306,6 +309,15 @@ I want to run some statistics here, if we are going to utilize this Multi-Browse
 which is faulty, and not due to our set up (at least that's what we want to believe), but 
 because of the functionality of planetbids, apparently after a few concurrent sessions, the
 sites do not work anymore, then startworking once again. I cannot figure why that is...
+
+10 Sessions: [:1200]
+webdriverwait = 15 sec
+2.03 Hours
+
+12 Sessions: [:1200]
+webdriverwait = 15 sec
+1.76 Hours
+
 '''
 
 
