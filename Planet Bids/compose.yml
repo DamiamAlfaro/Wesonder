@@ -1,4 +1,4 @@
-version: "3.8" # Use at least version 3.8 for compatibility
+version: "3.8"
 services:
   chrome:
     image: selenium/node-chrome:4.13.0-20230926
@@ -9,11 +9,13 @@ services:
       - SE_EVENT_BUS_HOST=selenium-hub
       - SE_EVENT_BUS_PUBLISH_PORT=4442
       - SE_EVENT_BUS_SUBSCRIBE_PORT=4443
-      - SE_NODE_MAX_SESSIONS=9
+      - SE_NODE_MAX_SESSIONS=10
     deploy:
       resources:
+        limits:
+          memory: 6g  # Maximum memory allowed
         reservations:
-          memory: 6g
+          memory: 6g  # Reserved memory
     volumes:
       - /dev/shm:/dev/shm # Ensures shared memory is available
 
