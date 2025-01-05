@@ -179,38 +179,30 @@ def html_parsing(function_input):
 
             # Not really a variable, but it is good to display the number of bid we are dealing with
             total_active_bids += 1
-            print(f"\nBid #{individual_tr_element}")
 
             # 1) PlanetbidsActiveBidLink
             link_rowattribute = tr_elements[individual_tr_element].attributes.get('rowattribute')
             planetbids_bid_link = f'https://vendors.planetbids.com/portal/{unique_planetbids_site_id_number}/bo/bo-detail/{link_rowattribute}'
-            print(f'Active Bid URL: {planetbids_bid_link}')
 
             # 2) DatePosted, the td_elements variable is similar to the individual_tr_element_string because it contains 
             # multiple useful information segregated by html elements and/or css classes.
             td_elements = tr_elements[individual_tr_element].css('td')
             date_posted = td_elements[0].text(strip=True)
-            print(f'Date Posted {date_posted}')
 
             # 3) BidName
             bid_name = td_elements[1].text(strip=True)
-            print(f'Bid Name: {bid_name}')
 
             # 4) SolicitationNumber
             solicitation_number = td_elements[2].text(strip=True)
-            print(f'Solicitation #: {solicitation_number}')
 
             # 5) DueDate
             due_date = td_elements[3].text(strip=True).split(" ")[0]
-            print(f'Due Date: {due_date}')
 
             # 6) DueTime
             due_time = td_elements[3].text(strip=True).split(" ")[1]
-            print(f'Due Time: {due_time}')
 
             # 7) SubmissionMethod
             submission_method = td_elements[6].text(strip=True)
-            print(f'Submission Method: {submission_method}')
 
             list_of_attributes = [
                 planetbids_bid_link,
@@ -242,7 +234,7 @@ def enhanced_planetbids_webscraping(csv_file, count):
 
 
     df = pd.read_csv(csv_file)
-    urls = df['WebLink'].values.tolist()[count:1000]
+    urls = df['WebLink'].values.tolist()[count:1200]
     remaining_attributes = df[['AwardingBody','WebLink','County','X_Coordinates','Y_Coordinates']]
 
     '''
@@ -254,7 +246,7 @@ def enhanced_planetbids_webscraping(csv_file, count):
         4) Y_Coordinates
     '''
         
-    with concurrent.futures.ThreadPoolExecutor(max_workers=10) as executor:
+    with concurrent.futures.ThreadPoolExecutor(max_workers=12) as executor:
         results = list(executor.map(enhanced_webscraping_html,urls))
 
     for res in range(len(results)):
@@ -267,20 +259,23 @@ def enhanced_planetbids_webscraping(csv_file, count):
         '''
 
         extra_attributes_converted = [float(x) if isinstance(x, (np.float64, float)) else x for x in extra_attributes]
-        webscraping_values = html_parsing(results[res])
 
-        extra_attributes_converted.extend(webscraping_values)
+        try:
+            webscraping_values = html_parsing(results[res])
 
-        if len(extra_attributes_converted) > 5:
-            multi_browser_to_csv(extra_attributes_converted)
-            print(extra_attributes_converted)
+            extra_attributes_converted.extend(webscraping_values)
 
-        else:
-            print(f'{extra_attributes_converted[0]} has 0 active bids\n')
-            print(extra_attributes_converted)
+            if len(extra_attributes_converted) > 5:
+                multi_browser_to_csv(extra_attributes_converted)
+                print(extra_attributes_converted)
+
+            else:
+                print(f'{extra_attributes_converted[0]} has 0 active bids\n')
+                print(extra_attributes_converted)
 
 
-        print('=====================================')
+        except TypeError:
+            pass
 
 
 
