@@ -1,0 +1,26 @@
+version: "3.8" # Use at least version 3.8 for compatibility
+services:
+  chrome:
+    image: selenium/node-chrome:4.13.0-20230926
+    depends_on:
+      - selenium-hub
+    environment:
+      - SE_NODE_SESSION_TIMEOUT=600
+      - SE_EVENT_BUS_HOST=selenium-hub
+      - SE_EVENT_BUS_PUBLISH_PORT=4442
+      - SE_EVENT_BUS_SUBSCRIBE_PORT=4443
+      - SE_NODE_MAX_SESSIONS=9
+    deploy:
+      resources:
+        reservations:
+          memory: 6g
+    volumes:
+      - /dev/shm:/dev/shm # Ensures shared memory is available
+
+  selenium-hub:
+    image: selenium/hub:4.13.0-20230926
+    container_name: selenium-hub
+    ports:
+      - "4442:4442"
+      - "4443:4443"
+      - "4444:4444"
