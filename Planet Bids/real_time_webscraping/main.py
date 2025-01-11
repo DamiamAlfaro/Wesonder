@@ -103,31 +103,43 @@ def site_html_webscrap(url):
 planetbids_sites_csv = 'https://storage.googleapis.com/wesonder_databases/Planetbids/refined_planetbids_sites.csv'
 df = pd.read_csv(planetbids_sites_csv)
 
+total_active_bids = 0
 i = 0
 
-for index, row in df.iloc[i:i+10].iterrows():  # Adjust the number of rows as needed
+for index, row in df.iloc[i:i+100].iterrows():  # Adjust the number of rows as needed
     awarding_body = row['AwardingBody']
     weblink = row['WebLink']
     county = row['County']
     x_coord = row['X_Coordinates']
     y_coord = row['Y_Coordinates']
 
-    active_bids = site_html_webscrap(weblink)  # Return a list with all active bids
+    try:
+        active_bids = site_html_webscrap(weblink)  # Return a list with all active bids
 
-    # Allocate the active bid list into csv
-    for active_bid in active_bids:
-        allocate_csv(
-            awarding_body,
-            weblink,
-            county,
-            x_coord,
-            y_coord,
-            active_bid
+        # Allocate the active bid list into csv
+        for active_bid in active_bids:
+            allocate_csv(
+                awarding_body,
+                weblink,
+                county,
+                x_coord,
+                y_coord,
+                active_bid
+            )
+
+        total_active_bids += 1
+
+        print(
+            f"BidSite #{index} Complete\nURL: {weblink}\nAwarding Body: {awarding_body}\nTotal Bids: {len(active_bids)}"
+            )
+
+    except Exception as exe:
+
+        print(
+            f"BidSite #{index} Incomplete\nURL: {weblink}\nAwarding Body: {awarding_body}"
         )
-
-    print(
-        f"BidSite #{index} Complete\nURL: {weblink}\nAwarding Body: {awarding_body}\nTotal Bids: {len(active_bids)}"
-        ) 
+        print(exe)
+        break
 
 
 
