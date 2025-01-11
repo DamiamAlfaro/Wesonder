@@ -43,7 +43,16 @@ def allocate_csv(ab, weblink, county, x_coord, y_coord, active_bids_list):
 def site_html_webscrap(url):
 
     # Initialize Chrome WebDriver
-    driver = webdriver.Chrome()
+    options = webdriver.ChromeOptions()
+    options.add_argument('--headless')  # Run Chrome in headless mode
+    options.add_argument('--disable-gpu')  # Disable GPU acceleration (required for headless mode on Windows)
+    options.add_argument('--disable-extensions')  # Disable extensions for faster loading
+    options.add_argument('--no-sandbox')  # Security sandbox can be disabled (usually for non-production use)
+    options.add_argument('--disable-dev-shm-usage')  # Avoid shared memory issues
+    options.add_argument('--window-size=1920,1080')  # Set viewport size explicitly
+    options.add_argument('--user-agent=Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/111.0.0.0 Safari/537.36')  # Mimic a real browser user-agent
+    options.add_argument('--start-maximized')  # Start the browser maximized (simulating a normal environment)
+    driver = webdriver.Chrome(options=options)
     driver.get(url)
 
     # Wait until the body of bids appears before acquiring the page source
@@ -102,11 +111,10 @@ def site_html_webscrap(url):
 # Load URLs from Google Cloud Storage
 planetbids_sites_csv = 'https://storage.googleapis.com/wesonder_databases/Planetbids/refined_planetbids_sites.csv'
 df = pd.read_csv(planetbids_sites_csv)
-
 total_active_bids = 0
 i = 0
 
-for index, row in df.iloc[i:i+100].iterrows():  # Adjust the number of rows as needed
+for index, row in df.iloc[i:i+10].iterrows():  # Adjust the number of rows as needed
     awarding_body = row['AwardingBody']
     weblink = row['WebLink']
     county = row['County']
@@ -128,7 +136,6 @@ for index, row in df.iloc[i:i+100].iterrows():  # Adjust the number of rows as n
             )
 
         total_active_bids += 1
-
         print(
             f"BidSite #{index} Complete\nURL: {weblink}\nAwarding Body: {awarding_body}\nTotal Bids: {len(active_bids)}"
             )
@@ -142,11 +149,7 @@ for index, row in df.iloc[i:i+100].iterrows():  # Adjust the number of rows as n
         break
 
 
-
-
-
-
+print(f'Total Active Bids: {total_active_bids}')
 end_time = time.time()
-
 elapsed_time = end_time-initial_time
 print(f'Total Seconds to Execute main.py: {elapsed_time}')
