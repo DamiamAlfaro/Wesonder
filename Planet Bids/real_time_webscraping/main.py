@@ -4,11 +4,9 @@ import re
 import os
 from bs4 import BeautifulSoup
 from selenium import webdriver
-from selenium.webdriver.chrome.service import Service
 from selenium.webdriver.common.by import By
 from selenium.webdriver.support.ui import WebDriverWait
 from selenium.webdriver.support import expected_conditions as EC
-from webdriver_manager.chrome import ChromeDriverManager
 
 initial_time = time.time()
 total_active_bids = 0
@@ -125,7 +123,7 @@ planetbids_sites_csv = 'https://storage.googleapis.com/wesonder_databases/Planet
 df = pd.read_csv(planetbids_sites_csv)
 i = 0
 
-for index, row in df.iloc[i:i+10].iterrows():  # Adjust the number of rows as needed
+for index, row in df.iloc[i:].iterrows():  # Adjust the number of rows as needed
     awarding_body = row['AwardingBody']
     weblink = row['WebLink']
     county = row['County']
