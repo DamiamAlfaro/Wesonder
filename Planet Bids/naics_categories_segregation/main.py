@@ -62,6 +62,7 @@ active_bids_csv = 'https://storage.googleapis.com/wesonder_databases/Planetbids/
 new_active_bids_csv = 'refined_planetbids_active_bids.csv'
 faulty_new_active_bids_csv = 'faulty_planetbids_active_bids.csv'
 df = pd.read_csv(active_bids_csv)
+total_rows = len(df)
 
 i = 0
 
@@ -82,7 +83,7 @@ for index, row in df.iloc[i:i+10].iterrows():
     bid_status = row['BidStatus']
     bid_submission_method = row['BidSubmissionMethod']
 
-    print(f'Row #{index} - BidUrl: {bid_url}')
+    print(f'Row #{index} - BidUrl: {bid_url} - Progress: {round((index/total_rows)*100,2)}%')
 
     # A list of NAICS categories that the bid pertains to.
     categories_list = site_html_webscrap(bid_url) 
@@ -156,8 +157,7 @@ end_time = time.time()
 elapsed_seconds = end_time-start_time
 elapsed_minutes = round(elapsed_seconds/60,2)
 elapsed_hours = round(elapsed_minutes/60,2)
-print(f'Total Seconds to Execute main.py:\n Seconds = {elapsed_seconds}\nMinutes = {elapsed_minutes}\nHours = {elapsed_hours}')
-
+print(f'Total Seconds to Execute main.py:\nSeconds = {elapsed_seconds}\nMinutes = {elapsed_minutes}\nHours = {elapsed_hours}')
 
 
 
