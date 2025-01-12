@@ -51,7 +51,6 @@ def site_html_webscrap(url):
         return naics_codes_involved
 
     except Exception as exe:
-        print(exe)
         return []
 
 
@@ -158,6 +157,18 @@ elapsed_seconds = end_time-start_time
 elapsed_minutes = round(elapsed_seconds/60,2)
 elapsed_hours = round(elapsed_minutes/60,2)
 print(f'Total Seconds to Execute main.py:\nSeconds = {elapsed_seconds}\nMinutes = {elapsed_minutes}\nHours = {elapsed_hours}')
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
