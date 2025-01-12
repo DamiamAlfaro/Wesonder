@@ -11,7 +11,7 @@ from selenium.webdriver.support import expected_conditions as EC
 from webdriver_manager.chrome import ChromeDriverManager
 
 initial_time = time.time()
-
+total_active_bids = 0
 
 def allocate_csv(ab, weblink, county, x_coord, y_coord, active_bids_list):
     
@@ -23,13 +23,14 @@ def allocate_csv(ab, weblink, county, x_coord, y_coord, active_bids_list):
         "County":[county],
         "X_Coordinates":[x_coord],
         "Y_Coordinates":[y_coord],
-        "AwardingBody":[active_bids_list[0]],
-        "BidPostedDate":[active_bids_list[1]],
-        "BidTitle":[active_bids_list[2]],
-        "BidInvitationID":[active_bids_list[3]],
-        "BidDueDate":[active_bids_list[4]],
-        "BidStatus":[active_bids_list[5]],
-        "BidSubmissionMethod":[active_bids_list[6]]
+        "BidUrl":[active_bids_list[0]],
+        "BidAwardingBody":[active_bids_list[1]],
+        "BidPostedDate":[active_bids_list[2]],
+        "BidTitle":[active_bids_list[3]],
+        "BidInvitationID":[active_bids_list[4]],
+        "BidDueDate":[active_bids_list[5]],
+        "BidStatus":[active_bids_list[6]],
+        "BidSubmissionMethod":[active_bids_list[7]]
     })
 
     if not os.path.isfile(file_name):
@@ -41,6 +42,8 @@ def allocate_csv(ab, weblink, county, x_coord, y_coord, active_bids_list):
 
 
 def site_html_webscrap(url):
+
+    global total_active_bids
 
     # Initialize Chrome WebDriver
     options = webdriver.ChromeOptions()
@@ -73,9 +76,17 @@ def site_html_webscrap(url):
     # Iterate through each <tr> tag (each <tr> reprents a bid, regardless of status)
     for tr_tag in all_tr:
         all_td = tr_tag.find_all('td')
+        tr_attribute_number = tr_tag.get('rowattribute')
 
         for td_tag in all_td:
             if td_tag.get('title') == 'Bidding':
+
+                total_active_bids += 1
+
+                # Acquire the link for the bid itself
+                bid_url = f"{url.replace('bo-search','bo-detail')}/{tr_attribute_number}"
+
+                # Acquire the rest of the bid attributes
                 posted_date = all_td[0].text
                 bid_title = all_td[1].text
                 invitation_id = all_td[2].text
@@ -84,6 +95,7 @@ def site_html_webscrap(url):
                 submission_method = all_td[6].text
 
                 active_bid_attributes_ugly = [
+                    bid_url,
                     site_awarding_body,
                     posted_date,
                     bid_title,
@@ -111,7 +123,6 @@ def site_html_webscrap(url):
 # Load URLs from Google Cloud Storage
 planetbids_sites_csv = 'https://storage.googleapis.com/wesonder_databases/Planetbids/refined_planetbids_sites.csv'
 df = pd.read_csv(planetbids_sites_csv)
-total_active_bids = 0
 i = 0
 
 for index, row in df.iloc[i:i+10].iterrows():  # Adjust the number of rows as needed
@@ -135,21 +146,21 @@ for index, row in df.iloc[i:i+10].iterrows():  # Adjust the number of rows as ne
                 active_bid
             )
 
-        total_active_bids += 1
+        
         print(
-            f"BidSite #{index} Complete\nURL: {weblink}\nAwarding Body: {awarding_body}\nTotal Bids: {len(active_bids)}"
+            f"Bid Site #{index} Complete\nURL: {weblink}\nAwarding Body: {awarding_body}\nTotal Bids: {len(active_bids)}"
             )
 
     except Exception as exe:
 
         print(
-            f"BidSite #{index} Incomplete\nURL: {weblink}\nAwarding Body: {awarding_body}"
+            f"Bid Site #{index} Incomplete\nURL: {weblink}\nAwarding Body: {awarding_body}"
         )
         print(exe)
         break
 
 
-print(f'Total Active Bids: {total_active_bids}')
+print(f'\nTotal Active Bids: {total_active_bids}')
 end_time = time.time()
 elapsed_time = end_time-initial_time
 print(f'Total Seconds to Execute main.py: {elapsed_time}')
