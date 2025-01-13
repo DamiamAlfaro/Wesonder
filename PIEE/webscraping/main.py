@@ -133,14 +133,63 @@ def iterating_through_other_results(driver, current_pages_id):
         print(f'Current Bid #{global_bid_turn}: {bid_titles[bid_turn-1]}')
 
 
+def extracting_solicitation_numbers(driver):
+    
+    # Re-locate table and bids
+    bid_table = driver.find_element(By.TAG_NAME, 'tbody')
+    all_bids = bid_table.find_elements(By.TAG_NAME, 'tr')
+    solicitation_numbers = []
+
+    # Locate the current bid link
+    for bid in all_bids:
+        solicitation_numbers.append(bid.find_element(By.TAG_NAME,'a').text)
+
+    return solicitation_numbers
 
 
+def next_page(driver, current_page_id):
+
+    # Locate the next page button and go to it
+    next_page_bar = driver.find_element(By.CLASS_NAME,'pagination')
+    next_page_button = next_page_bar.find_elements(By.CLASS_NAME,'paginate_button')[2+current_page_id].find_element(By.TAG_NAME,'a')
+    driver.execute_script("arguments[0].scrollIntoView(true);", next_page_button)
+    time.sleep(2)
+    next_page_button.click()
+    time.sleep(2)
+
+def allocate_to_csv(list_of_attributes):
+
+    file_name = 'piee_active_bids.csv'
+
+    headers = [
+        "SolicitationNumber",
+        "NoticeType",
+        "DueDate",
+        "SetAsideCode",
+        "ContactName",
+        "Description",
+        "Subject",
+        "PostingDate",
+        "ProductServiceCode",
+        "NAICS",
+        "PlaceOfPerformance",
+        "Address",
+        "ContractingOfficeDoDAAC",
+        "ContractingOfficeName",
+        "ContractingOfficeAddress",
+        "FunctionalURL"
+    ]
+    
+    df = pd.DataFrame([list_of_attributes], columns=headers)
+
+    if not os.path.isfile(file_name):
+        df.to_csv(file_name, index=False, header=True, mode='w')
+
+    else:
+        df.to_csv(file_name, index=False, header=False, mode='a')
 
 
-
-
-
-
+# Outset
 piee_url = 'https://piee.eb.mil/sol/xhtml/unauth/index.xhtml'
 driver = webdriver.Chrome()
 driver.get(piee_url)
@@ -172,26 +221,120 @@ total_bids_result = int(driver.find_element(By.TAG_NAME,'h3').text.split(' ')[2]
 total_pages = math.ceil(total_bids_result/20)
 current_pages = 1
 
-# First 20 results iteration
-iterating_through_first_results(driver)
+# This is the list we will use for unique url instances
+all_solicitation_numbers = []
+all_solicitation_numbers.extend(extracting_solicitation_numbers(driver))
 
-
-# Iterates through the 20 results of the current page
 while current_pages != total_pages:
 
-    # Assign the current_pages page
-    current_pages_id = current_pages - 1
+    # Page identification
+    current_page_id = current_pages - 1
 
-    # Switching to next pages
-    switching_pages(driver, current_pages_id)
-    iterating_through_other_results(driver, current_pages_id)
+    # Change to the next page
+    next_page(driver, current_page_id)
+
+    # Let's approach this faster by using unique URLs
+    solicitations = extracting_solicitation_numbers(driver)
+    all_solicitation_numbers.extend(solicitations)
 
     current_pages += 1
+
+# Close the driver
+driver.quit()
+
+# csv_file = 'piee_urls.csv'
+# df = pd.read_csv(csv_file)
+# all_solicitation_numbers = df['BidUrls']
+
+# The url sample is: 
+url_sample = "https://piee.eb.mil/sol/xhtml/unauth/search/oppMgmtLink.xhtml?solNo="
+for solicitation_url in all_solicitation_numbers[:]:
     
+    functional_url = f"{url_sample}{solicitation_url}"
 
+    response = requests.get(functional_url)
+    soup = BeautifulSoup(response.content,'html.parser')
 
-end_time = time.time()
-elapsed_seconds = end_time-start_time
-elapsed_minutes = round(elapsed_seconds/60,2)
-elapsed_hours = round(elapsed_minutes/60,2)
-print(f'Total Seconds to Execute main.py:\nSeconds = {elapsed_seconds}\nMinutes = {elapsed_minutes}\nHours = {elapsed_hours}')
+    # Acquire all of the attributes of your choice, starting with SolicitationNumber
+    input_element = soup.find('input', {'id': 'solicitationNumber'})
+    solicitation_value = input_element.get('value')
+    print(solicitation_value)
+
+    # NoticeType
+    notice_type_element = soup.find('input', {'id': 'noticeType'}).get('value')
+    print(notice_type_element)
+
+    # DueDate
+    due_date = soup.find('input', {'id': 'datetimepicker'}).get('value')
+    print(due_date)
+
+    # SetAsideCode
+    set_aside_code = soup.find('select', {'id':'setAsideCode'}).find('option', {'selected': 'selected'}).text
+    print(set_aside_code)
+
+    # ContactName
+    contact_name = soup.find('input', {'id': 'contactName'}).get('value')
+    print(contact_name)
+
+    # Description
+    description = soup.find('textarea', {'id':'description'}).text
+    print(description)
+
+    # Subject
+    subject = soup.find('input', {'id':'subject'}).get('value')
+    print(subject)
+    
+    # PostingDate
+    posting_date = soup.find('input', {'id':'postingDate'}).get('value')
+    print(posting_date)
+
+    # ProductServiceCode
+    product_service_code = soup.find('input',{'id':'productOrServiceCode'}).get('value')
+    print(product_service_code)
+
+    # NAICS
+    naics_code = soup.find('input',{'id':'naics'}).get('value')
+    print(naics_code)
+
+    # PlaceOfPerformance
+    place_of_performance = soup.find('input',{'id':'placeOfPerformanceZipCode'}).get('value')
+    print(place_of_performance)
+
+    # Address
+    address = soup.find('textarea', {'id':'placeOfPerformance'}).text
+    print(address)
+
+    # ContractingOfficeDoDAAC
+    dodaac = soup.find('select', {'id':'contractingOfficeDodaac'}).find('option', {'selected': 'selected'}).text
+    print(dodaac)
+
+    # ContractingOfficeName
+    office_name = soup.find('input',{'id':'contractingOfficeName'}).get('value')
+    print(office_name)
+
+    # ContractingOfficeAddress 
+    office_address = soup.find('textarea', {'id':'contractingOfficeAddress'}).text
+    print(office_address)
+
+    print(f'{functional_url}\n')
+
+    collected_data = [
+        solicitation_value,
+        notice_type_element,
+        due_date,
+        set_aside_code,
+        contact_name,
+        description,
+        subject,
+        posting_date,
+        product_service_code,
+        naics_code,
+        place_of_performance,
+        address,
+        dodaac,
+        office_name,
+        office_address,
+        functional_url
+    ]
+
+    allocate_to_csv(collected_data)
