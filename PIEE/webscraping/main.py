@@ -338,3 +338,10 @@ for solicitation_url in all_solicitation_numbers[:]:
     ]
 
     allocate_to_csv(collected_data)
+
+
+end_time = time.time()
+elapsed_seconds = end_time-start_time
+elapsed_minutes = round(elapsed_seconds/60,2)
+elapsed_hours = round(elapsed_minutes/60,2)
+print(f'Total Seconds to Execute main.py:\nSeconds = {elapsed_seconds}\nMinutes = {elapsed_minutes}\nHours = {elapsed_hours}')
