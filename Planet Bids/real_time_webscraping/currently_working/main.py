@@ -95,10 +95,10 @@ def planetbids_iteration(csv_file):
     df_pb = pd.read_csv(csv_file)
     i = 0
 
-    for index, row in enumerate(df_pb.iloc[i:i+50].itertuples(index=False), start=i):
+    for index, row in enumerate(df_pb.iloc[i:].itertuples(index=False), start=i):
 
         if index % 5 == 0:
-            time.sleep(25)
+            time.sleep(26)
         
         url = row.WebLink
         awarding_body = row.AwardingBody
