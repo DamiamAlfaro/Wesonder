@@ -7,6 +7,7 @@ import os
 from bs4 import BeautifulSoup
 from selenium import webdriver
 from selenium.webdriver.common.by import By
+from selenium.webdriver.chrome.options import Options
 from selenium.webdriver.support.ui import WebDriverWait
 from selenium.webdriver.support import expected_conditions as EC
 
@@ -94,8 +95,11 @@ def planetbids_iteration(csv_file):
     df_pb = pd.read_csv(csv_file)
     i = 0
 
-
     for index, row in enumerate(df_pb.iloc[i:i+50].itertuples(index=False), start=i):
+
+        if index % 5 == 0:
+            time.sleep(25)
+        
         url = row.WebLink
         awarding_body = row.AwardingBody
         county = row.County
