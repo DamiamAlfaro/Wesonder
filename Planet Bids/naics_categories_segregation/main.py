@@ -54,6 +54,7 @@ def site_html_webscrap(url):
         return []
 
 
+
 # The csv is from Google Cloud, which shall be uploaded manually before executing this program.
 active_bids_csv = 'https://storage.googleapis.com/wesonder_databases/Planetbids/planetbids_active_bids.csv'
 
@@ -66,7 +67,7 @@ total_rows = len(df)
 i = 0
 
 
-for index, row in df.iloc[i:i+10].iterrows():
+for index, row in df.iloc[i:].iterrows():
 
     allegedab = row['AllegedAwardingBody']
     weblink = row['WebLink']
@@ -156,21 +157,4 @@ end_time = time.time()
 elapsed_seconds = end_time-start_time
 elapsed_minutes = round(elapsed_seconds/60,2)
 elapsed_hours = round(elapsed_minutes/60,2)
-print(f'Total Seconds to Execute main.py:\nSeconds = {elapsed_seconds}\nMinutes = {elapsed_minutes}\nHours = {elapsed_hours}')
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+print(f'Total seconds to execute main.py:\nSeconds = {elapsed_seconds}\nMinutes = {elapsed_minutes}\nHours = {elapsed_hours}')
