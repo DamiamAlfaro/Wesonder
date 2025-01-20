@@ -5,6 +5,7 @@ import re
 from bs4 import BeautifulSoup
 from google.oauth2.service_account import Credentials
 from googleapiclient.discovery import build  # type: ignore
+from datetime import date
 from selenium import webdriver
 from selenium.webdriver.common.by import By
 from selenium.webdriver.support.ui import WebDriverWait
@@ -131,39 +132,6 @@ def google_sheets_allocation(list_of_attributes):
     ).execute()
 
 
-# Begins webscraping
-def planetbids_iterations(csv_file):
-    df_pb = pd.read_csv(planetbids_sites)
-    i = 1
-
-    for index, row in enumerate(df_pb.iloc[i:i+1].itertuples(index=False), start=i):
-
-        if index % 5 == 0 and index != 0:
-            time.sleep(26)
-        
-        url = row.WebLink
-        awarding_body = row.AwardingBody
-        county = row.County
-        x_coord = row.X_Coordinates
-        y_coord = row.Y_Coordinates
-
-        # Acquire the bid attributes
-        active_bids, total_bids, yes_or_no = opening_webdriver(
-            url,
-            awarding_body,
-            county,
-            x_coord,
-            y_coord
-        )
-
-        if active_bids:
-
-            # Allocate them into Google Sheets
-            google_sheets_allocation(active_bids)
-            
-
-        print(f"Bid {index}\nActive Bids: {active_bids}\nTotal Bids: {total_bids}\nWorked? {yes_or_no}\n")
-
 
 
 def planetbids_active_bids():
@@ -190,14 +158,88 @@ def planetbids_active_bids():
     return rows
 
 
+
+def planetbid_site_summary(list_of_attributes):
+    
+    SERVICE_ACCOUNT_FILE = "wesonder-4e2319ab4c38.json"
+    SCOPES = ['https://www.googleapis.com/auth/spreadsheets']
+
+    credentials = Credentials.from_service_account_file(SERVICE_ACCOUNT_FILE, scopes=SCOPES)
+    service = build('sheets', 'v4', credentials=credentials)
+
+    # Google Sheet ID and range
+    SPREADSHEET_ID = '1Wu3WiKnYlJ_tp-TdfKxA9OjWqrQK0BZfVlXDNe2Ikik'
+    RANGE = 'Sheet1!A:M' 
+
+    # Prepare the data to append 
+    body = {
+        'values': [list_of_attributes]
+    }
+
+    # Append the data to the Google Sheet
+    sheet = service.spreadsheets()
+    response = sheet.values().append(
+        spreadsheetId=SPREADSHEET_ID,
+        range=RANGE,
+        valueInputOption="RAW",
+        body=body
+    ).execute()
+
+
+
+# Begins webscraping
+def planetbids_iterations(csv_file, todays_date):
+    df_pb = pd.read_csv(csv_file)
+    i = 1
+
+    for index, row in enumerate(df_pb.iloc[i:i+1].itertuples(index=False), start=i):
+
+        if index % 5 == 0 and index != 0:
+            time.sleep(28)
+        
+        url = row.WebLink
+        awarding_body = row.AwardingBody
+        county = row.County
+        x_coord = row.X_Coordinates
+        y_coord = row.Y_Coordinates
+
+        # Acquire the bid attributes
+        active_bids, total_bids, yes_or_no = opening_webdriver(
+            url,
+            awarding_body,
+            county,
+            x_coord,
+            y_coord
+        )
+
+        if active_bids:
+
+            # Allocate them into Google Sheets
+            google_sheets_allocation(active_bids)
+
+        # Record an account of this planetbids site webscrap
+        planetbids_site_record = [
+            url,
+            awarding_body,
+            county,
+            x_coord,
+            y_coord,
+            total_bids,
+            todays_date
+        ]
+        planetbid_site_summary(planetbids_site_record)
+            
+
+        print(f"Bid {index}\nActive Bids: {active_bids}\nTotal Bids: {total_bids}\nWorked? {yes_or_no}\n")
+
+
+
 # Outset and Identificators
 planetbids_sites = 'https://storage.googleapis.com/wesonder_databases/Planetbids/refined_planetbids_sites.csv'
-active_bids_sofar = planetbids_active_bids()
-for i in active_bids_sofar:
-    print(i[5])
+date_today = str(date.today().strftime("%m/%d/%Y"))
 
-
-
+# Webscrap
+planetbids_iterations(planetbids_sites, date_today)
 
 
 
