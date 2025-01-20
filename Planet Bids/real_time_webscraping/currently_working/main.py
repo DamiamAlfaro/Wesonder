@@ -28,10 +28,16 @@ def opening_webdriver(url, alleged_ab, county, x_coord, y_coord):
     try:
 
         # In case the URL is no longer valid
-        section_heading = soup.find(class_="section-heading").text
-        if section_heading == "This is not a valid PlanetBids agency portal":
-            driver.quit()
-            return active_bids, len(active_bids), "Kinda"
+        try:
+            page_source_2 = driver.page_source
+            soup_2 = BeautifulSoup(page_source_2, "html.parser")
+            section_heading = soup_2.find(class_="section-heading").text
+            if section_heading == "This is not a valid PlanetBids agency portal":
+                driver.quit()
+                return active_bids, len(active_bids), "Kinda"
+        
+        except:
+            pass
         
         
         # Wait until the body of bids appears before acquiring the page source
