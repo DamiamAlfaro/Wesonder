@@ -26,6 +26,14 @@ def opening_webdriver(url, alleged_ab, county, x_coord, y_coord):
     active_bids = []
 
     try:
+
+        # In case the URL is no longer valid
+        section_heading = soup.find(class_="section-heading").text
+        if section_heading == "This is not a valid PlanetBids agency portal":
+            driver.quit()
+            return active_bids, len(active_bids), "Kinda"
+        
+        
         # Wait until the body of bids appears before acquiring the page source
         WebDriverWait(driver, 10).until(
             EC.presence_of_element_located((By.TAG_NAME,'tbody'))
@@ -190,9 +198,9 @@ def planetbid_site_summary(list_of_attributes):
 # Begins webscraping
 def planetbids_iterations(csv_file, todays_date):
     df_pb = pd.read_csv(csv_file)
-    i = 1
+    i = 0
 
-    for index, row in enumerate(df_pb.iloc[i:i+1].itertuples(index=False), start=i):
+    for index, row in enumerate(df_pb.iloc[i+1094:].itertuples(index=False), start=i):
 
         if index % 5 == 0 and index != 0:
             time.sleep(28)
@@ -240,7 +248,6 @@ date_today = str(date.today().strftime("%m/%d/%Y"))
 
 # Webscrap
 planetbids_iterations(planetbids_sites, date_today)
-
 
 
 
