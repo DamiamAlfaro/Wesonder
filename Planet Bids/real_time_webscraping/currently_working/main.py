@@ -3,9 +3,9 @@ import time
 import sys
 import re
 from bs4 import BeautifulSoup
-from google.oauth2.service_account import Credentials
+from google.oauth2.service_account import Credentials # type: ignore
 from googleapiclient.discovery import build  # type: ignore
-from datetime import date
+from datetime import date, datetime, timedelta
 from selenium import webdriver
 from selenium.webdriver.common.by import By
 from selenium.webdriver.support.ui import WebDriverWait
@@ -148,7 +148,7 @@ def google_sheets_allocation(list_of_attributes):
 
 
 
-def planetbids_active_bids():
+def active_bids_read():
 
     SERVICE_ACCOUNT_FILE = "wesonder-4e2319ab4c38.json"
     SCOPES = ['https://www.googleapis.com/auth/spreadsheets']
@@ -171,6 +171,13 @@ def planetbids_active_bids():
     
     return rows
 
+
+def active_bids_arrangement(list_of_bids, date_today):
+    
+    bids_due_today = 0
+
+    for bid in list_of_bids[:10]:
+        print(bid)
 
 
 def planetbid_site_summary(list_of_attributes):
@@ -251,10 +258,22 @@ def planetbids_iterations(csv_file, todays_date):
 # Outset and Identificators
 planetbids_sites = 'https://storage.googleapis.com/wesonder_databases/Planetbids/refined_planetbids_sites.csv'
 date_today = str(date.today().strftime("%m/%d/%Y"))
+yesterday_date = str((datetime.now()-timedelta(days=1)).strftime("%m/%d/%Y"))
 
-# Webscrap
-planetbids_iterations(planetbids_sites, date_today)
+# Planetbids Webscraping
+#planetbids_iterations(planetbids_sites, date_today)
 
+
+# Planetbids Webscraping Schedule
+all_bids = active_bids_read()
+active_bids_arrangement(all_bids, date_today)
+
+#https://vendors.planetbids.com/portal/15588/bo/bo-search
+
+
+
+
+# NAICS Segregation
 
 
 
