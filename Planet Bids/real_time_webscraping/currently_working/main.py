@@ -172,12 +172,83 @@ def active_bids_read():
     return rows
 
 
-def active_bids_arrangement(list_of_bids, date_today):
+# For when the Planetbids site had 0 active bids
+def zero_bids_attach(data):
     
-    bids_due_today = 0
+    SERVICE_ACCOUNT_FILE = "wesonder-4e2319ab4c38.json"
+    SCOPES = ['https://www.googleapis.com/auth/spreadsheets']
 
-    for bid in list_of_bids[:10]:
-        print(bid)
+    credentials = Credentials.from_service_account_file(SERVICE_ACCOUNT_FILE, scopes=SCOPES)
+    service = build('sheets', 'v4', credentials=credentials)
+
+    # Google Sheet ID and range
+    SPREADSHEET_ID = '1Wu3WiKnYlJ_tp-TdfKxA9OjWqrQK0BZfVlXDNe2Ikik'
+    range_to_update = 'Sheet2!A1'
+    body = {
+        "values":data
+    } 
+
+    service.spreadsheets().values().update(
+        spreadsheetId=SPREADSHEET_ID,
+        range=range_to_update,
+        valueInputOption="RAW",  # Input data as-is without formatting
+        body=body
+    ).execute()
+    
+
+
+
+
+def active_bids_arrangement_no_bids(planetbids_sites, date_today, two_days_after):
+
+    # Assign the date for the empty planetbids site
+
+    data_transfer = []
+
+    for index, bid in enumerate(planetbids_sites, start=1):
+        if bid[6] == date_today and bid[5] == "0":
+            bid.append(two_days_after)
+            data_transfer.append(bid)
+            print(index)
+
+        else:
+            bid.append("")
+            data_transfer.append(bid)
+
+    zero_bids_attach(data_transfer)
+        
+        
+
+
+    
+
+    
+    
+
+
+
+def planetbids_sites_google_sheets():
+
+    SERVICE_ACCOUNT_FILE = "wesonder-4e2319ab4c38.json"
+    SCOPES = ['https://www.googleapis.com/auth/spreadsheets']
+
+    credentials = Credentials.from_service_account_file(SERVICE_ACCOUNT_FILE, scopes=SCOPES)
+    service = build('sheets', 'v4', credentials=credentials)
+
+    # Google Sheet ID and range
+    SPREADSHEET_ID = '1Wu3WiKnYlJ_tp-TdfKxA9OjWqrQK0BZfVlXDNe2Ikik'
+    RANGE = 'Sheet1!A:H' 
+
+    # Show bids
+    sheet = service.spreadsheets()
+    result = sheet.values().get(
+        spreadsheetId=SPREADSHEET_ID,
+        range=RANGE
+    ).execute()
+
+    rows = result.get('values', [])
+    
+    return rows
 
 
 def planetbid_site_summary(list_of_attributes):
@@ -213,7 +284,7 @@ def planetbids_iterations(csv_file, todays_date):
     df_pb = pd.read_csv(csv_file)
     i = 0
 
-    for index, row in enumerate(df_pb.iloc[i+1094:].itertuples(index=False), start=i):
+    for index, row in enumerate(df_pb.iloc[i:].itertuples(index=False), start=i):
 
         if index % 5 == 0 and index != 0:
             time.sleep(28)
@@ -258,15 +329,22 @@ def planetbids_iterations(csv_file, todays_date):
 # Outset and Identificators
 planetbids_sites = 'https://storage.googleapis.com/wesonder_databases/Planetbids/refined_planetbids_sites.csv'
 date_today = str(date.today().strftime("%m/%d/%Y"))
+two_days_after = str((datetime.now()+timedelta(days=4)).strftime("%m/%d/%Y"))
 yesterday_date = str((datetime.now()-timedelta(days=1)).strftime("%m/%d/%Y"))
 
-# Planetbids Webscraping
+
+# Initial and Main Planetbids Webscraping
 #planetbids_iterations(planetbids_sites, date_today)
 
 
-# Planetbids Webscraping Schedule
-all_bids = active_bids_read()
-active_bids_arrangement(all_bids, date_today)
+# Planetbids Sites
+planetbids_sites_read = planetbids_sites_google_sheets()
+
+
+# Planetbids Webscraping Schedule - Zero Active Bids Scenario
+active_bids_arrangement_no_bids(planetbids_sites_read, date_today, two_days_after)
+
+
 
 #https://vendors.planetbids.com/portal/15588/bo/bo-search
 
@@ -281,5 +359,5 @@ active_bids_arrangement(all_bids, date_today)
 # Calculate elapsed time
 end_time = time.time()
 elapsed_time = end_time - start_time
-elapsed_hours = round((elapsed_time / 60 / 60), 2)
+elapsed_hours = round((elapsed_time / 60 / 60), 3)
 print(f'Total Hours to Execute: {elapsed_hours}')
