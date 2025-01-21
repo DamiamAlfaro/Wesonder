@@ -146,9 +146,80 @@ def google_sheets_allocation(list_of_attributes):
     ).execute()
 
 
+def planetbid_site_summary(list_of_attributes):
+    
+    SERVICE_ACCOUNT_FILE = "wesonder-4e2319ab4c38.json"
+    SCOPES = ['https://www.googleapis.com/auth/spreadsheets']
+
+    credentials = Credentials.from_service_account_file(SERVICE_ACCOUNT_FILE, scopes=SCOPES)
+    service = build('sheets', 'v4', credentials=credentials)
+
+    # Google Sheet ID and range
+    SPREADSHEET_ID = '1Wu3WiKnYlJ_tp-TdfKxA9OjWqrQK0BZfVlXDNe2Ikik'
+    RANGE = 'Sheet1!A:M' 
+
+    # Prepare the data to append 
+    body = {
+        'values': [list_of_attributes]
+    }
+
+    # Append the data to the Google Sheet
+    sheet = service.spreadsheets()
+    response = sheet.values().append(
+        spreadsheetId=SPREADSHEET_ID,
+        range=RANGE,
+        valueInputOption="RAW",
+        body=body
+    ).execute()
 
 
-def active_bids_read():
+# Begins webscraping
+def planetbids_iterations(csv_file, todays_date):
+    df_pb = pd.read_csv(csv_file)
+    i = 0
+
+    for index, row in enumerate(df_pb.iloc[i:].itertuples(index=False), start=i):
+
+        if index % 5 == 0 and index != 0:
+            time.sleep(28)
+        
+        url = row.WebLink
+        awarding_body = row.AwardingBody
+        county = row.County
+        x_coord = row.X_Coordinates
+        y_coord = row.Y_Coordinates
+
+        # Acquire the bid attributes
+        active_bids, total_bids, yes_or_no = opening_webdriver(
+            url,
+            awarding_body,
+            county,
+            x_coord,
+            y_coord
+        )
+
+        if active_bids:
+
+            # Allocate them into Google Sheets
+            google_sheets_allocation(active_bids)
+
+        # Record an account of this planetbids site webscrap
+        planetbids_site_record = [
+            url,
+            awarding_body,
+            county,
+            x_coord,
+            y_coord,
+            total_bids,
+            todays_date
+        ]
+        planetbid_site_summary(planetbids_site_record)
+            
+
+        print(f"Bid {index}\nActive Bids: {active_bids}\nTotal Bids: {total_bids}\nWorked? {yes_or_no}\n")
+
+
+def active_bids_reading():
 
     SERVICE_ACCOUNT_FILE = "wesonder-4e2319ab4c38.json"
     SCOPES = ['https://www.googleapis.com/auth/spreadsheets']
@@ -216,13 +287,6 @@ def active_bids_arrangement_no_bids(planetbids_sites, date_today, two_days_after
             data_transfer.append(bid)
 
     zero_bids_attach(data_transfer)
-        
-        
-
-
-    
-
-    
     
 
 
@@ -237,7 +301,7 @@ def planetbids_sites_google_sheets():
 
     # Google Sheet ID and range
     SPREADSHEET_ID = '1Wu3WiKnYlJ_tp-TdfKxA9OjWqrQK0BZfVlXDNe2Ikik'
-    RANGE = 'Sheet1!A:H' 
+    RANGE = 'RefinedSites!A:H' 
 
     # Show bids
     sheet = service.spreadsheets()
@@ -251,8 +315,14 @@ def planetbids_sites_google_sheets():
     return rows
 
 
-def planetbid_site_summary(list_of_attributes):
-    
+
+
+def active_bids_arrangement_other_bids(planetbids_sites, active_bids):
+    pass
+
+
+
+def refining_planetbids_sites(data):
     SERVICE_ACCOUNT_FILE = "wesonder-4e2319ab4c38.json"
     SCOPES = ['https://www.googleapis.com/auth/spreadsheets']
 
@@ -261,102 +331,108 @@ def planetbid_site_summary(list_of_attributes):
 
     # Google Sheet ID and range
     SPREADSHEET_ID = '1Wu3WiKnYlJ_tp-TdfKxA9OjWqrQK0BZfVlXDNe2Ikik'
-    RANGE = 'Sheet1!A:M' 
-
-    # Prepare the data to append 
+    range_to_update = 'Sheet3!A1'
     body = {
-        'values': [list_of_attributes]
-    }
+        "values":data
+    } 
 
-    # Append the data to the Google Sheet
-    sheet = service.spreadsheets()
-    response = sheet.values().append(
+    service.spreadsheets().values().update(
         spreadsheetId=SPREADSHEET_ID,
-        range=RANGE,
-        valueInputOption="RAW",
+        range=range_to_update,
+        valueInputOption="RAW",  # Input data as-is without formatting
         body=body
     ).execute()
 
 
 
-# Begins webscraping
-def planetbids_iterations(csv_file, todays_date):
-    df_pb = pd.read_csv(csv_file)
-    i = 0
-
-    for index, row in enumerate(df_pb.iloc[i:].itertuples(index=False), start=i):
-
-        if index % 5 == 0 and index != 0:
-            time.sleep(28)
+def remove_repeating_sites(planetbids_sites_list):
         
-        url = row.WebLink
-        awarding_body = row.AwardingBody
-        county = row.County
-        x_coord = row.X_Coordinates
-        y_coord = row.Y_Coordinates
+    new_list = []
+    unique_urls = []
+    
+    for index, bid in enumerate(planetbids_sites_list, start=0):
+        
+        if bid[0] not in unique_urls:
+            unique_urls.append(bid[0])
+            new_list.append(bid)
 
-        # Acquire the bid attributes
-        active_bids, total_bids, yes_or_no = opening_webdriver(
-            url,
-            awarding_body,
-            county,
-            x_coord,
-            y_coord
-        )
 
-        if active_bids:
-
-            # Allocate them into Google Sheets
-            google_sheets_allocation(active_bids)
-
-        # Record an account of this planetbids site webscrap
-        planetbids_site_record = [
-            url,
-            awarding_body,
-            county,
-            x_coord,
-            y_coord,
-            total_bids,
-            todays_date
-        ]
-        planetbid_site_summary(planetbids_site_record)
-            
-
-        print(f"Bid {index}\nActive Bids: {active_bids}\nTotal Bids: {total_bids}\nWorked? {yes_or_no}\n")
+    refining_planetbids_sites(new_list)
 
 
 
-# Outset and Identificators
-planetbids_sites = 'https://storage.googleapis.com/wesonder_databases/Planetbids/refined_planetbids_sites.csv'
+def removing_repeating_sites_csv(csv_file):
+
+    df = pd.read_csv(csv_file)
+    df_unique = df.drop_duplicates(subset="WebLink",keep="first")
+    df_unique.to_csv('absolute_planetbids_sites.csv', index=False)
+    
+
+
+
+
+
+
+
+'''
+Function Inputs: These shall always remain active (non-commented)
+'''
+# Active bids - Read
+#active_bids_read = active_bids_reading()
+
+# Planetbids Sites - Read
+#planetbids_sites_read = planetbids_sites_google_sheets()
+
+planetbids_sites = 'https://storage.googleapis.com/wesonder_databases/Planetbids/absolute_planetbids_sites.csv'
 date_today = str(date.today().strftime("%m/%d/%Y"))
-two_days_after = str((datetime.now()+timedelta(days=4)).strftime("%m/%d/%Y"))
+four_days_after = str((datetime.now()+timedelta(days=4)).strftime("%m/%d/%Y"))
 yesterday_date = str((datetime.now()-timedelta(days=1)).strftime("%m/%d/%Y"))
 
 
+'''
+Where such inputs are used
+'''
 # Initial and Main Planetbids Webscraping
-#planetbids_iterations(planetbids_sites, date_today)
-
-
-# Planetbids Sites
-planetbids_sites_read = planetbids_sites_google_sheets()
+planetbids_iterations(planetbids_sites, date_today)
 
 
 # Planetbids Webscraping Schedule - Zero Active Bids Scenario
-active_bids_arrangement_no_bids(planetbids_sites_read, date_today, two_days_after)
+#active_bids_arrangement_no_bids(planetbids_sites_read, date_today, four_days_after)
 
 
-
-#https://vendors.planetbids.com/portal/15588/bo/bo-search
-
-
-
-
-# NAICS Segregation
+# Planetbids Webscraping Schedule - Other Bids
+#active_bids_arrangement_other_bids(planetbids_sites_read, active_bids_read)
 
 
 
 
-# Calculate elapsed time
+
+# Cleaning Planetbids Repated Sites - Obsolote
+#remove_repeating_sites(planetbids_sites_read)
+
+# Cleaning Original Planetbids Sites CSV
+#csv_file = "refined_planetbids_sites.csv"
+#removing_repeating_sites_csv(csv_file)
+
+
+#https://vendors.planetbids.com/portal/{unique_pb_id}/bo/bo-search
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+'''
+Time Statistics
+'''
 end_time = time.time()
 elapsed_time = end_time - start_time
 elapsed_hours = round((elapsed_time / 60 / 60), 3)
