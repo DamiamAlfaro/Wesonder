@@ -443,6 +443,9 @@ def naics_segregation(list_of_active_bids):
     
     for index, url in enumerate(urls_to_webscrap[:]):
 
+        if index % 5 == 0 and index != 0:
+            time.sleep(28)
+
         naics_codes = actually_webscraping_individual_bid(url)
 
         if naics_codes:
@@ -465,6 +468,8 @@ def naics_segregation(list_of_active_bids):
             list_of_attributes = [bids[index]]
 
             naics_allocation(list_of_attributes)
+        
+        print(f"Iteration {index}\nNAICS Codes: {naics_codes}")
 
             
 
