@@ -243,76 +243,7 @@ def active_bids_reading():
     return rows
 
 
-# For when the Planetbids site had 0 active bids
-def zero_bids_attach(data):
-    
-    SERVICE_ACCOUNT_FILE = "wesonder-4e2319ab4c38.json"
-    SCOPES = ['https://www.googleapis.com/auth/spreadsheets']
 
-    credentials = Credentials.from_service_account_file(SERVICE_ACCOUNT_FILE, scopes=SCOPES)
-    service = build('sheets', 'v4', credentials=credentials)
-
-    # Google Sheet ID and range
-    SPREADSHEET_ID = '1Wu3WiKnYlJ_tp-TdfKxA9OjWqrQK0BZfVlXDNe2Ikik'
-    range_to_update = 'Sheet2!A1'
-    body = {
-        "values":data
-    } 
-
-    service.spreadsheets().values().update(
-        spreadsheetId=SPREADSHEET_ID,
-        range=range_to_update,
-        valueInputOption="RAW",  # Input data as-is without formatting
-        body=body
-    ).execute()
-    
-
-
-
-
-def active_bids_arrangement_no_bids(planetbids_sites, date_today, two_days_after):
-
-    # Assign the date for the empty planetbids site
-
-    data_transfer = []
-
-    for index, bid in enumerate(planetbids_sites, start=1):
-        if bid[6] == date_today and bid[5] == "0":
-            bid.append(two_days_after)
-            data_transfer.append(bid)
-            print(index)
-
-        else:
-            bid.append("")
-            data_transfer.append(bid)
-
-    zero_bids_attach(data_transfer)
-    
-
-
-
-def planetbids_sites_google_sheets():
-
-    SERVICE_ACCOUNT_FILE = "wesonder-4e2319ab4c38.json"
-    SCOPES = ['https://www.googleapis.com/auth/spreadsheets']
-
-    credentials = Credentials.from_service_account_file(SERVICE_ACCOUNT_FILE, scopes=SCOPES)
-    service = build('sheets', 'v4', credentials=credentials)
-
-    # Google Sheet ID and range
-    SPREADSHEET_ID = '1Wu3WiKnYlJ_tp-TdfKxA9OjWqrQK0BZfVlXDNe2Ikik'
-    RANGE = 'RefinedSites!A:H' 
-
-    # Show bids
-    sheet = service.spreadsheets()
-    result = sheet.values().get(
-        spreadsheetId=SPREADSHEET_ID,
-        range=RANGE
-    ).execute()
-
-    rows = result.get('values', [])
-    
-    return rows
 
 
 
@@ -497,10 +428,77 @@ def naics_segregated_bids():
     return rows
 
 
-# 3 - Webscrap the missing bids in the NAICS segregation
-def naics_followup_webscraping(list_of_active_segregated_bids):
+
+# 4 - A list containing all Planetbids Sites and their latest webscraping date
+def planetbids_sites_google_sheets():
+
+    SERVICE_ACCOUNT_FILE = "wesonder-4e2319ab4c38.json"
+    SCOPES = ['https://www.googleapis.com/auth/spreadsheets']
+
+    credentials = Credentials.from_service_account_file(SERVICE_ACCOUNT_FILE, scopes=SCOPES)
+    service = build('sheets', 'v4', credentials=credentials)
+
+    # Google Sheet ID and range
+    SPREADSHEET_ID = '1Wu3WiKnYlJ_tp-TdfKxA9OjWqrQK0BZfVlXDNe2Ikik'
+    RANGE = 'Sheet1!A:G' 
+
+    # Show bids
+    sheet = service.spreadsheets()
+    result = sheet.values().get(
+        spreadsheetId=SPREADSHEET_ID,
+        range=RANGE
+    ).execute()
+
+    rows = result.get('values', [])
     
-    pass
+    return rows
+
+
+
+# 4 - For when the Planetbids site had 0 active bids
+def zero_bids_attach(data):
+    
+    SERVICE_ACCOUNT_FILE = "wesonder-4e2319ab4c38.json"
+    SCOPES = ['https://www.googleapis.com/auth/spreadsheets']
+
+    credentials = Credentials.from_service_account_file(SERVICE_ACCOUNT_FILE, scopes=SCOPES)
+    service = build('sheets', 'v4', credentials=credentials)
+
+    # Google Sheet ID and range
+    SPREADSHEET_ID = '1Wu3WiKnYlJ_tp-TdfKxA9OjWqrQK0BZfVlXDNe2Ikik'
+    range_to_update = 'Sheet2!A1'
+    body = {
+        "values":data
+    } 
+
+    service.spreadsheets().values().update(
+        spreadsheetId=SPREADSHEET_ID,
+        range=range_to_update,
+        valueInputOption="RAW",  # Input data as-is without formatting
+        body=body
+    ).execute()
+    
+
+
+# 4 - Assigning a webscraping date to Planetbids Sites with Zero bids
+def active_bids_arrangement_no_bids(planetbids_sites, date_today, four_days_after):
+
+    # Assign the date for the empty planetbids site
+
+    data_transfer = []
+
+    for index, bid in enumerate(planetbids_sites, start=1):
+        if bid[6] == date_today and bid[5] == "0":
+            bid.append(four_days_after)
+            data_transfer.append(bid)
+            print(index)
+
+        else:
+            bid.append("")
+            data_transfer.append(bid)
+
+    zero_bids_attach(data_transfer)
+
 
 
 
@@ -511,13 +509,16 @@ Function Inputs: These shall always remain active (non-commented)
 # Active bids - Read - 2
 active_bids_read = active_bids_reading()
 
-planetbids_sites = 'https://storage.googleapis.com/wesonder_databases/Planetbids/absolute_planetbids_sites.csv'
+planetbids_sites_original = 'https://storage.googleapis.com/wesonder_databases/Planetbids/absolute_planetbids_sites.csv'
 date_today = str(date.today().strftime("%m/%d/%Y"))
 four_days_after = str((datetime.now()+timedelta(days=4)).strftime("%m/%d/%Y"))
 yesterday_date = str((datetime.now()-timedelta(days=1)).strftime("%m/%d/%Y"))
 
 # NAICS segregated active bids - Read - 3
 naics_segregation_bids = naics_segregated_bids()
+
+# Planetbids Sites - Read - 4
+planetbids_sites_read = planetbids_sites_google_sheets()
 
 
 
@@ -526,16 +527,17 @@ naics_segregation_bids = naics_segregated_bids()
 Functional Approaches
 '''
 # Initial and Main Planetbids Webscraping - 1
-#planetbids_iterations(planetbids_sites, date_today)
+#planetbids_iterations(planetbids_sites_original, date_today)
 
 
 # NAICS Webscraping - 2
 #naics_segregation(active_bids_read)
 
 # NAICS Follow-up - 3
-naics_segregation(naics_segregation_bids)
+#naics_segregation(naics_segregation_bids)
 
-
+# Webscraping Schedule Algorithm - 4
+active_bids_arrangement_no_bids(planetbids_sites_read, date_today, four_days_after)
 
 
 
