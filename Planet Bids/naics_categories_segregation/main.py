@@ -443,8 +443,8 @@ def naics_segregation(list_of_active_bids):
     
     for index, url in enumerate(urls_to_webscrap[:]):
 
-        if index % 5 == 0 and index != 0:
-            time.sleep(28)
+        if index % 4 == 0 and index != 0:
+            time.sleep(30)
 
         naics_codes = actually_webscraping_individual_bid(url)
 
@@ -471,7 +471,36 @@ def naics_segregation(list_of_active_bids):
         
         print(f"Iteration {index}\nNAICS Codes: {naics_codes}")
 
-            
+
+# 3 - We need to acquire a list with the active bids segregated by NAICS for 3 (retrieve the missing ones)
+def naics_segregated_bids():
+
+    SERVICE_ACCOUNT_FILE = "wesonder-4e2319ab4c38.json"
+    SCOPES = ['https://www.googleapis.com/auth/spreadsheets']
+
+    credentials = Credentials.from_service_account_file(SERVICE_ACCOUNT_FILE, scopes=SCOPES)
+    service = build('sheets', 'v4', credentials=credentials)
+
+    # Google Sheet ID and range
+    SPREADSHEET_ID = '197FCnOxTIa_rnXTc_0oapI53jkrPNrP7JA_n94fjUxI'
+    RANGE = 'Sheet3!A:M' 
+
+    # Show bids
+    sheet = service.spreadsheets()
+    result = sheet.values().get(
+        spreadsheetId=SPREADSHEET_ID,
+        range=RANGE
+    ).execute()
+
+    rows = result.get('values', [])
+    
+    return rows
+
+
+# 3 - Webscrap the missing bids in the NAICS segregation
+def naics_followup_webscraping(list_of_active_segregated_bids):
+    
+    pass
 
 
 
@@ -479,17 +508,16 @@ def naics_segregation(list_of_active_bids):
 '''
 Function Inputs: These shall always remain active (non-commented)
 '''
-# Active bids - Read
+# Active bids - Read - 2
 active_bids_read = active_bids_reading()
-
-# Planetbids Sites - Read
-#planetbids_sites_read = planetbids_sites_google_sheets()
 
 planetbids_sites = 'https://storage.googleapis.com/wesonder_databases/Planetbids/absolute_planetbids_sites.csv'
 date_today = str(date.today().strftime("%m/%d/%Y"))
 four_days_after = str((datetime.now()+timedelta(days=4)).strftime("%m/%d/%Y"))
 yesterday_date = str((datetime.now()-timedelta(days=1)).strftime("%m/%d/%Y"))
 
+# NAICS segregated active bids - Read - 3
+naics_segregation_bids = naics_segregated_bids()
 
 
 
@@ -502,9 +530,10 @@ Functional Approaches
 
 
 # NAICS Webscraping - 2
-naics_segregation(active_bids_read)
+#naics_segregation(active_bids_read)
 
-
+# NAICS Follow-up - 3
+naics_segregation(naics_segregation_bids)
 
 
 
