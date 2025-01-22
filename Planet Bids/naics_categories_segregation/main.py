@@ -501,12 +501,63 @@ def active_bids_arrangement_no_bids(planetbids_sites, date_today, four_days_afte
 
 
 
+# 5 - The Planetbids sites with some dates
+def planetbids_sites_google_sheets_other():
+
+    SERVICE_ACCOUNT_FILE = "wesonder-4e2319ab4c38.json"
+    SCOPES = ['https://www.googleapis.com/auth/spreadsheets']
+
+    credentials = Credentials.from_service_account_file(SERVICE_ACCOUNT_FILE, scopes=SCOPES)
+    service = build('sheets', 'v4', credentials=credentials)
+
+    # Google Sheet ID and range
+    SPREADSHEET_ID = '1Wu3WiKnYlJ_tp-TdfKxA9OjWqrQK0BZfVlXDNe2Ikik'
+    RANGE = 'Sheet2!A:H' 
+
+    # Show bids
+    sheet = service.spreadsheets()
+    result = sheet.values().get(
+        spreadsheetId=SPREADSHEET_ID,
+        range=RANGE
+    ).execute()
+
+    rows = result.get('values', [])
+    
+    return rows
+
+
+
+# 5 - Where we will be using the rowattribute to find correlations
+def unique_rowattribute_correlation(rowattribute):pass
+    
+
+
+
+# 5 - Filling the rest of the UpcomingScrapingDates cells
+def active_bids_arrangement_other_bids(list_of_planetbids_sites, active_bids):
+
+    variab = 61954
+    dates = [bid[5] for bid in active_bids[1:]]
+    rowattributes = [int(bid[0].split("/")[4]) for bid in active_bids[1:]]
+    matching_indexes = [i for i, attr in enumerate(rowattributes) if attr == variab]
+    matching_dates = [dates[i] for i in matching_indexes]
+
+    print(matching_indexes)
+    print(matching_dates)
+
+
+            
+
+            
+                    
+            
+
 
 
 '''
 Function Inputs: These shall always remain active (non-commented)
 '''
-# Active bids - Read - 2
+# Active bids - Read - 2, 5
 active_bids_read = active_bids_reading()
 
 planetbids_sites_original = 'https://storage.googleapis.com/wesonder_databases/Planetbids/absolute_planetbids_sites.csv'
@@ -515,13 +566,13 @@ four_days_after = str((datetime.now()+timedelta(days=4)).strftime("%m/%d/%Y"))
 yesterday_date = str((datetime.now()-timedelta(days=1)).strftime("%m/%d/%Y"))
 
 # NAICS segregated active bids - Read - 3
-naics_segregation_bids = naics_segregated_bids()
+#naics_segregation_bids = naics_segregated_bids()
 
 # Planetbids Sites - Read - 4
-planetbids_sites_read = planetbids_sites_google_sheets()
+#planetbids_sites_read = planetbids_sites_google_sheets()
 
-
-
+# Planetbids Sites Some Dates - Read - 5
+planetbids_sites_some_dates = planetbids_sites_google_sheets_other()
 
 '''
 Functional Approaches
@@ -536,10 +587,11 @@ Functional Approaches
 # NAICS Follow-up - 3
 #naics_segregation(naics_segregation_bids)
 
-# Webscraping Schedule Algorithm - 4
-active_bids_arrangement_no_bids(planetbids_sites_read, date_today, four_days_after)
+# Webscraping Schedule Algorithm No Bids - 4
+#active_bids_arrangement_no_bids(planetbids_sites_read, date_today, four_days_after)
 
-
+# Webscraping Schedule Algorithm Other Bids - 5
+active_bids_arrangement_other_bids(planetbids_sites_some_dates, active_bids_read)
 
 
 
@@ -556,12 +608,6 @@ Obsolote Functions
 #removing_repeating_sites_csv(csv_file)
 
 
-# Planetbids Webscraping Schedule - Zero Active Bids Scenario
-#active_bids_arrangement_no_bids(planetbids_sites_read, date_today, four_days_after)
-
-
-# Planetbids Webscraping Schedule - Other Bids
-#active_bids_arrangement_other_bids(planetbids_sites_read, active_bids_read)
 
 
 
