@@ -606,8 +606,30 @@ def active_bids_arrangement_other_bids(list_of_planetbids_sites, active_bids):
 
         it_worked_mate(list_of_planetbids_sites)
 
-            
-                    
+          
+# Not really needed (yet), but just in case
+def planetbids_sites_google_sheets_with_dates():
+
+    SERVICE_ACCOUNT_FILE = "wesonder-4e2319ab4c38.json"
+    SCOPES = ['https://www.googleapis.com/auth/spreadsheets']
+
+    credentials = Credentials.from_service_account_file(SERVICE_ACCOUNT_FILE, scopes=SCOPES)
+    service = build('sheets', 'v4', credentials=credentials)
+
+    # Google Sheet ID and range
+    SPREADSHEET_ID = '1Wu3WiKnYlJ_tp-TdfKxA9OjWqrQK0BZfVlXDNe2Ikik'
+    RANGE = 'Sheet3!A:H' 
+
+    # Show bids
+    sheet = service.spreadsheets()
+    result = sheet.values().get(
+        spreadsheetId=SPREADSHEET_ID,
+        range=RANGE
+    ).execute()
+
+    rows = result.get('values', [])
+    
+    return rows
             
 
 
@@ -630,7 +652,10 @@ yesterday_date = str((datetime.now()-timedelta(days=1)).strftime("%m/%d/%Y"))
 #planetbids_sites_read = planetbids_sites_google_sheets()
 
 # Planetbids Sites Some Dates - Read - 5
-planetbids_sites_some_dates = planetbids_sites_google_sheets_other()
+#planetbids_sites_some_dates = planetbids_sites_google_sheets_other()
+
+# Planetbids Sites With Dates - Read
+#planetbids_sites_all_dates = planetbids_sites_google_sheets_with_dates()
 
 '''
 Functional Approaches
@@ -649,9 +674,10 @@ Functional Approaches
 #active_bids_arrangement_no_bids(planetbids_sites_read, date_today, four_days_after)
 
 # Webscraping Schedule Algorithm Other Bids - 5
-active_bids_arrangement_other_bids(planetbids_sites_some_dates, active_bids_read)
+#active_bids_arrangement_other_bids(planetbids_sites_some_dates, active_bids_read)
 
-
+# Removing Passed Bids - 6
+removing_past_bids()
 
 
 '''
