@@ -527,26 +527,84 @@ def planetbids_sites_google_sheets_other():
 
 
 
-# 5 - Where we will be using the rowattribute to find correlations
-def unique_rowattribute_correlation(rowattribute):pass
+# 5 - Allocation of new cleaned google sheets spreadsheet
+def it_worked_mate(list_of_attributes):
     
+    SERVICE_ACCOUNT_FILE = "wesonder-4e2319ab4c38.json"
+    SCOPES = ['https://www.googleapis.com/auth/spreadsheets']
 
+    credentials = Credentials.from_service_account_file(SERVICE_ACCOUNT_FILE, scopes=SCOPES)
+    service = build('sheets', 'v4', credentials=credentials)
+
+    # Google Sheet ID and range
+    SPREADSHEET_ID = '1Wu3WiKnYlJ_tp-TdfKxA9OjWqrQK0BZfVlXDNe2Ikik'
+    range_to_update = 'Sheet3!A1'
+    body = {
+        "values":list_of_attributes
+    } 
+
+    service.spreadsheets().values().update(
+        spreadsheetId=SPREADSHEET_ID,
+        range=range_to_update,
+        valueInputOption="RAW",  # Input data as-is without formatting
+        body=body
+    ).execute()
 
 
 # 5 - Filling the rest of the UpcomingScrapingDates cells
 def active_bids_arrangement_other_bids(list_of_planetbids_sites, active_bids):
 
-    variab = 61954
+
+    planetbids_sites_order = [site[0] for site in list_of_planetbids_sites[1:]]
     dates = [bid[5] for bid in active_bids[1:]]
+    dates_dates = [datetime.strptime(date, '%m/%d/%Y').strftime('%m/%d/%Y') for date in dates]
     rowattributes = [int(bid[0].split("/")[4]) for bid in active_bids[1:]]
-    matching_indexes = [i for i, attr in enumerate(rowattributes) if attr == variab]
-    matching_dates = [dates[i] for i in matching_indexes]
 
-    print(matching_indexes)
-    print(matching_dates)
+    dates_and_urls_locations = []
 
+    for rowatt in rowattributes[:]:
+        
+        # Find the soonest date
+        matching_indexes = [i for i, attr in enumerate(rowattributes) if attr == rowatt]
+        matching_dates = [dates_dates[i] for i in matching_indexes]
+        soonest_date = min(matching_dates)
 
+        # Find the index of the url pertaining to that soonest date
+        initial_url_form = f'https://vendors.planetbids.com/portal/{rowatt}/bo/bo-search'
+        if initial_url_form in planetbids_sites_order:
+            pertaining_index = planetbids_sites_order.index(initial_url_form)
+
+            exact_location = [
+                pertaining_index,
+                initial_url_form,
+                soonest_date
+            ]
             
+            # Do note add duplicates
+            if exact_location not in dates_and_urls_locations:
+                dates_and_urls_locations.append(exact_location)
+            
+    count = 0
+    for planebids_site in list_of_planetbids_sites:
+        if len(planebids_site) == 7:
+
+            # Create the upcoming webscraping date based on soonest date
+            date_object = datetime.strptime(dates_and_urls_locations[count][-1], '%m/%d/%Y')
+            the_day_after = date_object + timedelta(days=1)
+            new_date_string = the_day_after.strftime('%m/%d/%Y')
+
+            # Append the new webscraping date
+            planebids_site.append(new_date_string)
+
+            count += 1
+
+    # Did it work?
+    are_all_same_length = all(len(sublist) == len(list_of_planetbids_sites[0]) for sublist in list_of_planetbids_sites)
+    
+    # If it worked, create the newly refined Google Sheets Spreadsheet
+    if are_all_same_length:
+
+        it_worked_mate(list_of_planetbids_sites)
 
             
                     
