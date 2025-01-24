@@ -749,12 +749,6 @@ Functional Approaches
 #naics_segregation(naics_segregation_bids)
 
 
-# Webscraping Schedule Algorithm No Bids - 4
-#active_bids_arrangement_no_bids(planetbids_sites_read, date_today, four_days_after)
-
-
-# Webscraping Schedule Algorithm Other Bids - 5
-#active_bids_arrangement_other_bids(planetbids_sites_some_dates, active_bids_read)
 
 
 # Removing Passed Bids - 6
