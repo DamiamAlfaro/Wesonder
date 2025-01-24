@@ -630,20 +630,97 @@ def planetbids_sites_google_sheets_with_dates():
     rows = result.get('values', [])
     
     return rows
-            
 
+
+
+def active_bids_reading_naics():
+
+    SERVICE_ACCOUNT_FILE = "wesonder-4e2319ab4c38.json"
+    SCOPES = ['https://www.googleapis.com/auth/spreadsheets']
+
+    credentials = Credentials.from_service_account_file(SERVICE_ACCOUNT_FILE, scopes=SCOPES)
+    service = build('sheets', 'v4', credentials=credentials)
+
+    # Google Sheet ID and range
+    SPREADSHEET_ID = '197FCnOxTIa_rnXTc_0oapI53jkrPNrP7JA_n94fjUxI'
+    RANGE = 'Sheet2!A:P' 
+
+    # Show bids
+    sheet = service.spreadsheets()
+    result = sheet.values().get(
+        spreadsheetId=SPREADSHEET_ID,
+        range=RANGE
+    ).execute()
+
+    rows = result.get('values', [])
+    
+    return rows
+
+
+
+# 6 - Updating Sheet2 of Active Bids into Sheet4
+def up_to_date_active_bids(list_of_updated_bids):
+
+    SERVICE_ACCOUNT_FILE = "wesonder-4e2319ab4c38.json"
+    SCOPES = ['https://www.googleapis.com/auth/spreadsheets']
+
+    credentials = Credentials.from_service_account_file(SERVICE_ACCOUNT_FILE, scopes=SCOPES)
+    service = build('sheets', 'v4', credentials=credentials)
+
+    # Google Sheet ID and range
+    SPREADSHEET_ID = '197FCnOxTIa_rnXTc_0oapI53jkrPNrP7JA_n94fjUxI'
+    RANGE = 'Sheet4!A:P' 
+
+    # Prepare the data to append 
+    body = {
+        'values': list_of_updated_bids
+    }
+
+    # Append the data to the Google Sheet
+    sheet = service.spreadsheets()
+    response = sheet.values().append(
+        spreadsheetId=SPREADSHEET_ID,
+        range=RANGE,
+        valueInputOption="RAW",
+        body=body
+    ).execute()
+
+
+# 6 - Let's remove the bids that are already past today at 6:00PM
+def removing_past_bids(list_of_active_bids):
+    
+    right_now_instance = datetime.now()
+    print(len(list_of_active_bids))
+    
+    up_to_date_bids = []
+
+    for bid in list_of_active_bids[1:]:
+        bid_date = datetime.strptime(bid[5], '%m/%d/%Y')
+        if bid_date < right_now_instance:
+            pass
+        else:
+            up_to_date_bids.append(bid)
+
+    up_to_date_active_bids(up_to_date_bids)
 
 
 '''
 Function Inputs: These shall always remain active (non-commented)
 '''
-# Active bids - Read - 2, 5
-active_bids_read = active_bids_reading()
+# Active bids - Read - 2, 5, 6
+#active_bids_read = active_bids_reading()
 
+# Active bids with NAICS Codes - Read - 6
+active_bids_read_naics = active_bids_reading_naics()
+
+# Initial webscraping - 1
 planetbids_sites_original = 'https://storage.googleapis.com/wesonder_databases/Planetbids/absolute_planetbids_sites.csv'
+
+# Today's date - 1, 4
 date_today = str(date.today().strftime("%m/%d/%Y"))
-four_days_after = str((datetime.now()+timedelta(days=4)).strftime("%m/%d/%Y"))
-yesterday_date = str((datetime.now()-timedelta(days=1)).strftime("%m/%d/%Y"))
+
+# Four days after today - 4
+#four_days_after = str((datetime.now()+timedelta(days=4)).strftime("%m/%d/%Y"))
 
 # NAICS segregated active bids - Read - 3
 #naics_segregation_bids = naics_segregated_bids()
@@ -667,17 +744,21 @@ Functional Approaches
 # NAICS Webscraping - 2
 #naics_segregation(active_bids_read)
 
+
 # NAICS Follow-up - 3
 #naics_segregation(naics_segregation_bids)
+
 
 # Webscraping Schedule Algorithm No Bids - 4
 #active_bids_arrangement_no_bids(planetbids_sites_read, date_today, four_days_after)
 
+
 # Webscraping Schedule Algorithm Other Bids - 5
 #active_bids_arrangement_other_bids(planetbids_sites_some_dates, active_bids_read)
 
+
 # Removing Passed Bids - 6
-removing_past_bids()
+removing_past_bids(active_bids_read_naics)
 
 
 '''
