@@ -2,7 +2,11 @@ import pandas as pd
 import math
 import os
 import time
+import re
+import sys
 import requests
+import mysql.connector # type: ignore
+from geopy.geocoders import Nominatim
 from google.oauth2.service_account import Credentials # type: ignore
 from googleapiclient.discovery import build  # type: ignore
 from selenium import webdriver
@@ -336,6 +340,8 @@ def piee_active_bids_webscraping(piee_active_bids):
             office_address
         ]
 
+        collected_data = ["none" if item == "" else item for item in collected_data]
+
         piee_bids.append(collected_data)
 
     return piee_bids
@@ -367,13 +373,86 @@ def reading_piee_active_bids():
 
 
 
+# 3 - Geolocation Acquisition
+def obtaining_new_geolocations(address_string):
+    
+    # This is the second attempt to find an address using Nominatim. We will
+    # be using the same methodology as with attempt 1; the output of this
+    # function will either be a pair of zeros, or the geolocation
+    # coordinates for each of the addressess.
+    
+    geolocator = Nominatim(user_agent="my_geocoder")
+    location = geolocator.geocode(address_string, timeout=8)
+
+    if location:
+        lat = location.latitude
+        lon = location.longitude
+        return lat, lon
+    else:
+        lat = 0
+        lon = 0
+        return lat, lon
+
+
+
+# 3 - Split string based on first appearance of five digits
+def split_string_on_five_digits(input_string):
+    # Find all occurrences of 5 consecutive digits
+    matches = list(re.finditer(r'\d{5}', input_string))
+    if len(matches) < 2:
+        # If there are fewer than 2 occurrences, return the original string as is
+        return input_string
+
+    # Get the penultimate match
+    penultimate_match = matches[-2]
+    end = penultimate_match.end()
+
+    # Split the string at the penultimate match
+    return input_string[end:]
+
+
 # 3 - Acquiring Geolocations
 def acquiring_geolocations(list_of_bids):
     
     for bid in list_of_bids:
-        print(bid)
         
+        geolocations = obtaining_new_geolocations(bid[-4])
 
+        if geolocations[0] != 0:
+            x_and_y_coord  = [
+                geolocations[0],
+                geolocations[1]
+            ]
+            bid.extend(x_and_y_coord)
+            print(x_and_y_coord)
+        
+        else:
+            other_address = bid[-1]
+            new_string = split_string_on_five_digits(other_address)
+            new_string = " ".join(
+                new_string.split(" ")[1:]
+            )
+            geolocations_2 = obtaining_new_geolocations(new_string)
+            x_and_y_coord_2 = [
+                geolocations_2[0],
+                geolocations_2[1]
+            ]
+            bid.extend(x_and_y_coord_2)
+            print(x_and_y_coord_2)
+
+        if len(bid) != 18:
+            print(bid)
+
+
+    first_length = len(list_of_bids[0])
+    all_the_same = all(len(lst) == first_length for lst in list_of_bids)
+    
+    if all_the_same:
+        return list_of_bids
+    
+    else:
+        print("Something wrong with geolocations\n")
+        sys.exit(1)
 
 
 
@@ -388,9 +467,9 @@ def acquiring_geolocations(list_of_bids):
 
 
 # Active Bids Geolocation Acquisition - 3
-active_bids = reading_piee_active_bids()
-acquiring_geolocations(active_bids)
-
+#active_bids = reading_piee_active_bids()
+#updated_active_bids = acquiring_geolocations(active_bids)
+#allocate_into_google_sheets(updated_active_bids)
 
 
 
