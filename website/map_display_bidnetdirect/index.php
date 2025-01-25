@@ -108,31 +108,7 @@
         }
         
         // Markers that will later be displayed on the leaflet.js map
-        $mapMarkersScript = "
-            var markers = L.markerClusterGroup({
-                iconCreateFunction: function(cluster) {
-                    // Calculate the number of markers in the cluster
-                    var childCount = cluster.getChildCount();
-                    
-                    // Define a class based on the number of markers
-                    var c = 'marker-cluster-'; 
-                    if (childCount < 25) {
-                        c += 'small';
-                    } else if (childCount < 350) {
-                        c += 'medium';
-                    } else {
-                        c += 'large';
-                    } 
-        
-                    // Return a custom cluster icon
-                    return new L.DivIcon({ 
-                        html: '<div><span>' + childCount + '</span></div>',
-                        className: 'marker-cluster ' + c, 
-                        iconSize: [40, 40] // Size of the cluster icon
-                    });
-                }
-            });
-        ";
+        $mapMarkersScript = "";
 
         
         $sql = "SELECT * FROM bidnetdirect_bids WHERE solicitation_number != 'none'";
@@ -190,24 +166,50 @@
     
 
     <div id="map"></div>
-
+    
     <script>
         var map = L.map('map', {
             renderer: L.canvas() // Enable Canvas rendering
         }).setView([37.7749, -122.4194], 5);
-        
+    
+        // Add tile layer
         L.tileLayer('https://tile.openstreetmap.org/{z}/{x}/{y}.png', {
             maxZoom: 19,
             attribution: '&copy; <a href="http://www.openstreetmap.org/copyright">OpenStreetMap</a>'
         }).addTo(map);
-
-        
+    
+        // Create a MarkerClusterGroup with custom options
+        var markers = L.markerClusterGroup({
+            disableClusteringAtZoom: 18, // Disable clustering at zoom level 18 and closer
+            maxClusterRadius: 40, // Cluster markers within a 40-pixel radius
+            spiderfyOnMaxZoom: true, // Allow spiderfying overlapping markers
+            showCoverageOnHover: false, // Don't show cluster coverage area on hover
+            iconCreateFunction: function(cluster) {
+                // Customize cluster icon appearance
+                var childCount = cluster.getChildCount();
+    
+                var c = 'marker-cluster-';
+                if (childCount < 25) {
+                    c += 'small';
+                } else if (childCount < 350) {
+                    c += 'medium';
+                } else {
+                    c += 'large';
+                }
+    
+                return new L.DivIcon({
+                    html: '<div><span>' + childCount + '</span></div>',
+                    className: 'marker-cluster ' + c,
+                    iconSize: [40, 40]
+                });
+            }
+        });
+    
+        // Add dynamically generated markers
         <?php echo $mapMarkersScript; ?>
+    
+        // Add the MarkerClusterGroup to the map
         map.addLayer(markers);
-        
-        
-        
-        
     </script>
 
 
