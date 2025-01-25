@@ -3,6 +3,8 @@ import math
 import os
 import time
 import requests
+from google.oauth2.service_account import Credentials # type: ignore
+from googleapiclient.discovery import build  # type: ignore
 from selenium import webdriver
 from selenium.webdriver.common.by import By
 from selenium.webdriver.support.ui import Select
@@ -157,187 +159,240 @@ def next_page(driver, current_page_id):
     next_page_button.click()
     time.sleep(2)
 
-def allocate_to_csv(list_of_attributes):
-
-    file_name = 'piee_active_bids.csv'
-
-    headers = [
-        "SolicitationNumber",
-        "NoticeType",
-        "DueDate",
-        "SetAsideCode",
-        "ContactName",
-        "Description",
-        "Subject",
-        "PostingDate",
-        "ProductServiceCode",
-        "NAICS",
-        "PlaceOfPerformance",
-        "Address",
-        "ContractingOfficeDoDAAC",
-        "ContractingOfficeName",
-        "ContractingOfficeAddress",
-        "FunctionalURL"
-    ]
+def allocate_into_google_sheets(list_of_attributes):
     
-    df = pd.DataFrame([list_of_attributes], columns=headers)
+    SERVICE_ACCOUNT_FILE = "wesonder-4e2319ab4c38.json"
+    SCOPES = ['https://www.googleapis.com/auth/spreadsheets']
 
-    if not os.path.isfile(file_name):
-        df.to_csv(file_name, index=False, header=True, mode='w')
+    credentials = Credentials.from_service_account_file(SERVICE_ACCOUNT_FILE, scopes=SCOPES)
+    service = build('sheets', 'v4', credentials=credentials)
 
-    else:
-        df.to_csv(file_name, index=False, header=False, mode='a')
+    # Google Sheet ID and range
+    SPREADSHEET_ID = '1k0Ga6AGMw3uTNXXeX34PUy7J1bBXOvQ_Q8pQ0LgV_rY'
+    range_to_update = 'Sheet1!A1'
+    body = {
+        "values":list_of_attributes
+    } 
+
+    service.spreadsheets().values().update(
+        spreadsheetId=SPREADSHEET_ID,
+        range=range_to_update,
+        valueInputOption="RAW",
+        body=body
+    ).execute()
 
 
-# Outset
-piee_url = 'https://piee.eb.mil/sol/xhtml/unauth/index.xhtml'
-driver = webdriver.Chrome()
-driver.get(piee_url)
-time.sleep(2)
+# 1 - Webscraping all active bids from PIEE URL
+def webscraping_piee_website(piee_url):
+    driver = webdriver.Chrome()
+    driver.get(piee_url)
+    time.sleep(2)
 
-# Locate the Search button in the navbar
-piee_navbar = driver.find_element(By.CSS_SELECTOR,"ul.navbar-nav")
-navbar_items = piee_navbar.find_elements(By.TAG_NAME,"li")
-search_button = navbar_items[0]
-search_button.click()
-time.sleep(2)
+    # Locate the Search button in the navbar
+    piee_navbar = driver.find_element(By.CSS_SELECTOR,"ul.navbar-nav")
+    navbar_items = piee_navbar.find_elements(By.TAG_NAME,"li")
+    search_button = navbar_items[0]
+    search_button.click()
+    time.sleep(2)
 
-# First input
-naics_input = driver.find_element(By.ID, "naics")
-naics_input.send_keys("236220")
+    # First input
+    naics_input = driver.find_element(By.ID, "naics")
+    naics_input.send_keys("236220")
 
-# Second input
-dropdown = Select(driver.find_element(By.ID, "status"))
-dropdown.select_by_value("O")
-time.sleep(2)
+    # Second input
+    dropdown = Select(driver.find_element(By.ID, "status"))
+    dropdown.select_by_value("O")
+    time.sleep(2)
 
-# Search results
-search_link = driver.find_element(By.ID, "search")
-search_link.click()
-time.sleep(2)
+    # Search results
+    search_link = driver.find_element(By.ID, "search")
+    search_link.click()
+    time.sleep(2)
 
-# Locate the total bids and iterate through each
-total_bids_result = int(driver.find_element(By.TAG_NAME,'h3').text.split(' ')[2][1:])
-total_pages = math.ceil(total_bids_result/20)
-current_pages = 1
+    # Locate the total bids and iterate through each
+    total_bids_result = int(driver.find_element(By.TAG_NAME,'h3').text.split(' ')[2][1:])
+    total_pages = math.ceil(total_bids_result/20)
+    current_pages = 1
 
-# This is the list we will use for unique url instances
-all_solicitation_numbers = []
-all_solicitation_numbers.extend(extracting_solicitation_numbers(driver))
+    # This is the list we will use for unique url instances
+    all_solicitation_numbers = []
+    all_solicitation_numbers.extend(extracting_solicitation_numbers(driver))
 
-while current_pages != total_pages:
+    while current_pages != total_pages:
 
-    # Page identification
-    current_page_id = current_pages - 1
+        # Page identification
+        current_page_id = current_pages - 1
 
-    # Change to the next page
-    next_page(driver, current_page_id)
+        # Change to the next page
+        next_page(driver, current_page_id)
 
-    # Let's approach this faster by using unique URLs
-    solicitations = extracting_solicitation_numbers(driver)
-    all_solicitation_numbers.extend(solicitations)
+        # Let's approach this faster by using unique URLs
+        solicitations = extracting_solicitation_numbers(driver)
+        all_solicitation_numbers.extend(solicitations)
 
-    current_pages += 1
+        current_pages += 1
 
-# Close the driver
-driver.quit()
+    # Close the driver
+    driver.quit()
 
-# csv_file = 'piee_urls.csv'
-# df = pd.read_csv(csv_file)
-# all_solicitation_numbers = df['BidUrls']
+    return all_solicitation_numbers
 
-# The url sample is: 
-url_sample = "https://piee.eb.mil/sol/xhtml/unauth/search/oppMgmtLink.xhtml?solNo="
-for solicitation_url in all_solicitation_numbers[:]:
+
+
+# 2 - Allocating PIEE Active bids into a Google Sheets spreadsheet
+def piee_active_bids_webscraping(piee_active_bids):
+
+    url_sample = "https://piee.eb.mil/sol/xhtml/unauth/search/oppMgmtLink.xhtml?solNo="
+
+    # PIEE active bids
+    piee_bids = []
+
+    for solicitation_url in piee_active_bids[:]:
+        
+        functional_url = f"{url_sample}{solicitation_url}"
+
+        response = requests.get(functional_url)
+        soup = BeautifulSoup(response.content,'html.parser')
+
+        # Acquire all of the attributes of your choice, starting with SolicitationNumber
+        input_element = soup.find('input', {'id': 'solicitationNumber'})
+        solicitation_value = input_element.get('value')
+        print(solicitation_value)
+
+        # NoticeType
+        notice_type_element = soup.find('input', {'id': 'noticeType'}).get('value')
+        print(notice_type_element)
+
+        # DueDate
+        due_date = soup.find('input', {'id': 'datetimepicker'}).get('value')
+        print(due_date)
+
+        # SetAsideCode
+        set_aside_code = soup.find('select', {'id':'setAsideCode'}).find('option', {'selected': 'selected'}).text
+        print(set_aside_code)
+
+        # ContactName
+        contact_name = soup.find('input', {'id': 'contactName'}).get('value')
+        print(contact_name)
+
+        # Description
+        description = soup.find('textarea', {'id':'description'}).text
+        print(description)
+
+        # Subject
+        subject = soup.find('input', {'id':'subject'}).get('value')
+        print(subject)
+        
+        # PostingDate
+        posting_date = soup.find('input', {'id':'postingDate'}).get('value')
+        print(posting_date)
+
+        # ProductServiceCode
+        product_service_code = soup.find('input',{'id':'productOrServiceCode'}).get('value')
+        print(product_service_code)
+
+        # NAICS
+        naics_code = soup.find('input',{'id':'naics'}).get('value')
+        print(naics_code)
+
+        # PlaceOfPerformance
+        place_of_performance = soup.find('input',{'id':'placeOfPerformanceZipCode'}).get('value')
+        print(place_of_performance)
+
+        # Address
+        address = soup.find('textarea', {'id':'placeOfPerformance'}).text
+        print(address)
+
+        # ContractingOfficeDoDAAC
+        dodaac = soup.find('select', {'id':'contractingOfficeDodaac'}).find('option', {'selected': 'selected'}).text
+        print(dodaac)
+
+        # ContractingOfficeName
+        office_name = soup.find('input',{'id':'contractingOfficeName'}).get('value')
+        print(office_name)
+
+        # ContractingOfficeAddress 
+        office_address = soup.find('textarea', {'id':'contractingOfficeAddress'}).text
+        print(office_address)
+
+        print(f'{functional_url}\n')
+
+        collected_data = [
+            functional_url,
+            solicitation_value,
+            notice_type_element,
+            due_date,
+            set_aside_code,
+            contact_name,
+            description,
+            subject,
+            posting_date,
+            product_service_code,
+            naics_code,
+            place_of_performance,
+            address,
+            dodaac,
+            office_name,
+            office_address
+        ]
+
+        piee_bids.append(collected_data)
+
+    return piee_bids
     
-    functional_url = f"{url_sample}{solicitation_url}"
 
-    response = requests.get(functional_url)
-    soup = BeautifulSoup(response.content,'html.parser')
 
-    # Acquire all of the attributes of your choice, starting with SolicitationNumber
-    input_element = soup.find('input', {'id': 'solicitationNumber'})
-    solicitation_value = input_element.get('value')
-    print(solicitation_value)
+# 3 - Reading the Google Spreadsheet containing all bids
+def reading_piee_active_bids():
+    SERVICE_ACCOUNT_FILE = "wesonder-4e2319ab4c38.json"
+    SCOPES = ['https://www.googleapis.com/auth/spreadsheets']
 
-    # NoticeType
-    notice_type_element = soup.find('input', {'id': 'noticeType'}).get('value')
-    print(notice_type_element)
+    credentials = Credentials.from_service_account_file(SERVICE_ACCOUNT_FILE, scopes=SCOPES)
+    service = build('sheets', 'v4', credentials=credentials)
 
-    # DueDate
-    due_date = soup.find('input', {'id': 'datetimepicker'}).get('value')
-    print(due_date)
+    # Google Sheet ID and range
+    SPREADSHEET_ID = '1k0Ga6AGMw3uTNXXeX34PUy7J1bBXOvQ_Q8pQ0LgV_rY'
+    RANGE = 'Sheet1!A:P' 
 
-    # SetAsideCode
-    set_aside_code = soup.find('select', {'id':'setAsideCode'}).find('option', {'selected': 'selected'}).text
-    print(set_aside_code)
+    # Show bids
+    sheet = service.spreadsheets()
+    result = sheet.values().get(
+        spreadsheetId=SPREADSHEET_ID,
+        range=RANGE
+    ).execute()
 
-    # ContactName
-    contact_name = soup.find('input', {'id': 'contactName'}).get('value')
-    print(contact_name)
-
-    # Description
-    description = soup.find('textarea', {'id':'description'}).text
-    print(description)
-
-    # Subject
-    subject = soup.find('input', {'id':'subject'}).get('value')
-    print(subject)
+    rows = result.get('values', [])
     
-    # PostingDate
-    posting_date = soup.find('input', {'id':'postingDate'}).get('value')
-    print(posting_date)
+    return rows
 
-    # ProductServiceCode
-    product_service_code = soup.find('input',{'id':'productOrServiceCode'}).get('value')
-    print(product_service_code)
 
-    # NAICS
-    naics_code = soup.find('input',{'id':'naics'}).get('value')
-    print(naics_code)
 
-    # PlaceOfPerformance
-    place_of_performance = soup.find('input',{'id':'placeOfPerformanceZipCode'}).get('value')
-    print(place_of_performance)
+# 3 - Acquiring Geolocations
+def acquiring_geolocations(list_of_bids):
+    
+    for bid in list_of_bids:
+        print(bid)
+        
 
-    # Address
-    address = soup.find('textarea', {'id':'placeOfPerformance'}).text
-    print(address)
 
-    # ContractingOfficeDoDAAC
-    dodaac = soup.find('select', {'id':'contractingOfficeDodaac'}).find('option', {'selected': 'selected'}).text
-    print(dodaac)
 
-    # ContractingOfficeName
-    office_name = soup.find('input',{'id':'contractingOfficeName'}).get('value')
-    print(office_name)
 
-    # ContractingOfficeAddress 
-    office_address = soup.find('textarea', {'id':'contractingOfficeAddress'}).text
-    print(office_address)
+# PIEE Webscraping - 1
+#piee_url = 'https://piee.eb.mil/sol/xhtml/unauth/index.xhtml'
+#piee_active_bids_urls = webscraping_piee_website(piee_url)
+#piee_bids = piee_active_bids_webscraping(piee_active_bids_urls)
 
-    print(f'{functional_url}\n')
 
-    collected_data = [
-        solicitation_value,
-        notice_type_element,
-        due_date,
-        set_aside_code,
-        contact_name,
-        description,
-        subject,
-        posting_date,
-        product_service_code,
-        naics_code,
-        place_of_performance,
-        address,
-        dodaac,
-        office_name,
-        office_address,
-        functional_url
-    ]
+# PIEE Google Sheets Allocation - 2
+#allocate_into_google_sheets(piee_bids)
 
-    allocate_to_csv(collected_data)
+
+# Active Bids Geolocation Acquisition - 3
+active_bids = reading_piee_active_bids()
+acquiring_geolocations(active_bids)
+
+
+
 
 
 end_time = time.time()
