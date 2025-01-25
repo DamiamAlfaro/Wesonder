@@ -167,7 +167,7 @@
                         fillColor: '#3388ff', // Fill color
                         fillOpacity: 0.5 // Opacity
                     }).bindPopup(" . json_encode($string_display) . ");
-                    marker.addTo(map);
+                    markers.addLayer(marker);
                 ";
                 
             }
@@ -187,14 +187,26 @@
         var map = L.map('map', {
             renderer: L.canvas() // Enable Canvas rendering
         }).setView([37.7749, -122.4194], 5);
-        
+    
+        // Add tile layer
         L.tileLayer('https://tile.openstreetmap.org/{z}/{x}/{y}.png', {
             maxZoom: 19,
             attribution: '&copy; <a href="http://www.openstreetmap.org/copyright">OpenStreetMap</a>'
         }).addTo(map);
     
-        // Add markers directly to the map
+        // Create a MarkerClusterGroup
+        var markers = L.markerClusterGroup({
+            disableClusteringAtZoom: 40, // Disable clustering at zoom level 18 and closer
+            maxClusterRadius: 40, // Cluster markers within a 40-pixel radius
+            spiderfyOnMaxZoom: true, // Allow spiderfying overlapping markers
+            showCoverageOnHover: false // Don't show cluster coverage area on hover
+        });
+    
+        // Add dynamically generated markers
         <?php echo $mapMarkersScript; ?>
+    
+        // Add the MarkerClusterGroup to the map
+        map.addLayer(markers);
     </script>
 
 
