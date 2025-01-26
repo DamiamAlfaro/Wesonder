@@ -8,27 +8,19 @@ from selenium.webdriver.common.by import By
 from selenium.webdriver.support.ui import WebDriverWait
 from selenium.webdriver.support.ui import Select
 from selenium.webdriver.support import expected_conditions as EC
+from geopy.geocoders import Nominatim
+from google.oauth2.service_account import Credentials # type: ignore
+from googleapiclient.discovery import build  # type: ignore
 
 
 start_time = time.time()
 
-# Retry attempt limit
-MAX_RETRIES = 3
 
-
+# 1 - Removing the anti-bot mechanism
 def entering_the_site(url_site):
 
     # The first step is to remove the annoying pop-up display as soon as one enters the website...
-    options = webdriver.ChromeOptions()
-    options.add_argument('--headless')  # Run Chrome in headless mode
-    options.add_argument('--disable-gpu')  # Disable GPU acceleration (required for headless mode on Windows)
-    options.add_argument('--disable-extensions')  # Disable extensions for faster loading
-    options.add_argument('--no-sandbox')  # Security sandbox can be disabled (usually for non-production use)
-    options.add_argument('--disable-dev-shm-usage')  # Avoid shared memory issues
-    options.add_argument('--window-size=1920,1080')  # Set viewport size explicitly
-    options.add_argument('--user-agent=Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/111.0.0.0 Safari/537.36')  # Mimic a real browser user-agent
-    options.add_argument('--start-maximized')  # Start the browser maximized (simulating a normal environment)
-    driver = webdriver.Chrome(options=options)
+    driver = webdriver.Chrome()
     driver.get(url_site)
     time.sleep(2)
 
@@ -47,20 +39,12 @@ def entering_the_site(url_site):
     return driver
 
 
-def bid_attributes(url, retries=0):
 
-    options = webdriver.ChromeOptions()
-    options.add_argument('--headless')  # Run Chrome in headless mode
-    options.add_argument('--disable-gpu')  # Disable GPU acceleration (required for headless mode on Windows)
-    options.add_argument('--disable-extensions')  # Disable extensions for faster loading
-    options.add_argument('--no-sandbox')  # Security sandbox can be disabled (usually for non-production use)
-    options.add_argument('--disable-dev-shm-usage')  # Avoid shared memory issues
-    options.add_argument('--window-size=1920,1080')  # Set viewport size explicitly
-    options.add_argument('--user-agent=Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/111.0.0.0 Safari/537.36')  # Mimic a real browser user-agent
-    options.add_argument('--start-maximized')  # Start the browser maximized (simulating a normal environment)
+# 1 - Webscraping each url
+def bid_attributes(url):
     
     try:
-        driver = webdriver.Chrome(options=options)
+        driver = webdriver.Chrome()
         driver.get(url)
         
         # Remove the anti-both mechanism
@@ -123,6 +107,8 @@ def bid_attributes(url, retries=0):
         # Place of Performance
         location = driver.find_element(By.ID,"classification-pop").text
 
+        driver.quit()
+
         # Cleansing the strings
         class_attributes = [
             original_set_aside,
@@ -141,90 +127,110 @@ def bid_attributes(url, retries=0):
 
         return all_attributes
     
-    except Exception as e:
-        if retries < MAX_RETRIES:
-            print(f"Error processing {url}. Retrying... ({retries+1}/{MAX_RETRIES})")
-            return bid_attributes(url, retries + 1)  # Retry logic
-        else:
-            print(f"Failed to process {url} after {MAX_RETRIES} retries.")
-            return None  # Return None after max retries
+    except:
+        driver.quit()
+        return []
 
 
-def attributes_to_csv(list_of_attributess):
 
-    file_name = "sam_gov_bids.csv"
-    
-    df = pd.DataFrame({
-        "BidTitle":[list_of_attributess[0]],
-        "NoticeID":[list_of_attributess[1]],
-        "RelatedNotice":[list_of_attributess[2]],
-        "DepartmentTiers":[list_of_attributess[3]],
-        "DepartmentNames":[list_of_attributess[4]],
-        "OriginalSetAside":[list_of_attributess[5]],
-        "CurrentSetAside":[list_of_attributess[6]],
-        "ServiceCodes":[list_of_attributess[7]],
-        "NAICS":[list_of_attributess[8]],
-        "Location":[list_of_attributess[9]],
-        "BidUrl":[list_of_attributess[10]]
-    })
+# 1 - Allocate the faulty urls into google sheets as well
+def faulty_attributes(list_of_faulty_urls):
 
-    if not os.path.isfile(file_name):
-        df.to_csv(file_name, index=False, header=True, mode='w')
-    else:
-        df.to_csv(file_name, index=False, header=False, mode='a')
+    SERVICE_ACCOUNT_FILE = "wesonder-4e2319ab4c38.json"
+    SCOPES = ['https://www.googleapis.com/auth/spreadsheets']
+
+    credentials = Credentials.from_service_account_file(SERVICE_ACCOUNT_FILE, scopes=SCOPES)
+    service = build('sheets', 'v4', credentials=credentials)
+
+    # Google Sheet ID and range
+    SPREADSHEET_ID = '1qp4yG_QU7jjLZRYNHRfho7JdYG_pw9BpRGd4gJqExos'
+    range_to_update = 'Sheet2!A1'
+    body = {
+        "values":[list_of_faulty_urls]
+    } 
+
+    service.spreadsheets().values().update(
+        spreadsheetId=SPREADSHEET_ID,
+        range=range_to_update,
+        valueInputOption="RAW",
+        body=body
+    ).execute()
 
 
-# Outset: URL for general NAICS code 23 in California
-sam_url = 'https://sam.gov/search/?index=opp&page=1&pageSize=25&sort=-modifiedDate&sfm%5BsimpleSearch%5D%5BkeywordRadio%5D=ALL&sfm%5BsimpleSearch%5D%5BkeywordEditorTextarea%5D=&sfm%5Bstatus%5D%5Bis_active%5D=true&sfm%5Bstatus%5D%5Bis_inactive%5D=false&sfm%5BserviceClassificationWrapper%5D%5Bnaics%5D%5B0%5D%5Bkey%5D=23&sfm%5BserviceClassificationWrapper%5D%5Bnaics%5D%5B0%5D%5Bvalue%5D=23%20-%20Construction&sfm%5BplaceOfPerformance%5D%5Bstate%5D%5B0%5D%5Bkey%5D=CA&sfm%5BplaceOfPerformance%5D%5Bstate%5D%5B0%5D%5Bvalue%5D=CA%20-%20California'
+# 1 - Allocating functional attributes to google sheets
+def attributes_to_google_sheets(list_of_attributes):
 
-# Remove the anti-bot mechanism (pathetic...) and increase results displayed
-driver = entering_the_site(sam_url)
+    SERVICE_ACCOUNT_FILE = "wesonder-4e2319ab4c38.json"
+    SCOPES = ['https://www.googleapis.com/auth/spreadsheets']
 
-# Now start webscraping the links to each individual bid
-page_source = driver.page_source
-soup = BeautifulSoup(page_source, 'html.parser')
-individual_links = soup.find_all('h3',class_='margin-y-0')
-individual_links = [link.find('a').get('href') for link in individual_links]
-individual_links = [f'https://sam.gov{link}' for link in individual_links]
-driver.quit()
+    credentials = Credentials.from_service_account_file(SERVICE_ACCOUNT_FILE, scopes=SCOPES)
+    service = build('sheets', 'v4', credentials=credentials)
 
-# Retry queue to hold failed sessions
-failed_sessions = []
+    # Google Sheet ID and range
+    SPREADSHEET_ID = '1qp4yG_QU7jjLZRYNHRfho7JdYG_pw9BpRGd4gJqExos'
+    range_to_update = 'Sheet1!A1'
+    body = {
+        "values":list_of_attributes
+    } 
 
-# Once acquired, webscrap each of them
-for sam_bid in individual_links[:]:
-    attributes = bid_attributes(sam_bid)
-    if attributes:
-        print(f"Successful: {sam_bid}")
-        attributes_to_csv(attributes)
-    else:
-        print(f"Failure: {sam_bid}")
-        failed_sessions.append(sam_bid)  # Add failed session to retry queue
+    service.spreadsheets().values().update(
+        spreadsheetId=SPREADSHEET_ID,
+        range=range_to_update,
+        valueInputOption="RAW",
+        body=body
+    ).execute()
 
-# Retry the failed sessions
-retry_attempts = 0
-while failed_sessions and retry_attempts < MAX_RETRIES:
-    print(f"\nRetrying failed sessions... Attempt {retry_attempts + 1}/{MAX_RETRIES}")
-    retry_queue = failed_sessions.copy()
+
+
+# 1 - Entering Sam.gov
+def entering_sam_gov(sam_url):
+
+    # Remove the anti-bot mechanism (pathetic...) and increase results displayed
+    driver = entering_the_site(sam_url)
+
+    # Now start webscraping the links to each individual bid
+    page_source = driver.page_source
+    soup = BeautifulSoup(page_source, 'html.parser')
+    individual_links = soup.find_all('h3',class_='margin-y-0')
+    individual_links = [link.find('a').get('href') for link in individual_links]
+    individual_links = [f'https://sam.gov{link}' for link in individual_links]
+    driver.quit()
+
+    # Respective sessions
+    successful_sessions = []
     failed_sessions = []
-    for sam_bid in retry_queue:
+
+    # Once acquired, webscrap each of them
+    for index, sam_bid in enumerate(individual_links[:]):
         attributes = bid_attributes(sam_bid)
         if attributes:
-            attributes_to_csv(attributes)
+            print(f"Successful #{index}: {sam_bid}")
+            successful_sessions.append(attributes)
         else:
-            failed_sessions.append(sam_bid)  # Add back to failed sessions if still not successful
+            print(f"Failure #{index}: {sam_bid}")
+            failed_sessions.append(sam_bid)  
 
-    retry_attempts += 1
+    # Allocating into Google Sheets
+    attributes_to_google_sheets(successful_sessions)
 
-# After all retries, print out the failed URLs
-re_attempt = []
-if failed_sessions:
-    print("\nThe following URLs failed after maximum retries:")
-    for failed_url in failed_sessions:
-        print(failed_url)
-        re_attempt.append(failed_url)
+    if failed_sessions:
+        faulty_attributes(failed_sessions)
 
-df = pd.DataFrame({"FailedURLs":re_attempt}).to_csv("failed_sam_gov_bids.csv",index=False)
+
+
+
+
+# URL for SAM.gov - 1
+sam_url = 'https://sam.gov/search/?index=opp&page=1&pageSize=25&sort=-modifiedDate&sfm%5BsimpleSearch%5D%5BkeywordRadio%5D=ALL&sfm%5Bstatus%5D%5Bis_active%5D=true&sfm%5BserviceClassificationWrapper%5D%5Bnaics%5D%5B0%5D%5Bkey%5D=23622&sfm%5BserviceClassificationWrapper%5D%5Bnaics%5D%5B0%5D%5Bvalue%5D=23622%20-%20Commercial%20and%20Institutional%20Building%20Construction&sfm%5BplaceOfPerformance%5D%5Bstate%5D%5B0%5D%5Bkey%5D=CA&sfm%5BplaceOfPerformance%5D%5Bstate%5D%5B0%5D%5Bvalue%5D=CA%20-%20California'
+entering_sam_gov(sam_url)
+
+
+
+
+
+
+
+
 
 end_time = time.time()
 elapsed_seconds = end_time-start_time
