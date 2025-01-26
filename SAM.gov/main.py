@@ -1,7 +1,7 @@
 import pandas as pd
 import time
 import re
-import os
+import sys
 from bs4 import BeautifulSoup
 from selenium import webdriver
 from selenium.webdriver.common.by import By
@@ -85,6 +85,7 @@ def bid_attributes(url):
         
 
         all_attributes = [
+            url,
             bid_title,
             notice_id,
             related_notice,
@@ -106,6 +107,7 @@ def bid_attributes(url):
 
         # Place of Performance
         location = driver.find_element(By.ID,"classification-pop").text
+        location = location.split('USA')[0]
 
         driver.quit()
 
@@ -123,7 +125,8 @@ def bid_attributes(url):
         ]
 
         all_attributes.extend(class_attributes)
-        all_attributes.append(url)
+
+        all_attributes = ["none" if item == "" else item for item in all_attributes]
 
         return all_attributes
     
@@ -157,7 +160,7 @@ def faulty_attributes(list_of_faulty_urls):
     ).execute()
 
 
-# 1 - Allocating functional attributes to google sheets
+# 1, 2 - Allocating functional attributes to google sheets
 def attributes_to_google_sheets(list_of_attributes):
 
     SERVICE_ACCOUNT_FILE = "wesonder-4e2319ab4c38.json"
@@ -218,6 +221,76 @@ def entering_sam_gov(sam_url):
 
 
 
+# 2 - Reading the Google Sheets spreadsheet with active bids
+def reading_active_bids():
+
+    SERVICE_ACCOUNT_FILE = "wesonder-4e2319ab4c38.json"
+    SCOPES = ['https://www.googleapis.com/auth/spreadsheets']
+
+    credentials = Credentials.from_service_account_file(SERVICE_ACCOUNT_FILE, scopes=SCOPES)
+    service = build('sheets', 'v4', credentials=credentials)
+
+    # Google Sheet ID and range
+    SPREADSHEET_ID = '1qp4yG_QU7jjLZRYNHRfho7JdYG_pw9BpRGd4gJqExos'
+    RANGE = 'Sheet1!A:K' 
+
+    # Show bids
+    sheet = service.spreadsheets()
+    result = sheet.values().get(
+        spreadsheetId=SPREADSHEET_ID,
+        range=RANGE
+    ).execute()
+
+    rows = result.get('values', [])
+    
+    return rows
+
+
+# 2 - Geolocation Acquisition
+def obtaining_new_geolocations(address_string):
+    
+    # This is the second attempt to find an address using Nominatim. We will
+    # be using the same methodology as with attempt 1; the output of this
+    # function will either be a pair of zeros, or the geolocation
+    # coordinates for each of the addressess.
+    
+    geolocator = Nominatim(user_agent="my_geocoder")
+    location = geolocator.geocode(address_string, timeout=8)
+
+    if location:
+        lat = location.latitude
+        lon = location.longitude
+        return lat, lon
+    else:
+        lat = 0
+        lon = 0
+        return lat, lon
+    
+
+
+# 2 - Iterating through active bids
+def acquiring_geolocations(active_bids_list):
+
+    for bid in active_bids_list:
+        geolocations = obtaining_new_geolocations(bid[-1])
+        x_and_y = [
+            geolocations[0],
+            geolocations[1]
+        ]
+        print(x_and_y)
+        bid.extend(x_and_y)
+        print(len(bid))
+
+    bid_lenght = len(active_bids_list[0])
+    all_or_not = all(len(lst) == bid_lenght for lst in active_bids_list)
+
+    if all_or_not:
+        return active_bids_list
+    else:
+        print("Something wrong with geolocations\n")
+        sys.exit(1)
+
+
 
 
 # URL for SAM.gov - 1
@@ -225,6 +298,10 @@ sam_url = 'https://sam.gov/search/?index=opp&page=1&pageSize=25&sort=-modifiedDa
 entering_sam_gov(sam_url)
 
 
+# Acquiring Geolocations and allocating them - 2
+sam_gov_active_bids = reading_active_bids()
+bids_with_geolocations = acquiring_geolocations(sam_gov_active_bids)
+attributes_to_google_sheets(bids_with_geolocations)
 
 
 
