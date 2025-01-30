@@ -18,15 +18,22 @@
 
     ?>
 
-    <h1></h1>
-    <div>
-        <section id="california_video">
-            <video autoplay loop muted>
-                <source src="media/wesonder_video.mp4" type="video/mp4">
-            </video>
+    <main>
+        <h1></h1>
+        <div id="video_container">
+            <section id="california_video">
+                <video autoplay loop muted>
+                    <source src="media/wesonder_video.mp4" type="video/mp4">
+                </video>
 
-        </section>
-    <div>
+            </section>
+        <div>
+
+
+
+
+        
+    </main>
 
 
 </body>

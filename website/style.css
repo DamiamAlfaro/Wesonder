@@ -2,9 +2,22 @@ html {
     background-color: #FFFAEC;
 }
 
+body {
+    margin: 0;
+}
+
+#video_container {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    width: 100vw;
+    height: 100%;
+    overflow: hidden;
+}
+
 #california_video {
     position: relative;
-    width: 95vw;
+    width: 100vw;
     height: 50.25vw;
     max-height: 100vh;
     overflow: hidden;
