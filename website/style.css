@@ -1,3 +1,17 @@
 html {
     background-color: #FFFAEC;
 }
+
+#california_video {
+    position: relative;
+    width: 95vw;
+    height: 50.25vw;
+    max-height: 100vh;
+    overflow: hidden;
+}
+
+#california_video video {
+    width: 100%;
+    height: 100%;
+    object-fit: cover; 
+}
