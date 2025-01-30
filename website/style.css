@@ -1,5 +1,6 @@
 html {
     background-color: #FFFAEC;
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
 }
 
 body {
@@ -13,6 +14,7 @@ body {
     width: 100vw;
     height: 100%;
     overflow: hidden;
+    position: relative;
 }
 
 #california_video {
@@ -27,4 +29,16 @@ body {
     width: 100%;
     height: 100%;
     object-fit: cover; 
+}
+
+#overlay_text {
+    position: absolute;
+    top: 100px;
+    right: 20px;
+    color: white;
+    font-size: 90px;
+    font-weight: 310;
+    text-align: right;
+    padding: 10px;
+    border-radius: 5px;
 }
