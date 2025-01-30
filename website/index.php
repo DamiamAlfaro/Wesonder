@@ -19,7 +19,7 @@
     ?>
 
     <main>
-        <h1></h1>
+        
         <div id="video_container">
             <section id="california_video">
                 <video autoplay loop muted>
@@ -30,13 +30,12 @@
             <div id="overlay_text">
                 Wesonder<br>
                 <br>
-
+                
                 Mapping<br>
                 the next<br>
                 opportunity.
             </div>
         <div>
-
 
 
 

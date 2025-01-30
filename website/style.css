@@ -20,7 +20,7 @@ body {
 #california_video {
     position: relative;
     width: 100vw;
-    height: 50.25vw;
+    height: 100vw;
     max-height: 100vh;
     overflow: hidden;
 }
@@ -33,7 +33,7 @@ body {
 
 #overlay_text {
     position: absolute;
-    top: 100px;
+    top: 130px;
     right: 20px;
     color: white;
     font-size: 90px;
