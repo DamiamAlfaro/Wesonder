@@ -5,6 +5,7 @@
     <meta name="author" content="Wesonder"/>
     <meta name="description" content="WESONDER Map Display"/>
     <link rel="icon" href="pictures/" type="image/x-icon"/>
+    <link rel="icon" type="image/png" href="media/bauhaus_logo_transparent.png"/>
     <link href="style.css" rel="stylesheet" type="text/css">
 
 
@@ -22,9 +23,12 @@
         
         <div id="video_container">
             <section id="california_video">
-                <video autoplay loop muted>
-                    <source src="media/wesonder_video.mp4" type="video/mp4">
+                <video autoplay loop muted playsinline poster="media/thumbnail.jpg">
+                    <source src="media/wesonder_reduced.mp4" type="video/mp4">
                 </video>
+                <!-- <video autoplay loop muted>
+                    <source src="media/wesonder_reduced.mp4" type="video/mp4">
+                </video> -->
 
             </section>
             <div id="overlay_logo">
@@ -41,9 +45,10 @@
         <div>
 
 
-
         
     </main>
+
+    <script type="text/javascript" src="script.js"></script>
 
 
 </body>
