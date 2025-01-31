@@ -23,10 +23,13 @@
         <div id="video_container">
             <section id="california_video">
                 <video autoplay loop muted>
-                    <source src="media/wesonder_video_refined.mp4" type="video/mp4">
+                    <source src="media/wesonder_video.mp4" type="video/mp4">
                 </video>
 
             </section>
+            <div id="overlay_logo">
+                <img src="media/bauhaus_logo_transparent.png">
+            </div>
             <div id="overlay_text">
                 Wesonder<br>
                 <br>
