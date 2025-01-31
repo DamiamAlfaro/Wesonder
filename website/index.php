@@ -19,6 +19,7 @@
 
     ?>
 
+    <nav id="navbar">Navigation Bar</nav>
     <main>
         
         <div id="video_container">
