@@ -36,7 +36,7 @@ html, body {
 
 #overlay_logo {
     position: absolute;
-    top: 6.5vh; 
+    top: 3.5vh; 
     left: 3.5vw; 
     width: 9.5vw; 
     height: auto;
@@ -50,8 +50,8 @@ html, body {
 
 #overlay_text {
     position: absolute;
-    top: 14vh;
-    right: 4vw;
+    top: 15vh;
+    right: 3vw;
     color: white;
     font-size: 5.5vw;
     font-weight: 310;
@@ -64,7 +64,7 @@ html, body {
 #navbar {
     position: absolute; /* Stays in place instead of following the user */
     top: 0;
-    left: 0;
+    right: 0;
     width: 100%;
     height: 60px;
     background-color: rgba(0, 0, 0, 0.0);
@@ -84,4 +84,12 @@ html, body {
     opacity: 1; /* Fades in */
     transform: translateY(0); /* Moves into place */
     position: absolute; /* Stays at the top, does NOT follow scrolling */
+}
+
+
+#signup-link {
+    text-decoration: none;
+    color: white;
+    font-weight: 250;
+    font-size: 2.3vw;
 }

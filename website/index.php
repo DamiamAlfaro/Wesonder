@@ -14,12 +14,10 @@
 </head>
 <body>
 
-    <?php 
-    
 
-    ?>
-
-    <nav id="navbar">Navigation Bar</nav>
+    <nav id="navbar">
+        <a href="#" id="signup-link">Sign Up</a>
+    </nav>
     <main>
         
         <div id="video_container">
