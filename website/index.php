@@ -41,7 +41,19 @@
                 the next<br>
                 opportunity.
             </div>
-        <div>
+        </div>
+
+
+        <section id="new_section">
+            <div class="video-wrapper">
+                <video autoplay loop muted playsinline poster="media/thumbnail2.jpg">
+                    <source src="media/awarding_body_illustration.mp4" type="video/mp4">
+                </video>
+            </div>
+            <div class="text-wrapper">
+                <p>Explore new areas, connect with like-minded individuals, and map your future with Wesonder.</p>
+            </div>
+        </section>
 
 
         
