@@ -1,3 +1,16 @@
+/* Keyframes for Fade-In Effect */
+@keyframes fadeInEase {
+    from {
+        opacity: 0;
+        transform: translateX(20px); /* Slight upward motion */
+    }
+    to {
+        opacity: 1;
+        transform: translateX(0);
+    }
+}
+
+/* Apply Animation to html, body */
 html, body {
     background-color: #FFFAEC;
     font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
@@ -5,7 +18,12 @@ html, body {
     padding: 0;
     height: 400vh;
     overflow-x: hidden;
+
+    /* Fade-In Animation */
+    animation: fadeInEase 1.5s ease-out forwards;  /* Duration: 1.5s, easing effect */
+    opacity: 0;  /* Start invisible */
 }
+
 
 
 main {
