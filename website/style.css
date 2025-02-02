@@ -133,7 +133,19 @@ main {
     width: 100%;
     box-shadow: 0 4px 6px rgba(0, 0.0, 0, 0.0);
     border-top: 4px solid #FFFAEC;
+
+    /* New for Animation */
+    opacity: 0;                   /* Hidden initially */
+    transform: translateY(50px);  /* Slight downward offset */
+    transition: opacity 1.5s ease-out, transform 1.5s ease-out; /* Smooth transition */
 }
+
+/* When in Viewport */
+#new_section.visible {
+    opacity: 1;                   /* Fade in */
+    transform: translateY(0);     /* Slide up into place */
+}
+
 
 /* Video Styling */
 .video-wrapper {

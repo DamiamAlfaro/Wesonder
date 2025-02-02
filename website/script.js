@@ -38,3 +38,22 @@ document.addEventListener("scroll", function () {
         }
     });
 });
+
+
+document.addEventListener("DOMContentLoaded", () => {
+    const newSection = document.getElementById("new_section");
+
+    const observer = new IntersectionObserver((entries) => {
+        entries.forEach(entry => {
+            if (entry.isIntersecting) {
+                newSection.classList.add("visible"); // Trigger the animation
+                observer.unobserve(newSection);      // Stop observing after animation (optional)
+            }
+        });
+    }, {
+        threshold: 0.75 // Trigger when 20% of the section is visible
+    });
+
+    observer.observe(newSection);
+});
+
