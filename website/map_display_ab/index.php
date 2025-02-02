@@ -151,18 +151,22 @@
 
                 
                 $string_display = "
-                <strong>Name:</strong> $awarding_body_name <br>
-                <strong>Email: </strong> $email <br>
-                <strong>Address: </strong> $address <br>
-                <strong>WebPages: </strong> $webpageHTMLFormatted
+                    <div style='font-family: Arial, sans-serif; font-size: 14px; padding: 5px; line-height: 1.6;'>
+                        <h4 style='color: #F93827; margin: 0 0 5px 0;'>$awarding_body_name</h4>
+                        <p style='margin: 0;'><strong>Email:</strong> <a href='mailto:$email' style='color: #007BFF;'>$email</a></p>
+                        <p style='margin: 0;'><strong>Address:</strong> $address</p>
+                        <p style='margin: 0;'><strong>County:</strong> $county, <strong>State:</strong> $state</p>
+                        <p style='margin: 0;'><strong>WebPages:</strong> $webpageHTMLFormatted</p>
+                    </div>
                 ";
+
                 
                 
                 $mapMarkersScript .= "
                     var marker = L.circleMarker([$x_coordinates, $y_coordinates], {
-                        radius: 6, // Marker size
-                        color: '#3388ff', // Border color
-                        fillColor: '#3388ff', // Fill color
+                        radius: 7, // Marker size
+                        color: '#F93827', // Border color
+                        fillColor: '#F93827', // Fill color
                         fillOpacity: 0.5 // Opacity
                     }).bindPopup(" . json_encode($string_display) . ");
                     markers.addLayer(marker);
