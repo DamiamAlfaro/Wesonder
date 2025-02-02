@@ -51,7 +51,9 @@
                 </video>
             </div>
             <div class="text-wrapper">
-                <p>Explore new areas, connect with like-minded individuals, and map your future with Wesonder.</p>
+                <h4>Find Awarding Bodies (Owners)</h4>
+                <p>Each Awarding Body marker includes the name,
+                address, county, email address of the point of contact, and most importantly: the direct website</p>
             </div>
         </section>
 

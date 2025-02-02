@@ -130,21 +130,31 @@ main {
     box-shadow: 0 2px 8px rgba(0, 0, 0, 1);
 }
 
-/* Text Styling */
 .text-wrapper {
     flex: 1;
     max-width: 40%;
     padding: 20px;
     display: flex;
-    align-items: center;          /* Vertically center text */
-    justify-content: center;
+    flex-direction: column;   /* Stack children vertically */
+    align-items: center;      /* Center content horizontally */
+    justify-content: center;  /* Center content vertically */
     text-align: center;
 }
 
+/* Title Styling */
+.text-wrapper h4 {
+    font-size: 2.2vw;         /* Responsive font size */
+    color: #222;
+    margin-bottom: 15px;      /* Adds space below the heading */
+    font-weight: 600;         /* Makes the title bolder */
+}
+
+/* Paragraph Styling */
 .text-wrapper p {
-    font-size: 1.6vw;
-    line-height: 1.6;
-    color: #333;
+    font-size: 1.6vw;         /* Responsive font size */
+    line-height: 1.6;         /* Increases readability */
+    color: #444;
+    max-width: 90%;           /* Limits paragraph width for better readability */
 }
 
 
