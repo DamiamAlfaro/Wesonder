@@ -120,30 +120,39 @@ main {
 
 
 
-
 #new_section {
-    margin-top: 15%;
-    display: flex;                /* Enables side-by-side layout */
-    flex-wrap: wrap;              /* Ensures responsiveness on small screens */
-    background-color: #FFFAEC;
+    margin: 15% auto;               /* Center horizontally with margin at the top */
+    display: flex;                  /* Enables side-by-side layout */
+    flex-wrap: wrap;                /* Ensures responsiveness on small screens */
+    background-color: #F5F5F5;
     padding: 40px 20px;
-    align-items: center;          /* Vertically centers content */
-    justify-content: center;      /* Horizontally centers content */
-    gap: 20px;                    /* Space between video and text */
-    width: 100%;
-    box-shadow: 0 4px 6px rgba(0, 0.0, 0, 0.0);
-    border-top: 4px solid #FFFAEC;
+    align-items: center;            /* Vertically centers content */
+    justify-content: center;        /* Horizontally centers content */
+    gap: 20px;                      /* Space between video and text */
+    width: 90%;                     /* Slightly narrower for the border effect */
 
-    /* New for Animation */
-    opacity: 0;                   /* Hidden initially */
-    transform: translateY(50px);  /* Slight downward offset */
+    /* New Styles for Rounded Border */
+    box-shadow: 0 0 20px rgba(0, 0, 0, 0.4);      /* Black border acting as the margin */
+    border-radius: 20px;            /* Rounded corners */
+    overflow: hidden;               /* Ensures content stays within rounded corners */
+
+    /* Existing Animation */
+    opacity: 0;                     /* Hidden initially */
+    transform: translateY(50px);    /* Slight downward offset */
     transition: opacity 1.5s ease-out, transform 1.5s ease-out; /* Smooth transition */
 }
 
+
 /* When in Viewport */
 #new_section.visible {
-    opacity: 1;                   /* Fade in */
-    transform: translateY(0);     /* Slide up into place */
+    opacity: 1;                     /* Fade in */
+    transform: translateY(0);       /* Slide up into place */
+}
+
+#new_section:hover {
+    box-shadow: 0 12px 18px rgba(0, 0, 0, 0.3); /* Deeper shadow on hover */
+    transform: translateY(-5px);              /* Slight lift effect */
+    transition: all 0.5s ease-in-out;
 }
 
 
