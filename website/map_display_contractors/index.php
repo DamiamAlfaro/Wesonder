@@ -4,7 +4,7 @@
     <meta charset="UTF-8"/>
     <meta name="author" content="Damiam Alfaro"/>
     <meta name="description" content="WESONDER Projects"/>
-    <link rel="icon" href="" type="image/x-icon"/>
+    <link rel="icon" type="image/png" href="../media/bauhaus_logo_transparent.png"/>
     <link href="../style.css" rel="stylesheet" type="text/css">
 
     <!-- Leaflet CSS -->
@@ -36,29 +36,41 @@
         
         #licenseForm {
             position: absolute;
+            background: linear-gradient(145deg, #f3f4f6, #ffffff);
             top: 20px; /* Distance from the top */
             right: 20px; /* Distance from the right */
             background-color: rgba(255, 255, 255, 0.9); /* Semi-transparent white background */
-            padding: 10px; /* Padding for better spacing */
-            border-radius: 8px; /* Rounded corners */
-            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.3); /* Add a slight shadow */
+            padding: 20px; /* Padding for better spacing */
+            border-radius: 12px; /* Rounded corners */
+            box-shadow: 0 8px 16px rgba(0, 0, 0, 0.1); /* Add a slight shadow */
             z-index: 1000; /* Ensure it is above the map */
             height: auto; /* Fixed height */
             max-height: 650px;
             width: 240px; /* Fixed width */
             overflow-y: auto; /* Enable scrolling for vertical overflow */
             font-size: 18px;
-            font-family: Optima;
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
         }
         
         #licenseForm input[type="checkbox"] {
             transform: scale(1.2);
             margin-right: 10px; /* Add spacing between checkbox and label */
+            width: 16px;
+            height: 16px;
+            border: 2px solid #1f5572;
+            border-radius: 4px;
+            position: relative;
+            cursor: pointer;
         }
         
-        #licenseForm input[type="checkbox"] + label {
-            font-size: 18px; /* Adjust font size */
-            font-family: Optima;
+        #licenseForm input[type="checkbox"]:checked {
+            background-color: #1f5572;
+        }
+
+        
+        #licenseForm label {
+            font-size: 16px;
+            color: #333;
         }
         
     </style>
@@ -446,35 +458,54 @@
                         
                         var markers = L.markerClusterGroup({
                             iconCreateFunction: function(cluster) {
-                                // Get the count of markers in the cluster
                                 var count = cluster.getChildCount();
+                                
+                                // Gradient color based on the count
+                                var gradient = count < 10
+                                    ? 'linear-gradient(135deg, #68c4cc, #1f5572)'
+                                    : count < 50
+                                    ? 'linear-gradient(135deg, #ffa500, #cc8400)'
+                                    : 'linear-gradient(135deg, #ff5733, #b53324)';
                         
-                                // Define border and fill colors dynamically
-                                var clusterFillColor = count < 10 ? '#68c4cc' : count < 50 ? '#ffa500' : '#ff5733'; // Fill colors
-                                var clusterBorderColor = count < 10 ? '#1f5572' : count < 50 ? '#cc8400' : '#b53324'; // Border colors
-                        
-                                // Create the custom cluster icon
                                 return L.divIcon({
                                     html: `
                                         <div style="
-                                            background-color: ${clusterFillColor}; 
-                                            border: 3px solid ${clusterBorderColor}; 
+                                            background: white; 
+                                            border: 4px solid transparent; 
+                                            background-clip: padding-box; 
                                             border-radius: 50%; 
-                                            color: black; 
-                                            text-align: center; 
-                                            line-height: 35px; 
-                                            width: 35px; 
-                                            height: 35px;
-                                            font-weight: bold;
-                                            font-size: 13px;
+                                            position: relative; 
+                                            width: 40px; 
+                                            height: 40px; 
+                                            display: flex; 
+                                            justify-content: center; 
+                                            align-items: center;
+                                            font-weight: bold; 
+                                            color: #333;
                                         ">
+                                            <div style="
+                                                position: absolute; 
+                                                top: -4px; 
+                                                left: -4px; 
+                                                right: -4px; 
+                                                bottom: -4px; 
+                                                border-radius: 50%; 
+                                                background: ${gradient}; 
+                                                z-index: -1;
+                                            "></div>
                                             ${count}
-                                        </div>`,
+                                        </div>
+                                    `,
                                     className: 'cluster-icon',
-                                    iconSize: [20, 20] // Size of the cluster icon
+                                    iconSize: [40, 40]
                                 });
                             }
                         });
+
+
+
+
+
 
                         
                         contractors.forEach(contractor => {
@@ -492,13 +523,39 @@
                         
                             
                             const popupContent = `
-                                <strong>Name: </strong> ${contractor_name}<br>
-                                <strong>Business Type: </strong> ${business_type}<br>
-                                <strong>License Number:</strong> ${license_number}<br>
-                                <strong>Phone Number:</strong> ${phone_number}<br>
-                                <strong>Classifications:</strong> ${classifications}<br>
-                                <strong>Address:</strong> ${complete_address}<br>
+                                <div style="
+                                    display: flex;
+                                    border-radius: 10px;
+                                    overflow: hidden;
+                                    font-family: 'Verdana', sans-serif;
+                                    box-shadow: 0 6px 12px rgba(0, 0, 0, 0.2);
+                                ">
+                                    <div style="background: linear-gradient(135deg, #42a5f5, #1e88e5); padding: 10px; color: white;">
+                                        <h4 style="margin: 0;">${contractor_name}</h4>
+                                        <p style="margin: 4px 0;">🔖 ${license_number}</p>
+                                        <p style="margin: 4px 0;">🏷 ${classifications}</p>
+                                    </div>
+                                    <div style="padding: 10px; background: white; color: #333;">
+                                        <p>🏢 <strong>${business_type}</strong></p>
+                                        <p>📞 <a href="tel:${phone_number}" style="color: #3bb2b8;">${phone_number}</a></p>
+                                        <p>📍 ${complete_address}</p>
+                                    </div>
+                                </div>
                             `;
+
+
+
+
+
+
+
+
+
+
+
+
+
+
                            
                             var marker = L.circleMarker([x_coordinates, y_coordinates], {
                                 radius: 7, // Marker size

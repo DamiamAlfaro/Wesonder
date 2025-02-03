@@ -4,7 +4,7 @@
     <meta charset="UTF-8"/>
     <meta name="author" content="Damiam Alfaro"/>
     <meta name="description" content="WESONDER Projects"/>
-    <link rel="icon" href="" type="image/x-icon"/>
+    <link rel="icon" type="image/png" href="../media/bauhaus_logo_transparent.png"/>
     <link href="../style.css" rel="stylesheet" type="text/css">
 
     <!-- Leaflet CSS -->
