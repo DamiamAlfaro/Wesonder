@@ -67,9 +67,21 @@
                     <div class="text-wrapper">
                         <h4>Find Awarding Bodies</h4>
                         <p>Also known as "Owners". Each marker includes the name, address, email address, and most importantly: the direct website
-                        to each owner.</p>
+                        to each owner. Owners issue new work on a daily basis.</p>
                     </div>
                 </div>
+                <div class="slide">
+                    <div class="video-wrapper">
+                        <video autoplay loop muted playsinline poster="media/thumbnail3.jpg">
+                            <source src="media/active_bids_sam.mp4" type="video/mp4">
+                        </video>
+                    </div>
+                    <div class="text-wrapper">
+                        <h4>Locate Active Bids</h4>
+                        <p>Bids are a crucial source of work, here we map all Federal and Public Works active bids from the top 4 construction bidding platforms in California: SAM.gov, Planetbids, Bidnet Direct, and PIEE. </p>
+                    </div>
+                </div>
+
                 <button class="nav-button left" onclick="changeSlide(-1)">&#10094;</button>
                 <button class="nav-button right" onclick="changeSlide(1)">&#10095;</button>
             </div>

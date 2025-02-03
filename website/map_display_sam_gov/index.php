@@ -46,27 +46,6 @@
         cursor: pointer;
     }
     
-    /* Small clusters */
-    .marker-cluster-small {
-        background-color: #90ee90; /* Light green */
-        width: 40px;
-        height: 40px;
-    }
-    
-    /* Medium clusters */
-    .marker-cluster-medium {
-        background-color: #ffa500; /* Orange */
-        width: 50px;
-        height: 50px;
-    }
-    
-    /* Large clusters */
-    .marker-cluster-large {
-        background-color: #ff4500; /* Red */
-        width: 60px;
-        height: 60px;
-    }
-    
     .leaflet-popup-content {
         max-width: 300px; /* Set the maximum width for the popup */
         white-space: normal; /* Ensure text wraps within the content */
@@ -83,6 +62,52 @@
         word-wrap: break-word; /* Break long links into multiple lines */
         color: blue; /* Optional: Make links more readable */
         text-decoration: underline;
+    }
+    
+    body {
+        font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        background-color: #f0f4f8;
+        color: #34495e;
+    }
+
+    .info-card {
+        background: #ffffff;
+        border-radius: 16px;
+        box-shadow: 0 8px 16px rgba(0, 0, 0, 0.1);
+        padding: 24px;
+        max-width: 420px;
+        margin: 20px auto;
+        line-height: 1.8;
+        transition: transform 0.3s ease;
+    }
+
+    .info-card:hover {
+        transform: translateY(-5px);
+    }
+
+    .info-card strong {
+        display: block;
+        font-weight: bold;
+        font-size: 1.1em;
+        color: #2c3e50;
+        margin-bottom: 4px;
+    }
+
+    .info-card a {
+        color: #2980b9;
+        text-decoration: none;
+        font-weight: 600;
+    }
+
+    .info-card a:hover {
+        text-decoration: underline;
+    }
+
+    .info-item {
+        background-color: #ecf0f1;
+        padding: 12px 16px;
+        border-radius: 8px;
+        margin-bottom: 14px;
     }
     
     </style>
@@ -136,17 +161,19 @@
 
                 
                 $string_display = "
-                    <strong>URL:</strong> <a href='$url' target='_blank'>$url</a><br>
-                    <strong>Bid Title:</strong> $bid_title <br>
-                    <strong>Notice ID:</strong> $notice_id <br>
-                    <strong>Related Notice:</strong> $related_notice <br>
-                    <strong>Department Tiers:</strong> $department_tiers <br>
-                    <strong>Department Names:</strong> $department_names <br>
-                    <strong>Original Set Aside:</strong> $original_set_aside <br>
-                    <strong>Set Aside:</strong> $set_aside <br>
-                    <strong>Service Code:</strong> $service_code <br>
-                    <strong>NAICS Code:</strong> $naics_code <br>
-                    <strong>Location:</strong> $location <br>
+                    <div class='info-card'>
+                        <div class='info-item'><strong>🌐 Bid URL:</strong> <a href='$url' target='_blank'>$url</a></div>
+                        <div class='info-item'><strong>📋 Bid Title:</strong> $bid_title</div>
+                        <div class='info-item'><strong>🆔 Solicitation ID:</strong> $notice_id</div>
+                        <div class='info-item'><strong>🔗 Related Notice:</strong> $related_notice</div>
+                        <div class='info-item'><strong>🏢 Department Tiers:</strong> $department_tiers</div>
+                        <div class='info-item'><strong>📊 Department Names:</strong> $department_names</div>
+                        <div class='info-item'><strong>🗂️ Original Set Aside:</strong> $original_set_aside</div>
+                        <div class='info-item'><strong>🎯 Set Aside:</strong> $set_aside</div>
+                        <div class='info-item'><strong>🔧 Service Code:</strong> $service_code</div>
+                        <div class='info-item'><strong>📇 NAICS Code:</strong> $naics_code</div>
+                        <div class='info-item'><strong>📍 Location:</strong> $location</div>
+                    </div>
                 ";
                 
                 $mapMarkersScript .= "
