@@ -45,17 +45,36 @@
 
 
         <section id="new_section">
-            <div class="video-wrapper">
-                <video autoplay loop muted playsinline poster="media/thumbnail2.jpg">
-                    <source src="media/awarding_body_illustration.mp4" type="video/mp4">
-                </video>
-            </div>
-            <div class="text-wrapper">
-                <h4>Find Awarding Bodies (Owners)</h4>
-                <p>Each Awarding Body marker includes the name,
-                address, county, email address of the point of contact, and most importantly: the direct website</p>
+            <div class="content-slider">
+                <div class="slide active">
+                    <div class="video-wrapper">
+                        <video autoplay loop muted playsinline poster="media/thumbnail2.jpg">
+                            <source src="media/contractors_illustration2.mp4" type="video/mp4">
+                        </video>
+                    </div>
+                    <div class="text-wrapper">
+                        <h4>Explore new Contractors</h4>
+                        <p>Discover new potential partners, suppliers, and subcontractors, 
+                        leading to new initiatives tailored to your interests and goals.</p>
+                    </div>
+                </div>
+                <div class="slide">
+                    <div class="video-wrapper">
+                        <video autoplay loop muted playsinline poster="media/thumbnail3.jpg">
+                            <source src="media/awarding_body_illustration.mp4" type="video/mp4">
+                        </video>
+                    </div>
+                    <div class="text-wrapper">
+                        <h4>Find Awarding Bodies</h4>
+                        <p>Also known as "Owners". Each marker includes the name, address, email address, and most importantly: the direct website
+                        to each owner.</p>
+                    </div>
+                </div>
+                <button class="nav-button left" onclick="changeSlide(-1)">&#10094;</button>
+                <button class="nav-button right" onclick="changeSlide(1)">&#10095;</button>
             </div>
         </section>
+
 
 
         

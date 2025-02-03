@@ -543,19 +543,6 @@
                                 </div>
                             `;
 
-
-
-
-
-
-
-
-
-
-
-
-
-
                            
                             var marker = L.circleMarker([x_coordinates, y_coordinates], {
                                 radius: 7, // Marker size

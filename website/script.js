@@ -57,3 +57,31 @@ document.addEventListener("DOMContentLoaded", () => {
     observer.observe(newSection);
 });
 
+
+document.addEventListener('DOMContentLoaded', () => {
+    let currentSlide = 0;
+    const slides = document.querySelectorAll('.slide');
+    const navButtons = document.querySelectorAll('.nav-button');
+
+    slides[currentSlide].classList.add('active');
+
+    function changeSlide(direction) {
+        const previousSlide = slides[currentSlide];
+        const slideOutClass = direction === 1 ? 'slide-out-left' : 'slide-out-right';
+
+        previousSlide.classList.add(slideOutClass);
+
+        setTimeout(() => {
+            previousSlide.classList.remove('active', slideOutClass);
+            currentSlide = (currentSlide + direction + slides.length) % slides.length;
+            slides[currentSlide].classList.add('active');
+        }, 800);
+    }
+
+    navButtons.forEach(button => {
+        button.addEventListener('click', (e) => {
+            const direction = e.target.classList.contains('left') ? -1 : 1;
+            changeSlide(direction);
+        });
+    });
+});

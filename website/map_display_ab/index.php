@@ -34,38 +34,29 @@
         position: relative;
     }
     
-    /* Base cluster style */
-    .marker-cluster {
-        background-clip: padding-box;
-        border-radius: 50%; /* Makes the cluster circular */
+    /* Brutalistic Minimalistic Modern Design */
+    .marker-cluster.block-shadow {
+        background: white;
         color: black;
+        border: 2px solid black;
+        box-shadow: 8px 8px 0px black;
+        font-family: "Impact", sans-serif;
+        font-size: 16px;
+        text-transform: uppercase;
         text-align: center;
-        font-size: 14px;
-        font-weight: bold;
-        line-height: 40px; /* Align text vertically */
-        cursor: pointer;
     }
     
-    /* Small clusters */
-    .marker-cluster-small {
-        background-color: #90ee90; /* Light green */
-        width: 40px;
-        height: 40px;
+    .marker-cluster:hover {
+        transform: scale(1.1);
     }
     
-    /* Medium clusters */
-    .marker-cluster-medium {
-        background-color: #ffa500; /* Orange */
+    .marker-cluster-small, .marker-cluster-medium, .marker-cluster-large {
         width: 50px;
         height: 50px;
     }
     
-    /* Large clusters */
-    .marker-cluster-large {
-        background-color: #ff4500; /* Red */
-        width: 60px;
-        height: 60px;
-    }
+
+
     
     </style>
 
@@ -149,16 +140,44 @@
                 }
                 $webpageHTMLFormatted = implode(', ', $webpageHTML);
 
-                
+                                
                 $string_display = "
-                    <div style='font-family: Arial, sans-serif; font-size: 14px; padding: 5px; line-height: 1.6;'>
-                        <h4 style='color: #F93827; margin: 0 0 5px 0;'>$awarding_body_name</h4>
-                        <p style='margin: 0;'><strong>Email:</strong> <a href='mailto:$email' style='color: #007BFF;'>$email</a></p>
-                        <p style='margin: 0;'><strong>Address:</strong> $address</p>
-                        <p style='margin: 0;'><strong>County:</strong> $county, <strong>State:</strong> $state</p>
-                        <p style='margin: 0;'><strong>WebPages:</strong> $webpageHTMLFormatted</p>
+                    <div style='font-family: Poppins, sans-serif; font-size: 14px; font-weight: 500; padding: 20px; background: linear-gradient(135deg, rgba(173, 216, 230, 0.9), rgba(135, 206, 250, 0.9)); backdrop-filter: blur(10px); border: 1px solid rgba(255, 255, 255, 0.3); border-radius: 12px; color: #222; box-shadow: 0 8px 24px rgba(0,0,0,0.1);'>
+                        <h4 style='margin: 0 0 12px 0; font-weight: 800;'>
+                            🏆 <span style='background: linear-gradient(90deg, #007acc, #005f99); color: #fff; padding: 4px 8px; border-radius: 6px; font-weight: 800;'>$awarding_body_name</span>
+                        </h4>
+                        <p style='margin: 5px 0; font-weight: 600;'>
+                            <strong style='background: linear-gradient(90deg, #2196f3, #64b5f6); padding: 4px 6px; border-radius: 6px; color: white; font-weight: 700;'>📩 Email:</strong> 
+                            <a href='mailto:$email' style='color: #007acc; text-decoration: none; font-weight: 600;'>$email</a>
+                        </p>
+                        <p style='margin: 5px 0; font-weight: 600;'>
+                            <strong style='background: linear-gradient(90deg, #00bcd4, #4dd0e1); color: white; padding: 4px 6px; border-radius: 6px; font-weight: 700;'>🗺️ Address:</strong> 
+                            $address
+                        </p>
+                        <p style='margin: 5px 0; font-weight: 600;'>
+                            <strong style='background: linear-gradient(90deg, #3f51b5, #7986cb); color: white; padding: 4px 6px; border-radius: 6px; font-weight: 700;'>🏙️ Location:</strong> 
+                            $county, $state
+                        </p>
+                        <p style='margin: 5px 0; font-weight: 600;'>
+                            <strong style='background: linear-gradient(90deg, #1e88e5, #42a5f5); color: white; padding: 4px 6px; border-radius: 6px; font-weight: 700;'>🌐 Web:</strong> 
+                            $webpageHTMLFormatted
+                        </p>
                     </div>
                 ";
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
                 
                 
