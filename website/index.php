@@ -14,6 +14,7 @@
 </head>
 <body>
 
+    <img src="media/bauhaus_logo_circle_black.png" id="background-logo" alt="Background Logo">
 
     <nav id="navbar">
         <a href="#" id="signup-link">Sign Up</a>
@@ -22,12 +23,9 @@
         
         <div id="video_container">
             <section id="california_video">
-                <video autoplay loop muted playsinline poster="media/thumbnail.jpg">
+                <video autoplay loop muted playsinline>
                     <source src="media/wesonder_reduced.mp4" type="video/mp4">
                 </video>
-                <!-- <video autoplay loop muted>
-                    <source src="media/wesonder_reduced.mp4" type="video/mp4">
-                </video> -->
 
             </section>
             <div id="overlay_logo">
@@ -48,7 +46,7 @@
             <div class="content-slider">
                 <div class="slide active">
                     <div class="video-wrapper">
-                        <video autoplay loop muted playsinline poster="media/thumbnail2.jpg">
+                        <video autoplay loop muted playsinline>
                             <source src="media/contractors_illustration2.mp4" type="video/mp4">
                         </video>
                     </div>
@@ -60,7 +58,7 @@
                 </div>
                 <div class="slide">
                     <div class="video-wrapper">
-                        <video autoplay loop muted playsinline poster="media/thumbnail3.jpg">
+                        <video autoplay loop muted playsinline>
                             <source src="media/awarding_body_illustration.mp4" type="video/mp4">
                         </video>
                     </div>
@@ -72,7 +70,7 @@
                 </div>
                 <div class="slide">
                     <div class="video-wrapper">
-                        <video autoplay loop muted playsinline poster="media/thumbnail3.jpg">
+                        <video autoplay loop muted playsinline>
                             <source src="media/active_bids_sam.mp4" type="video/mp4">
                         </video>
                     </div>

@@ -39,6 +39,17 @@ document.addEventListener("scroll", function () {
     });
 });
 
+document.addEventListener("scroll", () => {
+    const logo = document.getElementById("background-logo");
+    const scrollY = window.scrollY;
+
+    // Adjust the scroll speed factor (lower = smoother, subtle movement)
+    const speedFactor = 0.1;  // Adjust this for more or less movement
+
+    // Apply a smooth parallax effect
+    logo.style.transform = `translate(-50%, ${scrollY * speedFactor}px)`;
+});
+
 
 document.addEventListener("DOMContentLoaded", () => {
     const newSection = document.getElementById("new_section");
@@ -51,7 +62,7 @@ document.addEventListener("DOMContentLoaded", () => {
             }
         });
     }, {
-        threshold: 0.75 // Trigger when 20% of the section is visible
+        threshold: 0.65 // Trigger when xx% is visible
     });
 
     observer.observe(newSection);
