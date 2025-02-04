@@ -62,10 +62,14 @@ document.addEventListener('DOMContentLoaded', () => {
     let currentSlide = 0;
     const slides = document.querySelectorAll('.slide');
     const navButtons = document.querySelectorAll('.nav-button');
+    let isAnimating = false; // Lock variable to prevent rapid clicks
 
     slides[currentSlide].classList.add('active');
 
     function changeSlide(direction) {
+        if (isAnimating) return; // Exit if animation is in progress
+        isAnimating = true;      // Lock animation
+
         const previousSlide = slides[currentSlide];
         const slideOutClass = direction === 1 ? 'slide-out-left' : 'slide-out-right';
 
@@ -75,7 +79,9 @@ document.addEventListener('DOMContentLoaded', () => {
             previousSlide.classList.remove('active', slideOutClass);
             currentSlide = (currentSlide + direction + slides.length) % slides.length;
             slides[currentSlide].classList.add('active');
-        }, 800);
+
+            isAnimating = false; // Unlock after animation completes
+        }, 800); // Match this to your CSS transition duration (0.8s)
     }
 
     navButtons.forEach(button => {
