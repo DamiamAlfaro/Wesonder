@@ -97,7 +97,7 @@ def data_expropriation(url):
 	driver.get(url)
 
 	# Wait for its position
-	WebDriverWait(driver, 10).until(
+	WebDriverWait(driver, 6).until(
 		EC.presence_of_element_located((By.TAG_NAME,"table"))
 	)
 
@@ -129,8 +129,8 @@ def data_expropriation(url):
 
 
 # [1] Sources
-planetbids_sites_csv = "https://storage.googleapis.com/wesonder_databases/Planetbids/absolute_planetbids_sites.csv"
-df = pd.read_csv(planetbids_sites_csv)
+# planetbids_sites_csv = "https://storage.googleapis.com/wesonder_databases/Planetbids/absolute_planetbids_sites.csv"
+# df = pd.read_csv(planetbids_sites_csv)
 
 
 # [2] Sources
@@ -141,41 +141,40 @@ df_testing = pd.read_csv(data_delivery_location_pb_urls)
 # Data delivery location
 data_delivery_location_pb_data = "/Users/damiamalfaro/Downloads/pb_prospective_bidders_attributes.csv"
 
+# Faulty data
+faulty_attributes_data = "/Users/damiamalfaro/Downloads/faulty_attributes_attempts.csv"
 
 '''
 [1]: Acquire Indidiual href values for all bids for all PB sites.
 '''
-for index, row in df.iloc[:].iterrows():
+# for index, row in df.iloc[:].iterrows(): #243, 194 malfunction
 
-	if index % 5 == 0:
-		time.sleep(30)
+# 	if index % 5 == 0:
+# 		time.sleep(30)
 
-	prospective_bidders_url, awarding_body, single_pb_url = acquiring_bid_links(row["WebLink"])
-	awarding_body_list = []
-	awarding_body_list.extend([awarding_body] * len(prospective_bidders_url))
-	pb_links = []
-	pb_links.extend([single_pb_url] * len(prospective_bidders_url))
+# 	prospective_bidders_url, awarding_body, single_pb_url = acquiring_bid_links(row["WebLink"])
+# 	awarding_body_list = []
+# 	awarding_body_list.extend([awarding_body] * len(prospective_bidders_url))
+# 	pb_links = []
+# 	pb_links.extend([single_pb_url] * len(prospective_bidders_url))
 
-	resulting_df = pd.DataFrame({
-		'AwardingBody':awarding_body_list,
-		'ProspectiveBiddersURL':prospective_bidders_url,
-		'RespectivePBURL':pb_links
-		})
+# 	resulting_df = pd.DataFrame({
+# 		'AwardingBody':awarding_body_list,
+# 		'ProspectiveBiddersURL':prospective_bidders_url,
+# 		'RespectivePBURL':pb_links
+# 		})
 
-	resulting_df.to_csv(data_delivery_location_pb_urls, mode="a",index=False)
+# 	resulting_df.to_csv(data_delivery_location_pb_urls, mode="a",index=False, header=False)
 
-	total_percentage = round(((index / len(df)) * 100), 2)
-	print(f"Bid Site {index} Completed - {total_percentage}%\n")
+# 	total_percentage = round(((index / len(df)) * 100), 2)
+# 	print(f"Bid Site {index} Completed - {total_percentage}%\n")
 
 
 
 '''
-# [2]: Acquire the respective data from each Prospective Bidder
+[2]: Acquire the respective data from each Prospective Bidder
 '''
-for index, row in df_testing.iloc[:].iterrows():
-
-	if index % 5 == 0:
-		time.sleep(30)
+for index, row in df_testing.iloc[6653:].iterrows():
 
 	try:
 		pb_attributes = data_expropriation(row["ProspectiveBiddersURL"])
@@ -186,8 +185,17 @@ for index, row in df_testing.iloc[:].iterrows():
 
 
 	except Exception as exe:
-		print(exe)
-		sys.exit(1)
+
+		error_data = pd.DataFrame([{
+			"Index": index,
+			"FaultyURL": row["ProspectiveBiddersURL"],
+			"Eror": str(exe)
+			}])
+
+		error_data.to_csv(faulty_attributes_data, mode="a", index=False, header=False)
+
+	total_percentage = round(((index / len(df_testing)) * 100), 2)
+	print(f"Bid Site {index} Completed - {total_percentage}%\n")
 
 
 
