@@ -60,7 +60,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link rel="icon" type="image/png" href="../media/bauhaus_logo_transparent.png"/>
+    <link rel="icon" type="image/png" href="../../media/bauhaus_logo_transparent.png"/>
     <title>Contractors List</title>
     <style>
         body {
@@ -164,7 +164,7 @@
 </head>
 <body>
     <div class="header">
-        <img src="../media/bauhaus_logo_circle_black.png" alt="Logo">
+        <img src="../../media/bauhaus_logo_circle_black.png" alt="Logo">
         <h1>Contractors</h1>
     </div>
 
