@@ -162,11 +162,28 @@
         <table>
             <tr>
                 <?php
+                // Mapping of emojis to each column
+                $emojis = [
+                    'bid_url' => '🔗',
+                    'awarding_body' => '🏢',
+                    'posted_date' => '📅',
+                    'bid_title' => '📄',
+                    'solicitation_number' => '🔢',
+                    'bid_due_date' => '⏰',
+                    'bid_due_time' => '🕒',
+                    'bid_status' => '📊',
+                    'submission_method' => '📤',
+                    'county' => '🌍',
+                    'naics_codes' => '💼'
+                ];
+                
                 foreach ($valid_columns as $column) {
                     $new_order = ($sort_column === $column && $sort_order === 'ASC') ? 'desc' : 'asc';
-                    echo "<th onclick=\"sortTable('$column', '$new_order')\">" . strtoupper(str_replace('_', ' ', $column)) . "</th>";
+                    $emoji = isset($emojis[$column]) ? $emojis[$column] : '';
+                    echo "<th onclick=\"sortTable('$column', '$new_order')\">$emoji " . strtoupper(str_replace('_', ' ', $column)) . "</th>";
                 }
                 ?>
+
             </tr>
             <tr>
                 <?php
