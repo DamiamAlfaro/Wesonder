@@ -60,6 +60,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="icon" type="image/png" href="../media/bauhaus_logo_transparent.png"/>
     <title>Contractors List</title>
     <style>
         body {
@@ -68,10 +69,21 @@
             background-color: #f9fafb;
             color: #333;
         }
+        .header {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+            margin-bottom: 1%;
+        }
+        .header img {
+            height: 4rem;
+            width: auto;
+        }
         h1 {
-            text-align: center;
             font-size: 2rem;
-            margin-bottom: 20px;
+            margin: 0;
+            cursor: default;
         }
         table {
             width: 100%;
@@ -91,6 +103,10 @@
             text-transform: uppercase;
             position: sticky;
             top: 0;
+            cursor: grab;
+        }
+        tr {
+            cursor: crosshair;
         }
         th.sort-asc::after {
             content: " \25B2";
@@ -147,19 +163,43 @@
     </style>
 </head>
 <body>
-    <h1>Contractors Tabulation</h1>
+    <div class="header">
+        <img src="../media/bauhaus_logo_circle_black.png" alt="Logo">
+        <h1>Contractors</h1>
+    </div>
 
     <form method="GET" id="searchForm">
         <table>
             <tr>
                 <?php
+                // Define emojis for each column
+                $column_emojis = [
+                    'license_number' => '🔢',
+                    'business_type' => '🏢',
+                    'contractor_name' => '👷',
+                    'street_address' => '🏠',
+                    'city' => '🏙️',
+                    'state' => '🗺️',
+                    'zip_code' => '📬',
+                    'county' => '🌍',
+                    'phone_number' => '📞',
+                    'classifications' => '📋',
+                    'complete_address' => '📫'
+                ];
+            
+                // Render the table headers with emojis
                 foreach ($valid_columns as $column) {
                     $new_order = ($sort_column === $column && $sort_order === 'ASC') ? 'desc' : 'asc';
                     $sort_class = ($sort_column === $column) ? 'sort-' . strtolower($sort_order) : '';
-                    echo "<th class='$sort_class' onclick=\"sortTable('$column', '$new_order')\">" . strtoupper(str_replace('_', ' ', $column)) . "</th>";
+                    $emoji = isset($column_emojis[$column]) ? $column_emojis[$column] . ' ' : ''; // Add emoji if exists
+            
+                    echo "<th class='$sort_class' onclick=\"sortTable('$column', '$new_order')\">" 
+                        . $emoji . strtoupper(str_replace('_', ' ', $column)) 
+                        . "</th>";
                 }
                 ?>
             </tr>
+
             <tr>
                 <?php
                 foreach ($valid_columns as $column) {
