@@ -34,6 +34,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="icon" type="image/png" href="../media/bauhaus_logo_transparent.png"/>
     <title>Contractors List</title>
     <style>
         body {
@@ -65,20 +66,26 @@
             margin: 20px 0;
             text-align: center;
         }
-        .pagination a {
-            display: inline-block;
-            padding: 8px 16px;
-            margin: 0 5px;
-            border: 1px solid #4CAF50;
-            background-color: #4CAF50;
-            color: white;
-            text-decoration: none;
+        .pagination input[type="number"] {
+            width: 80px;
+            padding: 6px;
+            margin: 0 10px;
+            border: 1px solid #ccc;
             border-radius: 4px;
         }
-        .pagination a:hover {
+        .pagination button {
+            padding: 8px 16px;
+            margin: 0 5px;
+            border: none;
+            background-color: #4CAF50;
+            color: white;
+            cursor: pointer;
+            border-radius: 4px;
+        }
+        .pagination button:hover {
             background-color: #45a049;
         }
-        .pagination a.disabled {
+        .pagination button:disabled {
             background-color: #ccc;
             cursor: not-allowed;
         }
@@ -101,8 +108,6 @@
             <th>Expiration Date</th>
             <th>Classifications</th>
             <th>Complete Address</th>
-            <th>X Coordinate</th>
-            <th>Y Coordinate</th>
         </tr>
 
         <?php
@@ -122,8 +127,6 @@
                 echo "<td>" . htmlspecialchars($row['expiration_date']) . "</td>";
                 echo "<td>" . htmlspecialchars($row['classifications']) . "</td>";
                 echo "<td>" . htmlspecialchars($row['complete_address']) . "</td>";
-                echo "<td>" . htmlspecialchars($row['x_coordinate']) . "</td>";
-                echo "<td>" . htmlspecialchars($row['y_coordinate']) . "</td>";
                 echo "</tr>";
             }
         } else {
@@ -134,25 +137,39 @@
         ?>
     </table>
 
-    <!-- Pagination Controls -->
+    <!-- Pagination Controls with Input -->
     <div class="pagination">
-        <?php if ($page > 1): ?>
-            <a href="?page=<?php echo $page - 1; ?>">Previous</a>
-        <?php else: ?>
-            <a class="disabled">Previous</a>
-        <?php endif; ?>
+        <button onclick="navigatePage(<?php echo $page - 1; ?>)" <?php if ($page <= 1) echo 'disabled'; ?>>Previous</button>
 
-        <?php for ($i = 1; $i <= $total_pages; $i++): ?>
-            <a href="?page=<?php echo $i; ?>" <?php if ($i == $page) echo 'style="background-color: #45a049;"'; ?>>
-                <?php echo $i; ?>
-            </a>
-        <?php endfor; ?>
+        <label for="pageInput">Page:</label>
+        <input type="number" id="pageInput" min="1" max="<?php echo $total_pages; ?>" value="<?php echo $page; ?>">
+        <button onclick="goToPage()">Go</button>
 
-        <?php if ($page < $total_pages): ?>
-            <a href="?page=<?php echo $page + 1; ?>">Next</a>
-        <?php else: ?>
-            <a class="disabled">Next</a>
-        <?php endif; ?>
+        <button onclick="navigatePage(<?php echo $page + 1; ?>)" <?php if ($page >= $total_pages) echo 'disabled'; ?>>Next</button>
     </div>
+
+    <script>
+        function navigatePage(page) {
+            if (page >= 1 && page <= <?php echo $total_pages; ?>) {
+                window.location.href = "?page=" + page;
+            }
+        }
+
+        function goToPage() {
+            const page = parseInt(document.getElementById('pageInput').value);
+            if (page >= 1 && page <= <?php echo $total_pages; ?>) {
+                navigatePage(page);
+            } else {
+                alert("Please enter a number between 1 and <?php echo $total_pages; ?>.");
+            }
+        }
+
+        // Trigger "Go" on Enter key press
+        document.getElementById('pageInput').addEventListener('keydown', function(event) {
+            if (event.key === 'Enter') {
+                goToPage();
+            }
+        });
+    </script>
 </body>
 </html>
