@@ -21,8 +21,7 @@
     // Valid columns for sorting and searching
     $valid_columns = [
         'license_number', 'business_type', 'contractor_name', 'street_address',
-        'city', 'state', 'zip_code', 'county', 'phone_number',
-        'issue_date', 'expiration_date', 'classifications',
+        'city', 'state', 'zip_code', 'county', 'phone_number', 'classifications',
         'complete_address'
     ];
 
@@ -64,68 +63,86 @@
     <title>Contractors List</title>
     <style>
         body {
-            font-family: Arial, sans-serif;
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
             margin: 20px;
-            background-color: #f4f4f4;
+            background-color: #f9fafb;
+            color: #333;
+        }
+        h1 {
+            text-align: center;
+            font-size: 2rem;
+            margin-bottom: 20px;
         }
         table {
-            border-collapse: collapse;
             width: 100%;
+            border-collapse: collapse;
             background-color: white;
+            border-radius: 8px;
+            overflow: hidden;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
         }
         th, td {
-            border: 1px solid #ddd;
-            padding: 8px;
-            text-align: left;
-        }
-        th {
-            background-color: #4CAF50;
-            color: white;
-            cursor: pointer;
-        }
-        th.sort-asc::after {
-            content: " ▲";
-        }
-        th.sort-desc::after {
-            content: " ▼";
-        }
-        tr:nth-child(even) {
-            background-color: #f9f9f9;
-        }
-        tr:hover {
-            background-color: #f1f1f1;
-        }
-        .pagination {
-            margin: 20px 0;
+            padding: 12px 15px;
             text-align: center;
         }
-        .pagination input[type="number"] {
-            width: 80px;
-            padding: 6px;
-            margin: 0 10px;
-            border: 1px solid #ccc;
+        th {
+            background-color: #3674B5;
+            color: white;
+            text-transform: uppercase;
+            position: sticky;
+            top: 0;
+        }
+        th.sort-asc::after {
+            content: " \25B2";
+        }
+        th.sort-desc::after {
+            content: " \25BC";
+        }
+        tr:nth-child(even) {
+            background-color: #f3f4f6;
+        }
+        tr:hover {
+            background-color: #e5e7eb;
+        }
+        input[type="text"] {
+            width: 100%;
+            padding: 8px;
+            border: 1px solid #d1d5db;
             border-radius: 4px;
+            outline: none;
+            transition: border-color 0.3s;
+        }
+        input[type="text"]:focus {
+            border-color: #2563eb;
+        }
+        .pagination {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            gap: 10px;
+            margin: 20px 0;
         }
         .pagination button {
-            padding: 8px 16px;
-            margin: 0 5px;
-            border: none;
-            background-color: #4CAF50;
+            padding: 10px 20px;
+            background-color: #2563eb;
             color: white;
-            cursor: pointer;
+            border: none;
             border-radius: 4px;
+            cursor: pointer;
+            transition: background-color 0.3s;
         }
         .pagination button:hover {
-            background-color: #45a049;
+            background-color: #1d4ed8;
         }
         .pagination button:disabled {
-            background-color: #ccc;
+            background-color: #9ca3af;
             cursor: not-allowed;
         }
-        .search-row input[type="text"] {
-            width: 100%;
-            padding: 5px;
-            box-sizing: border-box;
+        .pagination input[type="number"] {
+            width: 60px;
+            padding: 8px;
+            border: 1px solid #d1d5db;
+            border-radius: 4px;
         }
     </style>
 </head>
@@ -139,13 +156,11 @@
                 foreach ($valid_columns as $column) {
                     $new_order = ($sort_column === $column && $sort_order === 'ASC') ? 'desc' : 'asc';
                     $sort_class = ($sort_column === $column) ? 'sort-' . strtolower($sort_order) : '';
-                    echo "<th class='$sort_class' onclick=\"sortTable('$column', '$new_order')\">" . ucfirst(str_replace('_', ' ', $column)) . "</th>";
+                    echo "<th class='$sort_class' onclick=\"sortTable('$column', '$new_order')\">" . strtoupper(str_replace('_', ' ', $column)) . "</th>";
                 }
                 ?>
             </tr>
-
-            <!-- Search Inputs Under Headers -->
-            <tr class="search-row">
+            <tr>
                 <?php
                 foreach ($valid_columns as $column) {
                     $value = isset($search_params[$column]) ? htmlspecialchars($search_params[$column]) : '';
@@ -153,7 +168,6 @@
                 }
                 ?>
             </tr>
-
             <?php
             if ($result->num_rows > 0) {
                 while ($row = $result->fetch_assoc()) {
@@ -166,21 +180,17 @@
             } else {
                 echo "<tr><td colspan='13'>No contractors found with those parameters.</td></tr>";
             }
-
             $conn->close();
             ?>
         </table>
-        <button type="submit" style="margin-top: 10px; background-color: #4CAF50; color: white; padding: 8px 16px; border: none; border-radius: 4px; cursor: pointer;">Apply Filters</button>
+        <button type="submit" style="margin-top: 10px; background-color: #2563eb; color: white; padding: 10px 20px; border: none; border-radius: 4px; cursor: pointer;">Apply Filters</button>
     </form>
 
-    <!-- Pagination Controls -->
     <div class="pagination">
         <button onclick="navigatePage(<?php echo $page - 1; ?>)" <?php if ($page <= 1) echo 'disabled'; ?>>Previous</button>
-
-        <label for="pageInput">Page:</label>
-        <input type="number" id="pageInput" min="1" max="<?php echo $total_pages; ?>" value="<?php echo $page; ?>">
+        <label>Page:</label>
+        <input type="number" min="1" max="<?php echo $total_pages; ?>" value="<?php echo $page; ?>" id="pageInput">
         <button onclick="goToPage()">Go</button>
-
         <button onclick="navigatePage(<?php echo $page + 1; ?>)" <?php if ($page >= $total_pages) echo 'disabled'; ?>>Next</button>
     </div>
 
@@ -196,7 +206,7 @@
             if (page >= 1 && page <= <?php echo $total_pages; ?>) {
                 navigatePage(page);
             } else {
-                alert("Please enter a number between 1 and <?php echo $total_pages; ?>.");
+                alert("Please enter a valid page number.");
             }
         }
 
@@ -204,18 +214,12 @@
             const params = new URLSearchParams(window.location.search);
             params.set('sort', column);
             params.set('order', order);
-            params.set('page', 1); // Reset to the first page when sorting
+            params.set('page', 1);
             document.querySelectorAll('.search-row input').forEach(input => {
                 if (input.value) params.set(input.name, input.value);
             });
             window.location.search = params.toString();
         }
-
-        document.getElementById('pageInput').addEventListener('keydown', function(event) {
-            if (event.key === 'Enter') {
-                goToPage();
-            }
-        });
     </script>
 </body>
 </html>
