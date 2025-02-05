@@ -98,7 +98,7 @@
             text-align: center;
         }
         th {
-            background-color: #89A8B2;
+            background-color: #729762;
             color: white;
             text-transform: uppercase;
             position: sticky;

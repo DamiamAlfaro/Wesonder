@@ -79,6 +79,30 @@
                         <p>Bids are a crucial source of work, here we map all Federal and Public Works active bids from the top 4 construction bidding platforms in California: SAM.gov, Planetbids, Bidnet Direct, and PIEE. </p>
                     </div>
                 </div>
+                <div class="slide">
+                    <div class="video-wrapper">
+                        <video autoplay loop muted playsinline>
+                            <source src="media/contractors_tabulation.mp4" type="video/mp4">
+                        </video>
+                    </div>
+                    <div class="text-wrapper">
+                        <h4>Tabulate Contractors</h4>
+                        <p>You can also search for Contractors using specific parameters, such as County, License Number, License Type, 
+                        Name, Address, among others.</p>
+                    </div>
+                </div>
+                <div class="slide">
+                    <div class="video-wrapper">
+                        <video autoplay loop muted playsinline>
+                            <source src="media/planetbids_tabulation.mp4" type="video/mp4">
+                        </video>
+                    </div>
+                    <div class="text-wrapper">
+                        <h4>Classify Active Bids </h4>
+                        <p>Active Bids are available via tabulation as well, which can be classified by County, Awarding Body, Date, 
+                        NAICS Code, among others. </p>
+                    </div>
+                </div>
 
                 <button class="nav-button left" onclick="changeSlide(-1)">&#10094;</button>
                 <button class="nav-button right" onclick="changeSlide(1)">&#10095;</button>
