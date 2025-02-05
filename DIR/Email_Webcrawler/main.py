@@ -85,7 +85,7 @@ def dir_emails_extraction(url):
 # Allocate respectively to csv
 def allocation_into_csv(list_of_lists):
     
-    file_name = "dir_email_collection.csv"
+    file_name = "dir_email_collection4.csv"
     file_exists = os.path.isfile(file_name)
 
     # Open the file in append mode ('a'), create if it doesn't exist
@@ -107,14 +107,20 @@ def allocation_into_csv(list_of_lists):
 
 
 # Outset
-for i in range(2, 5532): # 5532 as of 02/03/2025
+# for i in range(0, 5532): # 5532 as of 02/03/2025
 
-    dir_url = f"https://services.dir.ca.gov/gsp?id=dir_contractors&table=x_cdoi2_csm_portal_customer_account_lookup&view=public&sysparm_fixed_query=type%3D2&filter=type%3D2&spa=1&p={i}&o=crafts&d=asc"
-    emails = dir_emails_extraction(dir_url)
-    allocation_into_csv(emails)
+#     dir_url = f"https://services.dir.ca.gov/gsp?id=dir_contractors&table=x_cdoi2_csm_portal_customer_account_lookup&view=public&sysparm_fixed_query=type%3D2&filter=type%3D2&spa=1&p={i}&o=crafts&d=asc"
+#     emails = dir_emails_extraction(dir_url)
+#     allocation_into_csv(emails)
+#     print(i)
     
-
-
+# After the events...
+new_csv = "dir_emails_refined.csv"
+df = pd.read_csv(new_csv, encoding='ISO-8859-1')
+print(len(df))
+df_refined = df[df["Email"] != 'none']
+print(len(df_refined))
+df_refined.to_csv('dir_emails_refined_2.csv',header=False,index=False)
 
 
 
