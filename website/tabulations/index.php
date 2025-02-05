@@ -18,7 +18,7 @@
     $page = max($page, 1);
     $offset = ($page - 1) * $limit;
 
-    // Sorting logic (excluding x_coordinate and y_coordinate)
+    // Valid columns for sorting and searching
     $valid_columns = [
         'license_number', 'business_type', 'contractor_name', 'street_address',
         'city', 'state', 'zip_code', 'county', 'phone_number',
@@ -29,14 +29,28 @@
     $sort_column = isset($_GET['sort']) && in_array($_GET['sort'], $valid_columns) ? $_GET['sort'] : 'license_number';
     $sort_order = isset($_GET['order']) && $_GET['order'] === 'desc' ? 'DESC' : 'ASC';
 
-    // Total number of rows with state = 'CA'
-    $total_result = $conn->query("SELECT COUNT(*) AS total FROM cslb_contractors WHERE state = 'CA'");
+    // Building the WHERE clause for search filters
+    $where_clauses = ["state = 'CA'"];
+    $search_params = [];
+
+    foreach ($valid_columns as $column) {
+        if (!empty($_GET[$column])) {
+            $search_value = strtolower($conn->real_escape_string($_GET[$column]));
+            $where_clauses[] = "LOWER($column) LIKE '%$search_value%'";
+            $search_params[$column] = $_GET[$column];
+        }
+    }
+
+    $where_sql = implode(" AND ", $where_clauses);
+
+    // Total number of rows with filters
+    $total_result = $conn->query("SELECT COUNT(*) AS total FROM cslb_contractors WHERE $where_sql");
     $total_rows = $total_result->fetch_assoc()['total'];
     $total_pages = ceil($total_rows / $limit);
 
     // SQL query with WHERE, ORDER BY, LIMIT, and OFFSET
     $sql = "SELECT * FROM cslb_contractors 
-            WHERE state = 'CA' 
+            WHERE $where_sql 
             ORDER BY $sort_column $sort_order 
             LIMIT $limit OFFSET $offset";
     $result = $conn->query($sql);
@@ -47,8 +61,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link rel="icon" type="image/png" href="../media/bauhaus_logo_transparent.png"/>
-    <title>Contractors Tabulation</title>
+    <title>Contractors List</title>
     <style>
         body {
             font-family: Arial, sans-serif;
@@ -109,38 +122,56 @@
             background-color: #ccc;
             cursor: not-allowed;
         }
+        .search-row input[type="text"] {
+            width: 100%;
+            padding: 5px;
+            box-sizing: border-box;
+        }
     </style>
 </head>
 <body>
-    <h1>CSLB Contractors List</h1>
-    <table>
-        <tr>
-            <?php
-            // Generate sortable table headers (excluding x_coordinate and y_coordinate)
-            foreach ($valid_columns as $column) {
-                $new_order = ($sort_column === $column && $sort_order === 'ASC') ? 'desc' : 'asc';
-                $sort_class = ($sort_column === $column) ? 'sort-' . strtolower($sort_order) : '';
-                echo "<th class='$sort_class' onclick=\"sortTable('$column', '$new_order')\">" . ucfirst(str_replace('_', ' ', $column)) . "</th>";
-            }
-            ?>
-        </tr>
+    <h1>Contractors Tabulation</h1>
 
-        <?php
-        if ($result->num_rows > 0) {
-            while ($row = $result->fetch_assoc()) {
-                echo "<tr>";
+    <form method="GET" id="searchForm">
+        <table>
+            <tr>
+                <?php
                 foreach ($valid_columns as $column) {
-                    echo "<td>" . htmlspecialchars($row[$column]) . "</td>";
+                    $new_order = ($sort_column === $column && $sort_order === 'ASC') ? 'desc' : 'asc';
+                    $sort_class = ($sort_column === $column) ? 'sort-' . strtolower($sort_order) : '';
+                    echo "<th class='$sort_class' onclick=\"sortTable('$column', '$new_order')\">" . ucfirst(str_replace('_', ' ', $column)) . "</th>";
                 }
-                echo "</tr>";
-            }
-        } else {
-            echo "<tr><td colspan='13'>No contractors found in California.</td></tr>";
-        }
+                ?>
+            </tr>
 
-        $conn->close();
-        ?>
-    </table>
+            <!-- Search Inputs Under Headers -->
+            <tr class="search-row">
+                <?php
+                foreach ($valid_columns as $column) {
+                    $value = isset($search_params[$column]) ? htmlspecialchars($search_params[$column]) : '';
+                    echo "<td><input type='text' name='$column' value='$value' placeholder='Search...'></td>";
+                }
+                ?>
+            </tr>
+
+            <?php
+            if ($result->num_rows > 0) {
+                while ($row = $result->fetch_assoc()) {
+                    echo "<tr>";
+                    foreach ($valid_columns as $column) {
+                        echo "<td>" . htmlspecialchars($row[$column]) . "</td>";
+                    }
+                    echo "</tr>";
+                }
+            } else {
+                echo "<tr><td colspan='13'>No contractors found with those parameters.</td></tr>";
+            }
+
+            $conn->close();
+            ?>
+        </table>
+        <button type="submit" style="margin-top: 10px; background-color: #4CAF50; color: white; padding: 8px 16px; border: none; border-radius: 4px; cursor: pointer;">Apply Filters</button>
+    </form>
 
     <!-- Pagination Controls -->
     <div class="pagination">
@@ -174,6 +205,9 @@
             params.set('sort', column);
             params.set('order', order);
             params.set('page', 1); // Reset to the first page when sorting
+            document.querySelectorAll('.search-row input').forEach(input => {
+                if (input.value) params.set(input.name, input.value);
+            });
             window.location.search = params.toString();
         }
 
