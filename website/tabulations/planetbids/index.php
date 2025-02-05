@@ -20,11 +20,12 @@
 
     // Valid columns for sorting and searching
     $valid_columns = [
-        'weblink', 'county', 'bid_url', 'bid_ab', 'bid_posted_date', 'bid_title', 
-        'bid_invitation_id', 'bid_due_date', 'bid_status', 'bid_submission_method'
+        'bid_url', 'awarding_body', 'posted_date', 'bid_title', 'solicitation_number',
+        'bid_due_date', 'bid_due_time', 'bid_status', 'submission_method', 'county',
+        'naics_codes'
     ];
 
-    $sort_column = isset($_GET['sort']) && in_array($_GET['sort'], $valid_columns) ? $_GET['sort'] : 'bid_invitation_id';
+    $sort_column = isset($_GET['sort']) && in_array($_GET['sort'], $valid_columns) ? $_GET['sort'] : 'solicitation_number';
     $sort_order = isset($_GET['order']) && $_GET['order'] === 'desc' ? 'DESC' : 'ASC';
 
     // Building the WHERE clause for search filters
@@ -42,12 +43,12 @@
     $where_sql = $where_clauses ? implode(" AND ", $where_clauses) : "1";
 
     // Total number of rows with filters
-    $total_result = $conn->query("SELECT COUNT(*) AS total FROM planetbids WHERE $where_sql");
+    $total_result = $conn->query("SELECT COUNT(*) AS total FROM planetbids_active_bids WHERE $where_sql");
     $total_rows = $total_result->fetch_assoc()['total'];
     $total_pages = ceil($total_rows / $limit);
 
     // SQL query with WHERE, ORDER BY, LIMIT, and OFFSET
-    $sql = "SELECT * FROM planetbids 
+    $sql = "SELECT * FROM planetbids_active_bids 
             WHERE $where_sql 
             ORDER BY $sort_column $sort_order 
             LIMIT $limit OFFSET $offset";
@@ -59,16 +60,30 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>PlanetBids List</title>
+    <link rel="icon" type="image/png" href="../../media/bauhaus_logo_transparent.png"/>
+    <title>Bid Listings</title>
     <style>
         body {
-            font-family: Arial, sans-serif;
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
             margin: 20px;
             background-color: #f9fafb;
             color: #333;
         }
+        .header {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+            margin-bottom: 1%;
+        }
+        .header img {
+            height: 4rem;
+            width: auto;
+        }
         h1 {
-            text-align: center;
+            font-size: 2rem;
+            margin: 0;
+            cursor: default;
         }
         table {
             width: 100%;
@@ -83,12 +98,15 @@
             padding: 12px 15px;
             text-align: center;
             word-wrap: break-word;
+            max-height: 60px;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            cursor: pointer;
         }
         th {
             background-color: #3674B5;
             color: white;
             text-transform: uppercase;
-            cursor: pointer;
         }
         tr:nth-child(even) {
             background-color: #f3f4f6;
@@ -97,10 +115,11 @@
             background-color: #e5e7eb;
         }
         input[type="text"] {
-            width: 100%;
+            width: calc(100% - 16px);
             padding: 8px;
             border: 1px solid #d1d5db;
             border-radius: 4px;
+            box-sizing: border-box;
         }
         .pagination {
             display: flex;
@@ -108,7 +127,7 @@
             gap: 10px;
             margin: 20px 0;
         }
-        .pagination button {
+        .pagination button, button[type="submit"] {
             padding: 10px 20px;
             background-color: #2563eb;
             color: white;
@@ -120,10 +139,24 @@
             background-color: #9ca3af;
             cursor: not-allowed;
         }
+        .pagination input[type="number"] {
+            width: 80px;
+            padding: 8px;
+            border: 1px solid #d1d5db;
+            border-radius: 4px;
+            text-align: center;
+        }
+        td.expanded {
+            max-height: none !important;
+            white-space: normal;
+        }
     </style>
 </head>
 <body>
-    <h1>PlanetBids</h1>
+    <div class="header">
+        <img src="../../media/bauhaus_logo_circle_black.png" alt="Logo">
+        <h1>Planetbids Active Bids</h1>
+    </div>
 
     <form method="GET">
         <table>
@@ -148,12 +181,19 @@
                 while ($row = $result->fetch_assoc()) {
                     echo "<tr>";
                     foreach ($valid_columns as $column) {
-                        echo "<td>" . htmlspecialchars($row[$column]) . "</td>";
+                        $content = htmlspecialchars($row[$column]);
+                        if ($column === 'bid_url') {
+                            echo "<td><a href='$content' target='_blank'>Bid Link</a></td>";
+                        } elseif (strlen($content) > 50) {
+                            echo "<td onclick=\"this.classList.toggle('expanded')\">" . substr($content, 0, 50) . "..." . "</td>";
+                        } else {
+                            echo "<td>$content</td>";
+                        }
                     }
                     echo "</tr>";
                 }
             } else {
-                echo "<tr><td colspan='10'>No records found.</td></tr>";
+                echo "<tr><td colspan='11'>No records found.</td></tr>";
             }
             $conn->close();
             ?>
