@@ -13,7 +13,7 @@
     }
 
     // Pagination settings
-    $limit = 40;
+    $limit = 20;
     $page = isset($_GET['page']) ? (int)$_GET['page'] : 1;
     $page = max($page, 1);
     $offset = ($page - 1) * $limit;
