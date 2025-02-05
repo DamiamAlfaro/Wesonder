@@ -8,24 +8,37 @@
     // Connect to the database
     $conn = new mysqli($host, $username, $password, $dbname);
 
-    // Check the connection
     if ($conn->connect_error) {
         die("Connection failed: " . $conn->connect_error);
     }
 
-    // Pagination logic
-    $limit = 40; // Rows per page
+    // Pagination settings
+    $limit = 40;
     $page = isset($_GET['page']) ? (int)$_GET['page'] : 1;
-    $page = max($page, 1); // Ensure page is at least 1
+    $page = max($page, 1);
     $offset = ($page - 1) * $limit;
 
-    // Get total number of rows
-    $total_result = $conn->query("SELECT COUNT(*) AS total FROM cslb_contractors");
+    // Sorting logic (excluding x_coordinate and y_coordinate)
+    $valid_columns = [
+        'license_number', 'business_type', 'contractor_name', 'street_address',
+        'city', 'state', 'zip_code', 'county', 'phone_number',
+        'issue_date', 'expiration_date', 'classifications',
+        'complete_address'
+    ];
+
+    $sort_column = isset($_GET['sort']) && in_array($_GET['sort'], $valid_columns) ? $_GET['sort'] : 'license_number';
+    $sort_order = isset($_GET['order']) && $_GET['order'] === 'desc' ? 'DESC' : 'ASC';
+
+    // Total number of rows with state = 'CA'
+    $total_result = $conn->query("SELECT COUNT(*) AS total FROM cslb_contractors WHERE state = 'CA'");
     $total_rows = $total_result->fetch_assoc()['total'];
     $total_pages = ceil($total_rows / $limit);
 
-    // SQL query with LIMIT and OFFSET
-    $sql = "SELECT * FROM cslb_contractors LIMIT $limit OFFSET $offset";
+    // SQL query with WHERE, ORDER BY, LIMIT, and OFFSET
+    $sql = "SELECT * FROM cslb_contractors 
+            WHERE state = 'CA' 
+            ORDER BY $sort_column $sort_order 
+            LIMIT $limit OFFSET $offset";
     $result = $conn->query($sql);
 ?>
 
@@ -35,7 +48,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="icon" type="image/png" href="../media/bauhaus_logo_transparent.png"/>
-    <title>Contractors List</title>
+    <title>Contractors Tabulation</title>
     <style>
         body {
             font-family: Arial, sans-serif;
@@ -55,6 +68,13 @@
         th {
             background-color: #4CAF50;
             color: white;
+            cursor: pointer;
+        }
+        th.sort-asc::after {
+            content: " ▲";
+        }
+        th.sort-desc::after {
+            content: " ▼";
         }
         tr:nth-child(even) {
             background-color: #f9f9f9;
@@ -95,49 +115,34 @@
     <h1>CSLB Contractors List</h1>
     <table>
         <tr>
-            <th>License Number</th>
-            <th>Business Type</th>
-            <th>Contractor Name</th>
-            <th>Street Address</th>
-            <th>City</th>
-            <th>State</th>
-            <th>Zip Code</th>
-            <th>County</th>
-            <th>Phone Number</th>
-            <th>Issue Date</th>
-            <th>Expiration Date</th>
-            <th>Classifications</th>
-            <th>Complete Address</th>
+            <?php
+            // Generate sortable table headers (excluding x_coordinate and y_coordinate)
+            foreach ($valid_columns as $column) {
+                $new_order = ($sort_column === $column && $sort_order === 'ASC') ? 'desc' : 'asc';
+                $sort_class = ($sort_column === $column) ? 'sort-' . strtolower($sort_order) : '';
+                echo "<th class='$sort_class' onclick=\"sortTable('$column', '$new_order')\">" . ucfirst(str_replace('_', ' ', $column)) . "</th>";
+            }
+            ?>
         </tr>
 
         <?php
         if ($result->num_rows > 0) {
             while ($row = $result->fetch_assoc()) {
                 echo "<tr>";
-                echo "<td>" . htmlspecialchars($row['license_number']) . "</td>";
-                echo "<td>" . htmlspecialchars($row['business_type']) . "</td>";
-                echo "<td>" . htmlspecialchars($row['contractor_name']) . "</td>";
-                echo "<td>" . htmlspecialchars($row['street_address']) . "</td>";
-                echo "<td>" . htmlspecialchars($row['city']) . "</td>";
-                echo "<td>" . htmlspecialchars($row['state']) . "</td>";
-                echo "<td>" . htmlspecialchars($row['zip_code']) . "</td>";
-                echo "<td>" . htmlspecialchars($row['county']) . "</td>";
-                echo "<td>" . htmlspecialchars($row['phone_number']) . "</td>";
-                echo "<td>" . htmlspecialchars($row['issue_date']) . "</td>";
-                echo "<td>" . htmlspecialchars($row['expiration_date']) . "</td>";
-                echo "<td>" . htmlspecialchars($row['classifications']) . "</td>";
-                echo "<td>" . htmlspecialchars($row['complete_address']) . "</td>";
+                foreach ($valid_columns as $column) {
+                    echo "<td>" . htmlspecialchars($row[$column]) . "</td>";
+                }
                 echo "</tr>";
             }
         } else {
-            echo "<tr><td colspan='15'>No contractors found.</td></tr>";
+            echo "<tr><td colspan='13'>No contractors found in California.</td></tr>";
         }
 
         $conn->close();
         ?>
     </table>
 
-    <!-- Pagination Controls with Input -->
+    <!-- Pagination Controls -->
     <div class="pagination">
         <button onclick="navigatePage(<?php echo $page - 1; ?>)" <?php if ($page <= 1) echo 'disabled'; ?>>Previous</button>
 
@@ -150,9 +155,9 @@
 
     <script>
         function navigatePage(page) {
-            if (page >= 1 && page <= <?php echo $total_pages; ?>) {
-                window.location.href = "?page=" + page;
-            }
+            const params = new URLSearchParams(window.location.search);
+            params.set('page', page);
+            window.location.search = params.toString();
         }
 
         function goToPage() {
@@ -164,7 +169,14 @@
             }
         }
 
-        // Trigger "Go" on Enter key press
+        function sortTable(column, order) {
+            const params = new URLSearchParams(window.location.search);
+            params.set('sort', column);
+            params.set('order', order);
+            params.set('page', 1); // Reset to the first page when sorting
+            window.location.search = params.toString();
+        }
+
         document.getElementById('pageInput').addEventListener('keydown', function(event) {
             if (event.key === 'Enter') {
                 goToPage();
