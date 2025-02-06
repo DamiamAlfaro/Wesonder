@@ -102,3 +102,23 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     });
 });
+
+
+document.addEventListener("DOMContentLoaded", () => {
+    const newSection = document.getElementById("new_section");
+    const wesonderFunctionality = document.getElementById("wesonder_functionality");
+
+    const observer = new IntersectionObserver((entries) => {
+        entries.forEach(entry => {
+            if (entry.isIntersecting) {
+                entry.target.classList.add("visible"); // Trigger the animation
+                observer.unobserve(entry.target);      // Stop observing after animation (optional)
+            }
+        });
+    }, {
+        threshold: 0.65 // Trigger when 65% is visible
+    });
+
+    observer.observe(newSection);
+    observer.observe(wesonderFunctionality); // Observe the new section
+});

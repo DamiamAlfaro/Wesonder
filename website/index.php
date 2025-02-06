@@ -109,6 +109,19 @@
             </div>
         </section>
 
+        <div id="wesonder_functionality">
+            
+            <h1>How does Wesonder Work?</h1>
+
+            <section id="independent_section">
+                <div class="independent-content">
+                    <h2>Discover New Insights</h2>
+                    <p>Gain a deeper understanding of your data with real-time analysis and visualization tools.</p>
+                </div>
+            </section>
+        </div>
+
+
 
 
         
