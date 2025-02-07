@@ -475,3 +475,81 @@ main {
 }
 
 
+
+
+
+/*FOOTER */
+
+
+/* Footer Styling */
+#wesonder-footer {
+    background-color: #D7D3BF;    /* Dark background for contrast */
+    color: #F8FAFC;               /* Light text */
+    padding: 40px 20px;
+    text-align: center;
+    margin-top: 50px;
+}
+
+
+
+.footer-content {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: space-between;
+    align-items: center;
+    max-width: 1200px;
+    margin: 0 auto;
+    gap: 20px;
+}
+
+/* Footer Logo */
+.footer-logo img {
+    width: 120px;
+    height: auto;
+    border-radius: 8px;
+}
+
+/* Footer Links */
+.footer-links {
+    display: flex;
+    gap: 20px;
+}
+
+.footer-links a {
+    color: #F8FAFC;
+    text-decoration: none;
+    font-size: 1.1em;
+    transition: color 0.3s ease;
+}
+
+.footer-links a:hover {
+    color: #00BFFF;  /* Highlight link on hover */
+}
+
+/* Footer Info */
+.footer-info p {
+    margin: 5px 0;
+    font-size: 0.9em;
+}
+
+.footer-info a {
+    color: #F8FAFC;
+    text-decoration: none;
+}
+
+.footer-info a:hover {
+    color: #00BFFF;
+}
+
+/* Responsive Footer */
+@media (max-width: 768px) {
+    .footer-content {
+        flex-direction: column;
+        text-align: center;
+    }
+    
+    .footer-links {
+        flex-direction: column;
+        gap: 10px;
+    }
+}

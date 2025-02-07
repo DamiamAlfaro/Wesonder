@@ -127,17 +127,17 @@
                         <a href="https://www.cslb.ca.gov/" target="_blank"><img src="media/cslb_logo.png"></a>
                         <a href="https://www.ca.gov/" target="_blank"><img src="media/ca_gov_logo.png"></a>
                     </div>
-                    <h2>Wesonder thereby serves as the hub for state-of-the-art technologies that aim to support all people participating
+                    <h2>Wesonder thereby serves as the hub for state-of-the-art technologies aiming to support all people participating
                     in the construction industry. </h2>
                 </div>
             </section>
         </div>
 
         <div id="wesonder-last-section">
-            <h1>From Construction Estimators to Project Managers, </h1>
-            <h1>From Foremen to Chief Executives, </h1>
-            <h1>From Government Officials to Architectural Designers, </h1> 
-            <h1>Wesonder serves equally for everyone.</h1>
+            <h1>From Construction Estimators 👨🏿‍💼 to Project Managers 🧑🏽‍💼, </h1>
+            <h1>From Foremen 👷 to Chief Executives 👩🏻‍💼, </h1>
+            <h1>From Government Officials 👨🏼‍💼 to Architectural Designers 🧑🏻‍🎨, </h1> 
+            <h1>Wesonder serves equally for everyone 🌎. </h1>
 
             <!-- New Section Split into Two Halves -->
             <section id="last-section">
@@ -155,13 +155,28 @@
                 </div>
             </section>
         </div>
-
-
-
-
-
         
     </main>
+
+
+    <footer id="wesonder-footer">
+        <div class="footer-content">
+            <div class="footer-logo">
+                <img src="media/bauhaus_logo_transparent.png" alt="Wesonder Logo">
+            </div>
+            <div class="footer-links">
+                <a href="#">Home</a>
+                <a href="#">About Us</a>
+                <a href="#">Contact</a>
+                <a href="#">Privacy Policy</a>
+            </div>
+            <div class="footer-info">
+                <p>&copy; 2024 Wesonder. All Rights Reserved.</p>
+                <p>Email: <a href="mailto:support@wesonder.com">support@wesonder.com</a></p>
+            </div>
+        </div>
+    </footer>
+
 
     <script type="text/javascript" src="script.js"></script>
 

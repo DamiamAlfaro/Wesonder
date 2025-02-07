@@ -165,14 +165,17 @@ function typeHeadings(headings) {
     }
 
     function typeText(element, text, charIndex) {
-        if (charIndex < text.length) {
-            element.textContent += text.charAt(charIndex);
+        const characters = Array.from(text);  // Properly splits text into full characters, including emojis
+
+        if (charIndex < characters.length) {
+            element.textContent += characters[charIndex];
             setTimeout(() => typeText(element, text, charIndex + 1), 35);  // Typing speed
         } else {
             element.classList.remove("typing");    // Remove cursor after typing
             setTimeout(typeHeading, 400);          // Delay before typing the next heading
         }
     }
+
 
     typeHeading();  // Start typing the first heading
 }
