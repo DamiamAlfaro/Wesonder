@@ -124,3 +124,56 @@ document.addEventListener("DOMContentLoaded", () => {
     observer.observe(wesonderFunctionality);
     observer.observe(wesonderLastSection);  // Add this line to observe the last section
 });
+
+
+document.addEventListener("DOMContentLoaded", () => {
+    const wesonderLastSection = document.getElementById("wesonder-last-section");
+    const headings = wesonderLastSection.querySelectorAll("h1");
+
+    // Hide all headings initially
+    headings.forEach(heading => {
+        heading.dataset.text = heading.textContent;  // Save the original text in a data attribute
+        heading.textContent = "";                   // Clear the text initially
+    });
+
+    const observer = new IntersectionObserver((entries) => {
+        entries.forEach(entry => {
+            if (entry.isIntersecting) {
+                typeHeadings(headings);             // Start typing effect
+                observer.unobserve(wesonderLastSection);  // Stop observing after the first trigger
+            }
+        });
+    }, {
+        threshold: 0.70  // Trigger when 60% of the section is visible
+    });
+
+    observer.observe(wesonderLastSection);
+});
+
+// Typing effect function
+function typeHeadings(headings) {
+    let index = 0;
+
+    function typeHeading() {
+        if (index < headings.length) {
+            const heading = headings[index];
+            const text = heading.dataset.text;     // Retrieve the saved original text
+            heading.classList.add("typing");       // Add typing cursor
+            typeText(heading, text, 0);            // Start typing each heading
+            index++;
+        }
+    }
+
+    function typeText(element, text, charIndex) {
+        if (charIndex < text.length) {
+            element.textContent += text.charAt(charIndex);
+            setTimeout(() => typeText(element, text, charIndex + 1), 35);  // Typing speed
+        } else {
+            element.classList.remove("typing");    // Remove cursor after typing
+            setTimeout(typeHeading, 400);          // Delay before typing the next heading
+        }
+    }
+
+    typeHeading();  // Start typing the first heading
+}
+
