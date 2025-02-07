@@ -197,6 +197,7 @@ main {
     color: #222;
     margin-bottom: 15px;      /* Adds space below the heading */
     font-weight: 600;         /* Makes the title bolder */
+    cursor: default;
 }
 
 /* Paragraph Styling */
@@ -205,6 +206,7 @@ main {
     line-height: 1.6;         /* Increases readability */
     color: #444;
     max-width: 90%;           /* Limits paragraph width for better readability */
+    cursor: default;
 }
 
 
@@ -285,6 +287,7 @@ main {
     font-weight: 700;
     letter-spacing: 1px;
     animation: fadeInDown 1s ease-out;
+    cursor: default;
 }
 
 /* Independent Section with Background */
@@ -306,6 +309,7 @@ main {
 
 #independent-section-images {
     margin-left: 35px;
+    margin-bottom: 5%;
 }
 
 /* Content Styling */
@@ -315,6 +319,8 @@ main {
     margin-bottom: 35px;
     margin-left: 35px;
     font-weight: 600;
+    cursor: default;
+    line-height: 1.5;
 }
 
 .independent-content p {
@@ -332,6 +338,13 @@ main {
     margin: 10px;          /* Space between images */
     border-radius: 10px;   /* Optional: Adds subtle rounded corners */
     box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1); /* Optional: Adds a slight shadow for aesthetics */
+    transition: transform 0.5s ease, box-shadow 0.5s ease;
+    padding: 10px;
+}
+
+.independent-content img:hover {
+    transform: translateY(-8px);
+    box-shadow: 0 8px 25px rgba(0, 0, 0, 0.3);
 }
 
 
@@ -346,3 +359,113 @@ main {
         transform: translateY(0);
     }
 }
+
+
+
+
+
+
+
+
+/*LAST SECTION*/
+
+/* Initial hidden state */
+#wesonder-last-section {
+    padding: 20px;
+    text-align: left;
+    margin: 185px auto;
+    width: 90%;
+    opacity: 0;  /* Make it hidden initially */
+    transform: translateY(50px);  /* Slide from below */
+    transition: opacity 1.5s ease-out, transform 1.5s ease-out; /* Smooth transition */
+}
+
+/* When visible (after scrolling 60%) */
+#wesonder-last-section.visible {
+    opacity: 1;  /* Fade in */
+    transform: translateY(0);  /* Slide into place */
+}
+
+
+#wesonder-last-section h1 {
+    font-size: 3em;
+    color: #1a202c;
+    margin-bottom: 40px;
+    font-weight: 700;
+    letter-spacing: 1px;
+    animation: fadeInDown 1s ease-out;
+    cursor: default;
+}
+
+/* Container for Last Section Split */
+#last-section {
+    display: flex;               /* Enables side-by-side layout */
+    flex-wrap: wrap;             /* Allows wrapping on smaller screens */
+    align-items: center;         /* Vertical alignment */
+    justify-content: space-between;
+    gap: 20px;                   /* Space between text and image */
+    margin-top: 40px;            /* Space from the text above */
+    background-color: #F8FAFC;   /* Light background */
+    padding: 20px;
+    border-radius: 15px;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+}
+
+/* Left Side (Text) */
+.last-section-text {
+    flex: 1;                     /* Takes up equal space with image */
+    max-width: 50%;              /* Limit width to half */
+    padding: 20px;
+    text-align: left;
+}
+
+.last-section-text h2 {
+    font-size: 2.5em;
+    color: #2d3748;
+    margin-bottom: 15px;
+}
+
+.last-section-text p {
+    font-size: 1.5em;
+    line-height: 1.6;
+    color: #4a5568;
+    margin-bottom: 15px;
+}
+
+/* Right Side (Image) */
+.last-section-image {
+    flex: 1;                     /* Takes up equal space with text */
+    max-width: 50%;
+    display: flex;
+    justify-content: center;     /* Center the image horizontally */
+    align-items: center;         /* Center the image vertically */
+}
+
+.last-section-image img {
+    width: 100%;
+    height: auto;
+    border-radius: 10px;         /* Rounded corners */
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);  /* Subtle shadow for depth */
+}
+
+/* Responsive Behavior for Smaller Screens */
+@media (max-width: 768px) {
+    #last-section {
+        flex-direction: column;  /* Stack vertically on small screens */
+    }
+
+    .last-section-text, .last-section-image {
+        max-width: 100%;         /* Full width for both on small screens */
+    }
+}
+
+
+
+
+
+
+
+
+
+
+

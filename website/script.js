@@ -107,6 +107,7 @@ document.addEventListener('DOMContentLoaded', () => {
 document.addEventListener("DOMContentLoaded", () => {
     const newSection = document.getElementById("new_section");
     const wesonderFunctionality = document.getElementById("wesonder_functionality");
+    const wesonderLastSection = document.getElementById("wesonder-last-section");  // Add this line
 
     const observer = new IntersectionObserver((entries) => {
         entries.forEach(entry => {
@@ -116,9 +117,10 @@ document.addEventListener("DOMContentLoaded", () => {
             }
         });
     }, {
-        threshold: 0.65 // Trigger when 65% is visible
+        threshold: 0.65 // Trigger when 60% is visible
     });
 
     observer.observe(newSection);
-    observer.observe(wesonderFunctionality); // Observe the new section
+    observer.observe(wesonderFunctionality);
+    observer.observe(wesonderLastSection);  // Add this line to observe the last section
 });

@@ -111,26 +111,50 @@
 
         <div id="wesonder_functionality">
             
-            <h1>How does Wesonder Work?</h1>
+            <h1>How does Wesonder work?</h1>
 
             <section id="independent_section">
                 <div class="independent-content">
-                    <h2>Wesonder utilizes a diverse repertoire of reliable sources:</h2>
+                    <h2>Wesonder utilizes a diverse repertoire of reliable publicly available sources:</h2>
                     <div id="independent-section-images">
-                        <img src="media/sam_gov_logo_transparent.png">
-                        <img src="media/bidnetdirect_logo.png">
-                        <img src="media/dir_logo.png">
-                        <img src="media/planetbids_logo.png">
-                        <img src="media/piee_logo.png">
-                        <img src="media/caleprocure_logo.png">
-                        <img src="media/dvbe_logo.png">
-                        <img src="media/cslb_logo.png">
-                        <img src="media/ca_gov_logo.png">
+                        <a href="https://sam.gov/" target="_blank"><img src="media/sam_gov_logo_transparent.png"></a>
+                        <a href="https://www.bidnetdirect.com/" target="_blank"><img src="media/bidnetdirect_logo.png"></a>
+                        <a href="https://www.dir.ca.gov/" target="_blank"><img src="media/dir_logo.png"></a>
+                        <a href="https://home.planetbids.com/" target="_blank"><img src="media/planetbids_logo.png"></a>
+                        <a href="https://piee.eb.mil/" target="_blank"><img src="media/piee_logo.png"></a>
+                        <a href="https://caleprocure.ca.gov/pages/public-search.aspx" target="_blank"><img src="media/caleprocure_logo.png"></a>
+                        <a href="https://dot.ca.gov/programs/civil-rights/dvbe" target="_blank"><img src="media/dvbe_logo.png"></a>
+                        <a href="https://www.cslb.ca.gov/" target="_blank"><img src="media/cslb_logo.png"></a>
+                        <a href="https://www.ca.gov/" target="_blank"><img src="media/ca_gov_logo.png"></a>
                     </div>
-                    <p></p>
+                    <h2>Wesonder thereby serves as the hub for state-of-the-art technologies that aim to support all people participating
+                    in the construction industry. </h2>
                 </div>
             </section>
         </div>
+
+        <div id="wesonder-last-section">
+            <h1>From Construction Estimators to Project Managers, </h1>
+            <h1>From Foremen to Chief Executives, </h1>
+            <h1>From Government Officials to Architectural Designers, </h1> 
+            <h1>Wesonder serves equally for everyone.</h1>
+
+            <!-- New Section Split into Two Halves -->
+            <section id="last-section">
+                <!-- Left Side (Text) -->
+                <div class="last-section-text">
+                    <h2>Empowering Every Professional</h2>
+                    <p>Whether you're estimating costs, managing projects, or designing architectural marvels, Wesonder provides the tools and data to elevate your work.</p>
+                    <p>Our platform ensures seamless access to contractors, bids, and opportunities, supporting your journey in the construction industry.</p>
+                </div>
+
+                <!-- Right Side (Image) -->
+                <div class="last-section-image">
+                    <img src="media/bauhaus_logo_circle_black.png" alt="Construction Team">
+                </div>
+            </section>
+        </div>
+
 
 
 
