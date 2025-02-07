@@ -321,6 +321,15 @@ main {
     line-height: 1.6;
 }
 
+.independent-content img {
+    width: 200px;          /* Fixed width */
+    height: 200px;         /* Fixed height */
+    object-fit: contain;   /* Ensures images are fully visible without distortion */
+    margin: 10px;          /* Space between images */
+    border-radius: 10px;   /* Optional: Adds subtle rounded corners */
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1); /* Optional: Adds a slight shadow for aesthetics */
+}
+
 
 /* Simple Fade-In Animation */
 @keyframes fadeInDown {
