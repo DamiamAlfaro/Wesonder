@@ -143,9 +143,10 @@
             <section id="last-section">
                 <!-- Left Side (Text) -->
                 <div class="last-section-text">
-                    <h2>Empowering Every Professional</h2>
-                    <p>Whether you're estimating costs, managing projects, or designing architectural marvels, Wesonder provides the tools and data to elevate your work.</p>
-                    <p>Our platform ensures seamless access to contractors, bids, and opportunities, supporting your journey in the construction industry.</p>
+                    <h2><i>"A fountain of Construction Knowledge"</i></h2>
+                    <p>Wesonder offers access to Contractors of any License Type, Small Local Business Enterprises (SLBE) firms, Emerging Local Business Enterprises (ELBE) firms, Disable Veteran Business Enterprises (DVBE) firms, Small Businesses (SB) firms, more than <strong>+400,000</strong> commercial enterprises all throughout California.</p>
+                    <p>Here you can also procure active bids from Planetbids, Bidnetdirect, as well as Federal Opportunities from SAM.gov and PIEE. Combined there is more than <strong>+250</strong> new bids on a weekly basis throughout California.</p>
+                    <p>Lastly, as an additional feature, here you find more than <strong>+8000</strong> Awarding Bodies (Owners) and their location, as well as the record of more than <strong>+300,000</strong> construction Projects from 2018 throughout California.</p>
                 </div>
 
                 <!-- Right Side (Image) -->
