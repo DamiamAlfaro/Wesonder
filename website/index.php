@@ -116,17 +116,17 @@
             <section id="independent_section">
                 <div class="independent-content">
                     <h2>Wesonder utilizes a diverse repertoire of reliable sources:</h2>
-                    <img src="media/sam_gov_logo_transparent.png" width="250" height="250">
-                    <img src="media/bidnetdirect_logo.png" width="250" height="250">
-                    <img src="media/dir_logo.png" width="250" height="250">
-                    <br>
-                    <img src="media/planetbids_logo.png" width="250" height="250">
-                    <img src="media/piee_logo.png" width="250" height="250">
-                    <img src="media/caleprocure_logo.png" width="250" height="250">
-                    <br>
-                    <img src="media/dvbe_logo.png" width="250" height="250">
-                    <img src="media/cslb_logo.png" width="250" height="250">
-                    <img src="media/ca_gov_logo.png" width="250" height="250">
+                    <div id="independent-section-images">
+                        <img src="media/sam_gov_logo_transparent.png">
+                        <img src="media/bidnetdirect_logo.png">
+                        <img src="media/dir_logo.png">
+                        <img src="media/planetbids_logo.png">
+                        <img src="media/piee_logo.png">
+                        <img src="media/caleprocure_logo.png">
+                        <img src="media/dvbe_logo.png">
+                        <img src="media/cslb_logo.png">
+                        <img src="media/ca_gov_logo.png">
+                    </div>
                     <p></p>
                 </div>
             </section>

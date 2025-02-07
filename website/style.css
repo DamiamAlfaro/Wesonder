@@ -304,6 +304,10 @@ main {
     box-shadow: 0 8px 25px rgba(0, 0, 0, 0.3);
 }
 
+#independent-section-images {
+    margin-left: 35px;
+}
+
 /* Content Styling */
 .independent-content h2 {
     font-size: 2.8em;
@@ -322,8 +326,8 @@ main {
 }
 
 .independent-content img {
-    width: 200px;          /* Fixed width */
-    height: 200px;         /* Fixed height */
+    width: 240px;          /* Fixed width */
+    height: 240px;         /* Fixed height */
     object-fit: contain;   /* Ensures images are fully visible without distortion */
     margin: 10px;          /* Space between images */
     border-radius: 10px;   /* Optional: Adds subtle rounded corners */
