@@ -115,8 +115,8 @@
 
             <section id="independent_section">
                 <div class="independent-content">
-                    <h2>Discover New Insights</h2>
-                    <p>Gain a deeper understanding of your data with real-time analysis and visualization tools.</p>
+                    <h2>Wesonder utilizes a diverse repertoire of reliable sources:</h2>
+                    <p>Such as</p>
                 </div>
             </section>
         </div>
