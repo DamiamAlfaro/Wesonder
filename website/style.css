@@ -461,9 +461,11 @@ main {
 
 /* Typing effect base */
 .typing {
+    display: inline-block;        /* Ensure the element behaves like inline text */
     border-right: 2px solid #1a202c;  /* Blinking cursor */
-    white-space: nowrap;              /* Prevent text from wrapping */
-    overflow: hidden;                 /* Hide overflowing text */
+    white-space: nowrap;         /* Prevent text from wrapping */
+    overflow: hidden;            /* Hide overflowing text */
+    animation: blink 0.7s step-end infinite;  /* Blinking animation */
 }
 
 /* Blinking Cursor Animation */
@@ -471,20 +473,5 @@ main {
     from { border-color: transparent; }
     to { border-color: #1a202c; }
 }
-
-.typing::after {
-    content: '';
-    display: inline-block;
-    width: 10px;
-    animation: blink 0.7s infinite;
-}
-
-
-
-
-
-
-
-
 
 
