@@ -559,3 +559,16 @@ main {
         gap: 10px;
     }
 }
+
+.damiam-alfaro a {
+    color: #F8FAFC;
+    text-decoration: none;
+    transition: 0s background-color;
+    padding: 10px;
+}
+
+.damiam-alfaro a:hover {
+    background-color: rgba(0, 0, 0, 0.1);
+    border-radius: 10px;
+    transition: 1s;
+}

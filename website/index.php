@@ -174,6 +174,9 @@
                 <p>&copy; 2024 Wesonder. All Rights Reserved.</p>
                 <p>Email: <a href="mailto:support@wesonder.com">support@wesonder.com</a></p>
             </div>
+            <div class="damiam-alfaro">
+                A piece by <a href="https://damiamalfaro.com/" target="_blank">Damiam Alfaro</a>
+            </div>
         </div>
     </footer>
 
