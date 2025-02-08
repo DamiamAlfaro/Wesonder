@@ -62,7 +62,7 @@ document.addEventListener("DOMContentLoaded", () => {
             }
         });
     }, {
-        threshold: 0.65 // Trigger when xx% is visible
+        threshold: 0.15 // Trigger when xx% is visible
     });
 
     observer.observe(newSection);
@@ -117,7 +117,7 @@ document.addEventListener("DOMContentLoaded", () => {
             }
         });
     }, {
-        threshold: 0.65 // Trigger when 60% is visible
+        threshold: 0.15 // Trigger when 60% is visible
     });
 
     observer.observe(newSection);
@@ -144,7 +144,7 @@ document.addEventListener("DOMContentLoaded", () => {
             }
         });
     }, {
-        threshold: 0.70  // Trigger when 60% of the section is visible
+        threshold: 0.15  // Trigger when 60% of the section is visible
     });
 
     observer.observe(wesonderLastSection);
