@@ -22,6 +22,8 @@ html, body {
     opacity: 0;
 }
 
+
+
 /* Logo Background Setup */
 #background-logo {
     position: fixed;
@@ -44,29 +46,33 @@ main {
 
 
 #video_container {
-    display: block;
+    display: flex; /* Change to flex to center the video easily */
     justify-content: center;
     align-items: center;
-    width: 100vw;
-    height: 100vh;
+    width: 100vw; /* Initial full width */
+    height: 90vh; /* Initial full height */
+    margin: 0 auto; /* Center horizontally */
     overflow: hidden;
     position: relative;
-    transition: width 0.3s ease-out, height 0.3s ease-out, border-radius 0.3s ease-out, margin 0.3s ease-out;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2); /* Optional: shadow for better aesthetics */
+
 }
+
+
 
 #california_video {
     position: relative;
-    width: 100vw;
-    height: 100vw;
-    max-height: 100vh;
+    width: 100%; /* Make the video fill the container */
+    height: 100%; /* Maintain full height within the container */
     overflow: hidden;
 }
 
 #california_video video {
     width: 100%;
     height: 100%;
-    object-fit: cover; 
+    object-fit: cover; /* Ensure the video covers the container nicely */
 }
+
 
 
 #overlay_logo {
@@ -85,49 +91,23 @@ main {
 
 #overlay_text {
     position: absolute;
-    top: 15vh;
+    top: 15vh;           /* Adjust this as needed to center the text vertically */
     right: 3vw;
     color: white;
-    font-size: 5.5vw;
+    font-size: 5vw;      /* Change from 5.5vw to 5vw for better scaling */
+    line-height: 1.2;    /* Ensure consistent spacing between lines */
     font-weight: 310;
     text-align: right;
     padding: 1vw;
     border-radius: 0.5vw;
+    max-height: 80%;     /* Prevent text from exceeding the video height */
+    overflow: hidden;    /* Hide overflow if text becomes too large */
+    display: flex;
+    flex-direction: column;
+    justify-content: center;  /* Vertically center the text */
+    cursor: default;
 }
 
-
-#navbar {
-    position: absolute; /* Stays in place instead of following the user */
-    top: 0;
-    right: 0;
-    width: 100%;
-    height: 60px;
-    background-color: rgba(0, 0, 0, 0.0);
-    color: white;
-    text-align: center;
-    line-height: 60px;
-    font-size: 18px;
-    font-weight: bold;
-    opacity: 0; /* Hidden initially */
-    transform: translateY(-100%); /* Moves navbar off-screen */
-    transition: opacity 0.3s ease-in-out, transform 0.3s ease-in-out;
-    z-index: 1000; /* Ensures it stays above video */
-}
-
-/* When navbar becomes visible */
-#navbar.visible {
-    opacity: 1; /* Fades in */
-    transform: translateY(0); /* Moves into place */
-    position: absolute; /* Stays at the top, does NOT follow scrolling */
-}
-
-
-#signup-link {
-    text-decoration: none;
-    color: white;
-    font-weight: 250;
-    font-size: 2.3vw;
-}
 
 
 
@@ -423,6 +403,7 @@ main {
     max-width: 50%;              /* Limit width to half */
     padding: 20px;
     text-align: left;
+    cursor: default;
 }
 
 .last-section-text h2 {
@@ -536,6 +517,7 @@ main {
 .footer-info p {
     margin: 5px 0;
     font-size: 0.9em;
+    cursor: default;
 }
 
 .footer-info a {
@@ -558,6 +540,10 @@ main {
         flex-direction: column;
         gap: 10px;
     }
+}
+
+.damiam-alfaro {
+    cursor: default;
 }
 
 .damiam-alfaro a {

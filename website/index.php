@@ -14,11 +14,11 @@
 </head>
 <body>
 
+
     <img src="media/bauhaus_logo_circle_black.png" id="background-logo" alt="Background Logo">
 
-    <nav id="navbar">
-        <a href="#" id="signup-link">Sign Up</a>
-    </nav>
+    <nav>Navar</nav>
+
     <main>
         
         <div id="video_container">
