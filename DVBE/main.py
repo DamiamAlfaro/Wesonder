@@ -1,19 +1,22 @@
 import pandas as pd
 import numpy as np
+import time
 import requests
 from pathlib import Path
 from geopy.geocoders import Nominatim #type: ignore
 
 
 
+start_time = time.time()
+
 
 '''
-Using the Address Line1, Address Line2, City, State, and Postal code,
+[1] Using the Address Line1, Address Line2, City, State, and Postal code,
 we will create a new column containing all those attributes in a single
 cell value in order to use that cell value to find the respective geolocation
 further on.
 '''
-def complete_address_column_creation(csv_file):
+def complete_address_column_creation(new_entities_dataframe):
     
     # Read the file, covert it to a DataFrame using pandas, then locate
     # the five columns that contain the CompleteAddress attribute, concatenate
@@ -21,18 +24,17 @@ def complete_address_column_creation(csv_file):
     # adjunction. One can locate the five columns using the itterrows() 
     # functionality which works efficiently for dataframes.
 
-    df = pd.read_csv(csv_file,low_memory=False)
     
-    df['CompleteAddress'] = df['CompleteAddress'].astype(str)
+    new_entities_dataframe['CompleteAddress'] = new_entities_dataframe['CompleteAddress'].astype(str)
 
-    for index, row in df.iterrows():
+    for index, row in new_entities_dataframe.iterrows():
         
         # This is where we locate each column by pinpointing it using
         # the title of each column respectively. Each column contains an
         # attribute of the complete address.
 
-        address_line1 = str(row['AddressLine1']).title()
-        address_line2 = str(row['AddressLine2']).title()
+        address_line1 = str(row['Address Line 1']).title()
+        address_line2 = str(row['Address Line 2']).title()
         city = str(row['City']).title()
         state = row['State']
 
@@ -40,7 +42,7 @@ def complete_address_column_creation(csv_file):
         # '-' character. Let's remove them since they sometimes alter the 
         # posibility of finding the correct address in question.
 
-        zip_code = str(row['PostalCode'])
+        zip_code = str(row['Postal Code'])
 
         if '-' in zip_code:
             zip_code_split = zip_code.split('-')
@@ -50,7 +52,7 @@ def complete_address_column_creation(csv_file):
         # useless. We can build a if statement to apply the address line 2 if
         # applicable, and dismiss it if non-applicable.
 
-        if df.isnull().loc[index,'AddressLine2']:
+        if new_entities_dataframe.isnull().loc[index,'Address Line 2']:
             complete_address = f'{address_line1}, {city}, {state} {zip_code}'
         
         else:
@@ -60,13 +62,13 @@ def complete_address_column_creation(csv_file):
         # column, 'CompleteAddress'. We will do this individually with each of the
         # cells along the dataframe.
 
-        df.at[index,'CompleteAddress'] = complete_address
+        new_entities_dataframe.at[index,'CompleteAddress'] = complete_address
     
     # Once all the complete addresses have been iterated to their respective column,
     # we need to export the dataframe into a csv file for future usage. After that, we
     # will jump to step 2: Geolocation Acquisition.
     
-    df.to_csv('refined_latest_dvbe.csv',index=False)
+    return new_entities_dataframe
         
 
 
@@ -154,18 +156,16 @@ geocoordinates for each of the addresses. Using both will increase the chances o
 finding geocoordinates, but they won't be absolute, which is why we will need a creative
 way to find the geocoordinates for the remanining ones. 
 '''
-def geolocation_acquisition(csv_file):
+def geolocation_acquisition(new_entities_dataframe):
     
     # First we need to import the respective csv file into our function, convert it into
     # a dataframe, and begin iteration within the file, in the iteration, we are looking
     # for the 'CompleteAddress' values, which we will use to feed the geolocation
     # finding functions. 
 
-    main_df = pd.read_csv(csv_file, low_memory=False)
+    for index, row in new_entities_dataframe.iterrows():
 
-    for index, row in main_df.iterrows():
-
-        percentage_progress = (index/len(main_df))*100
+        percentage_progress = (index/len(new_entities_dataframe))*100
         
         complete_address = row['CompleteAddress']
         coordinates = obtaining_new_geolocations_attempt1(complete_address)
@@ -181,16 +181,16 @@ def geolocation_acquisition(csv_file):
             second_attempt = obtaining_new_geolocations_attempt2(str(complete_address))
             x_coordinate = second_attempt[0]
             y_coordinate = second_attempt[1]
-            main_df.at[index, 'X_Coordinates'] = x_coordinate
-            main_df.at[index, 'Y_Coordinates'] = y_coordinate
+            new_entities_dataframe.at[index, 'X_Coordinates'] = x_coordinate
+            new_entities_dataframe.at[index, 'Y_Coordinates'] = y_coordinate
 
         else:
-            main_df.at[index, 'X_Coordinates'] = x_coordinate
-            main_df.at[index, 'Y_Coordinates'] = y_coordinate
+            new_entities_dataframe.at[index, 'X_Coordinates'] = x_coordinate
+            new_entities_dataframe.at[index, 'Y_Coordinates'] = y_coordinate
 
         print(f'Iteration #{index} - {round(percentage_progress,2)}%\n{complete_address}: ({x_coordinate},{y_coordinate})')
 
-    main_df.to_csv('some_geolocations_dvbe.csv',index=False)
+    return new_entities_dataframe
 
 
 
@@ -203,7 +203,7 @@ Segregating the non-found addressess, yes, that's it...yes, I need a function fo
 I forgot to mention that we will fix the zip_code column, I don't want to use nine-digit zip
 codes, but five-digit zip codes.
 '''
-def geolocation_segregation_and_fix(csv_file):
+def geolocation_segregation_and_fix(df):
     
     # As mentioned, the only goal with this function is to segregate the locations
     # with the ones of which the location was not found, a simple action that can
@@ -217,16 +217,17 @@ def geolocation_segregation_and_fix(csv_file):
     # every single part of one's life, as there isn't enough time to manage all of them properly,
     # this is where one asks oneself: "what is really important, what do I want to have control upon?"...
 
-    df = pd.read_csv(csv_file)
     
     df['PostalCode'] = df['PostalCode'].astype(str).str.split("-").str[0]
 
     df_cleaned = df[df['X_Coordinates'] != 0]
-    df_cleaned.to_csv('found_dvbe_geolocations.csv',index=False)
+    df_cleaned.to_csv('just_in_case_found.csv', index=False)
 
     df_segregated = df[df['X_Coordinates'] == 0]
-    df_segregated.to_csv('non_found_dvbe_geolocations.csv',index=False)
+    df_segregated.to_csv('just_in_case_nonfound.csv', index=False)
 
+
+    return df_cleaned, df_segregated
         
 
 
@@ -234,7 +235,7 @@ def geolocation_segregation_and_fix(csv_file):
 The rules are simple, we will simply assign a post office geolocation to all the
 non-found addresses based on their zip code value, plain and simple...
 '''
-def dvbe_concatenation(found_dvbe_entities, non_found_dvbe_entities, post_offices_file):
+def dvbe_concatenation(found_df, nonfound_df):
 
     # If you want to write less, then write less functions... I just realized that I enjoy writing
     # while coding; those two are my favorite things to do in this mundane life, those too make me
@@ -247,16 +248,16 @@ def dvbe_concatenation(found_dvbe_entities, non_found_dvbe_entities, post_office
     # addresses that we cannot find and use the post office address for an alternative. If the faulty
     # zip code list is not extensive, do them manually.
 
-    df_found_entities = pd.read_csv(found_dvbe_entities,low_memory=False)
-    df_non_found_entities = pd.read_csv(non_found_dvbe_entities,low_memory=False)
-    df_non_found_entities['X_Coordinates'] = df_non_found_entities['X_Coordinates'].astype(float)
-    df_non_found_entities['Y_Coordinates'] = df_non_found_entities['Y_Coordinates'].astype(float)
 
+    nonfound_df['X_Coordinates'] = nonfound_df['X_Coordinates'].astype(float)
+    nonfound_df['Y_Coordinates'] = nonfound_df['Y_Coordinates'].astype(float)
+
+    post_offices_file = 'https://storage.googleapis.com/wesonder_databases/post_offices/california_post_offices.csv'
     df_post_offices = pd.read_csv(post_offices_file,low_memory=False)
 
     faulty_zip_codes = []
 
-    for index, row in df_non_found_entities.iterrows():
+    for index, row in nonfound_df.iterrows():
         
         zip_code = row['PostalCode']
 
@@ -281,13 +282,39 @@ def dvbe_concatenation(found_dvbe_entities, non_found_dvbe_entities, post_office
         else:
             faulty_zip_codes.append(zip_code)
 
-    concatenated_dataframes = pd.concat([df_found_entities, df_non_found_entities])
-    concatenated_dataframes.to_csv('finalized_dvbe_entities.csv',index=False)
+    concatenated_dataframes = pd.concat([nonfound_df, found_df])
+    
+    return concatenated_dataframes
 
 
+
+
+'''
+[1.0] Comparing past and present DVBE between old and new csv files containing them.
+'''
+def comparing_dvbe_entities(old_file, new_file):
+
+    # Convert csv files to dataframes for easy manipulation
+    df_old = pd.read_csv(old_file)
+    df_new = pd.read_csv(new_file)
+
+    new_entities = df_new[~df_new['Certification ID'].isin(df_old['Certification ID'])]
+    transformative_df = new_entities.reset_index(drop=True)
+
+    return transformative_df
     
-    
-    
+
+
+'''
+[3.0] Concatenating the old and new dvbe firms in order to export them to
+the web server. Resources my friend, the distribution of resources. 
+'''
+def concotenate_dataframes(past_entities_csv, new_entities_df):
+
+    df_past = pd.read_csv(past_entities_csv)
+
+    all_dvbe_entities = pd.concat([df_past, new_entities_df])
+    all_dvbe_entities.to_csv('finalized_dvbe_entities.csv', index=False)
 
             
 
@@ -295,93 +322,44 @@ def dvbe_concatenation(found_dvbe_entities, non_found_dvbe_entities, post_office
 
 
 
+'''
+FUNCTIONALITY STEPS - Estimated Time (15-35 min): 
+
+[1] Step one focuses in comparing the past dvbe csv file with the newly downloaded csv file from
+the Cal eProcure website. We are doing so by comparing the license numbers from each of the DVBE
+commercial enterprises from the past and current file, adding the new ones that appear in the
+newly downloaded file to the past csv file. 
+
+[2] Acquire the Geolocations for the New entities. We will utilize the functions above that are quite
+functional. But first, we need to create the CompleteAddress with the entire addresses for each cell.
+After the complete addresses, we then acquire the Geolocations using the Complete Addresses. After
+acquiring the addresses, try to find a few more using the California Zip codes and the respective
+post offices geolocations in order to increase the volume of geolocations found.
+
+[3] As a final last easy step, we append the old dvbe dataframe with the new one, in order to expand 
+our existing repertoire of DVBE firms.
+'''
 
 
+# Outset Files
+past_dvbe_file = 'https://storage.googleapis.com/wesonder_databases/dvbe/finalized_dvbe_entities.csv'
+new_dvbe_file = '/Users/damiamalfaro/Downloads/latest_dvbes.csv' #(newly downloaded file)
 
-if __name__ == '__main__':
-    
-    # The goal with this program is to make some adjustments and crucial changes to the
-    # csv file that contain all of the dvbe information. So far, I have two goals involving
-    # this file in mind: 1) the acquisition of geolocations, and 2) the correlation of 
-    # the 'Keywords' column with CSLB license titles via Linguistic Patterns. The initial
-    # file can be found in google cloud.
+# [1] Create the new Dataframe with new DVBE entities
+new_entities_df = comparing_dvbe_entities(past_dvbe_file, new_dvbe_file)
 
-    ultimate_california_post_offices = 'ultimate_california_post_offices.csv' # Imported from usps_postal_offices_addresses.py - Step 4 Input
-    first_csv_file_dvbe_initial = 'latest_dvbes.csv' # Step 1 Input
-    second_csv_file_refined_without_geolocations = 'refined_latest_dvbe.csv' # Step 2 Input - Step 1 Output
-    third_csv_file_segregation_and_fix = 'some_geolocations_dvbe.csv' # Step 3 Input - Step 2 Output
-    found_dvbe_locations = 'found_dvbe_geolocations.csv' # Step 4 Input - Step 3 Output
-    non_found_dvbe_locations = 'non_found_dvbe_geolocations.csv' # Step 4 Input - Step 3 Output
-    
-    step = int(input('Step: '))
+# [2] Acquire Geolocations and clean the Dataframe
+new_entities_df_complete_addresses = complete_address_column_creation(new_entities_df)
 
-    match step:
+new_entities_df_some_geolocations = geolocation_acquisition(new_entities_df_complete_addresses)
 
-        case 1:
-            
-            # Step 1 - Complete Address Creation: The first step will be creation of a 'CompleteAddress' column. We need to create
-            # a column to include the complete addresses. Currently, the addresses are splitted 
-            # into 5 columns, we need to put the values of each of those 5 columns into a single
-            # column in order for the geofinder to find the geolocation coordinates. After that, 
-            # we will output a new file containing such column, in which we will use to find the
-            # geolocations directly with.
+new_entities_geolocations_found = geolocation_segregation_and_fix(new_entities_df_some_geolocations)[0]
+new_entities_geolocations_nonfound = geolocation_segregation_and_fix(new_entities_df_some_geolocations)[1]
 
-            # Files Input:
-            # 1) latest_dvbes.csv
+all_new_dvbe_firms = dvbe_concatenation(new_entities_geolocations_found, new_entities_geolocations_nonfound)
 
-            # Files Output:
-            # 1) refined_latest_dvbe.csv
-            
-            complete_address_column_creation(first_csv_file_dvbe_initial)
-
-        case 2:
-
-            # Step 2 - Geolocation Acquisition: As the title goes, we will be acquiring the respective geolocations
-            # for eveyry value under the 'CompleteAddress' columns of the file. We will utilize the freely 
-            # available functionality of the U.S. Census Bureau. Thanks U.S. However, unfortunately this functionality
-            # isn't complete accurate. If the geolocation was not found, within the same iteration, we will attempt
-            # to find the same geolocation using Nominatim.
-
-            # Files Input:
-            # 1) refined_latest_dvbe.csv
-
-            # Files Output:
-            # 1) some_geolocations_dvbe.csv
-
-            geolocation_acquisition(second_csv_file_refined_without_geolocations)
-
-        case 3:
-
-            # Step 3 - Address Segregation and Fixing: we will not only segregate the rows containing addresses that 
-            # were not found by Step 2, but we will also fix the zip codes from the PostalCode Column, some of them 
-            # contain nine-digit zip codes, which makes it more confusing. We will be creating two files here, one with 
-            # the found addresses, the clean one, and one for the non-found addresses. The latter will be used for 
-            # post office-address correlation in the following step.
-
-            # Files Input:
-            # 1) some_geolocations_dvbe.csv
-
-            # Files Output:
-            # 1) found_dvbe_geolocations.csv
-            # 2) non_found_dvbe_geolocations.csv
-
-            geolocation_segregation_and_fix(third_csv_file_segregation_and_fix)
-
-        case 4:
-
-            # Step 4: DVBE Addresses Correlation: using the Post Offices, we are going to correlate
-            # all of the non-found addresses geolocations with Post Offices geolocations based on
-            # each respective's zip code. Perhaps we can utilize this database to associate non-found
-            # addresses of other mechanisms...
-
-            # Files Input:
-            # 1) found_dvbe_geolocations.csv
-            # 2) non_found_dvbe_geolocations.csv
-
-            # Files Out:
-            # 1) finalized_dvbe_entities.csv
-
-            dvbe_concatenation(found_dvbe_locations, non_found_dvbe_locations, ultimate_california_post_offices)
+# [3.0]
+concotenate_dataframes(past_dvbe_file, all_new_dvbe_firms)
 
 
 
@@ -389,3 +367,11 @@ if __name__ == '__main__':
 
 
 
+
+'''
+Time Statistics
+'''
+end_time = time.time()
+elapsed_time = end_time - start_time
+elapsed_hours = round((elapsed_time / 60 / 60), 3)
+print(f'Total Hours to Execute: {elapsed_hours}')
