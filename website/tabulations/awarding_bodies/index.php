@@ -21,8 +21,7 @@
     // Valid columns for sorting and searching
     $valid_columns = [
         'name', 'email', 'street', 'city', 'state', 'entity_id', 'zip_code',
-        'county', 'full_address', 'x_coordinate', 'y_coordinate', 'ab_name',
-        'web_pages', 'web_links'
+        'county', 'full_address', 'ab_name'
     ];
 
     $sort_column = isset($_GET['sort']) && in_array($_GET['sort'], $valid_columns) ? $_GET['sort'] : 'name';
@@ -167,6 +166,14 @@
         <img src="../../media/bauhaus_logo_circle_black.png" alt="Logo">
         <h1>Awarding Bodies</h1>
     </div>
+    
+    <div class="pagination">
+        <button onclick="navigatePage(<?php echo $page - 1; ?>)" <?php if ($page <= 1) echo 'disabled'; ?>>Previous</button>
+        <label>Page:</label>
+        <input type="number" min="1" max="<?php echo $total_pages; ?>" value="<?php echo $page; ?>" id="pageInput">
+        <button onclick="goToPage()">Go</button>
+        <button onclick="navigatePage(<?php echo $page + 1; ?>)" <?php if ($page >= $total_pages) echo 'disabled'; ?>>Next</button>
+    </div>
 
     <form method="GET" id="searchForm">
         <table>
@@ -182,11 +189,7 @@
                     'zip_code' => '📬',
                     'county' => '🌍',
                     'full_address' => '📫',
-                    'x_coordinate' => '❌',
-                    'y_coordinate' => '➖',
-                    'ab_name' => '🏆',
-                    'web_pages' => '🌐',
-                    'web_links' => '🔗'
+                    'ab_name' => '🏆'
                 ];
 
                 foreach ($valid_columns as $column) {
@@ -198,6 +201,7 @@
                         . $emoji . strtoupper(str_replace('_', ' ', $column)) 
                         . "</th>";
                 }
+                echo "<th>🌐 LINKS</th>";
                 ?>
             </tr>
 
@@ -207,6 +211,7 @@
                     $value = isset($search_params[$column]) ? htmlspecialchars($search_params[$column]) : '';
                     echo "<td><input type='text' name='$column' value='$value' placeholder='Search...'></td>";
                 }
+                echo "<td></td>";
                 ?>
             </tr>
             <?php
@@ -216,24 +221,28 @@
                     foreach ($valid_columns as $column) {
                         echo "<td>" . htmlspecialchars($row[$column]) . "</td>";
                     }
+
+                    // Generate clickable links
+                    $web_pages = explode(',', $row['web_pages']);
+                    $web_links = explode(',', $row['web_links']);
+                    $links_html = '';
+
+                    foreach ($web_pages as $index => $page) {
+                        $link = isset($web_links[$index]) ? $web_links[$index] : '#';
+                        $links_html .= "<a href='$link' target='_blank'>" . htmlspecialchars($page) . "</a><br>";
+                    }
+
+                    echo "<td>$links_html</td>";
                     echo "</tr>";
                 }
             } else {
-                echo "<tr><td colspan='14'>No awarding bodies found with those parameters.</td></tr>";
+                echo "<tr><td colspan='11'>No awarding bodies found with those parameters.</td></tr>";
             }
             $conn->close();
             ?>
         </table>
         <button type="submit" style="margin-top: 10px; background-color: #2563eb; color: white; padding: 10px 20px; border: none; border-radius: 4px; cursor: pointer;">Apply Filters</button>
     </form>
-
-    <div class="pagination">
-        <button onclick="navigatePage(<?php echo $page - 1; ?>)" <?php if ($page <= 1) echo 'disabled'; ?>>Previous</button>
-        <label>Page:</label>
-        <input type="number" min="1" max="<?php echo $total_pages; ?>" value="<?php echo $page; ?>" id="pageInput">
-        <button onclick="goToPage()">Go</button>
-        <button onclick="navigatePage(<?php echo $page + 1; ?>)" <?php if ($page >= $total_pages) echo 'disabled'; ?>>Next</button>
-    </div>
 
     <script>
         function navigatePage(page) {
