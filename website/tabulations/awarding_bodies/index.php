@@ -96,6 +96,9 @@
             padding: 12px 15px;
             text-align: center;
         }
+        
+
+        
         th {
             background-color: #729762;
             color: white;
@@ -185,8 +188,8 @@
                     'street' => '🏠',
                     'city' => '🏙️',
                     'state' => '🗺️',
-                    'entity_id' => '🆔',
                     'zip_code' => '📬',
+                    'entity_id' => '🆔',
                     'county' => '🌍',
                     'full_address' => '📫',
                     'ab_name' => '🏆'
