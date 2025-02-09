@@ -5,7 +5,6 @@ import time
 import re
 import sys
 import requests
-import mysql.connector # type: ignore
 from geopy.geocoders import Nominatim
 from google.oauth2.service_account import Credentials # type: ignore
 from googleapiclient.discovery import build  # type: ignore
@@ -456,20 +455,43 @@ def acquiring_geolocations(list_of_bids):
 
 
 
-# PIEE Webscraping - 1
-#piee_url = 'https://piee.eb.mil/sol/xhtml/unauth/index.xhtml'
-#piee_active_bids_urls = webscraping_piee_website(piee_url)
-#piee_bids = piee_active_bids_webscraping(piee_active_bids_urls)
+
+def allocation_to_csv(list_of_lists):
+
+    headers = [
+        "functional_url",
+        "solicitation_value",
+        "notice_type_element",
+        "due_date",
+        "set_aside_code",
+        "contact_name",
+        "description",
+        "subject",
+        "posting_date",
+        "product_service_code",
+        "naics_code",
+        "place_of_performance",
+        "address",
+        "dodaac",
+        "office_name",
+        "office_address",
+        "X_Coordinates",
+        "Y_Coordinates"
+    ]
+
+    df = pd.DataFrame(list_of_lists,columns=headers)
+    df.to_csv('finalized_piee_bids.csv',index=False)
 
 
-# PIEE Google Sheets Allocation - 2
-#allocate_into_google_sheets(piee_bids)
 
 
-# Active Bids Geolocation Acquisition - 3
-#active_bids = reading_piee_active_bids()
-#updated_active_bids = acquiring_geolocations(active_bids)
-#allocate_into_google_sheets(updated_active_bids)
+
+# [1] PIEE Webscraping
+piee_url = 'https://piee.eb.mil/sol/xhtml/unauth/index.xhtml'
+piee_active_bids_urls = webscraping_piee_website(piee_url)
+piee_bids = piee_active_bids_webscraping(piee_active_bids_urls)
+updated_active_bids = acquiring_geolocations(piee_bids)
+allocation_to_csv(updated_active_bids)
 
 
 
