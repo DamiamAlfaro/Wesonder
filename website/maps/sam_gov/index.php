@@ -34,33 +34,31 @@
         position: relative;
     }
     
-    /* Base cluster style */
     .marker-cluster {
         background-clip: padding-box;
-        border-radius: 50%; /* Makes the cluster circular */
+        border-radius: 50%;
         color: black;
         text-align: center;
         font-size: 14px;
         font-weight: bold;
-        line-height: 40px; /* Align text vertically */
+        line-height: 40px;
         cursor: pointer;
     }
     
     .leaflet-popup-content {
-        max-width: 300px; /* Set the maximum width for the popup */
-        white-space: normal; /* Ensure text wraps within the content */
-        overflow-wrap: break-word; /* Break long words to fit within the popup */
+        max-width: 300px;
+        white-space: normal;
+        overflow-wrap: break-word;
     }
 
-    /* Add scrolling for very large content */
     .leaflet-popup-content-wrapper {
-        max-height: 400px; /* Set a maximum height */
-        overflow-y: auto; /* Enable vertical scrolling if content exceeds height */
+        max-height: 400px;
+        overflow-y: auto;
     }
 
     .leaflet-popup-content a {
-        word-wrap: break-word; /* Break long links into multiple lines */
-        color: blue; /* Optional: Make links more readable */
+        word-wrap: break-word;
+        color: blue;
         text-decoration: underline;
     }
     
@@ -111,60 +109,46 @@
     }
     
     </style>
-
-
 </head>
 <body>
-    
-
     <?php 
-        
         $host = "localhost"; 
         $username = "u978864605_wesonder";
         $password = "Elchapillo34?nmddam";
         $dbname = "u978864605_wesonder";
         
-        // Connect to the database
         $conn = new mysqli($host, $username, $password, $dbname);
-        
         
         if ($conn->connect_error) {
             die("Connection failed: " . $conn->connect_error);
         }
         
-        // Markers that will later be displayed on the leaflet.js map
         $mapMarkersScript = "";
 
-        
-        $sql = "SELECT * FROM sam_gov_table";
+        $sql = "SELECT * FROM finalized_sam_gov";
         $result = $conn->query($sql);
 
         if ($result->num_rows > 0) {
             while ($row = $result->fetch_assoc()) {
-                
-                // Assign variables based on the headers of the table from MySQL
-                $url = $row['url'];
-                $bid_title = $row['bid_title'];
-                $notice_id = $row['notice_id'];
-                $related_notice = $row['related_notice'];
-                $department_tiers = $row['department_tiers'];
-                $department_names = $row['department_names'];
-                $original_set_aside = $row['original_set_aside'];
-                $set_aside = $row['set_aside'];
-                $service_code = $row['service_code'];
-                $naics_code = $row['naics_code'];
-                $location = $row['location'];
-                $x_coordinates = $row['x_coordinates'];
-                $y_coordinates = $row['y_coordinates'];
+                $url = $row['BidLink'];
+                $bid_title = $row['BidTitle'];
+                $notice_id = $row['SolicitationID'];
+                $related_notice = $row['RelatedNotice'];
+                $department_tiers = $row['DepartmentTiers'];
+                $department_names = $row['DepartmentNames'];
+                $original_set_aside = $row['OriginalSetAside'];
+                $set_aside = $row['SetAsideCode'];
+                $service_code = $row['ServiceCode'];
+                $naics_code = $row['NAICS'];
+                $location = $row['Location'];
+                $x_coordinates = $row['X_Coordinates'];
+                $y_coordinates = $row['Y_Coordinates'];
 
-
-
-                
                 $string_display = "
                     <div class='info-card'>
                         <div class='info-item'><strong>🌐 Bid URL:</strong> <a href='$url' target='_blank'>$url</a></div>
                         <div class='info-item'><strong>📋 Bid Title:</strong> $bid_title</div>
-                        <div class='info-item'><strong>🆔 Solicitation ID:</strong> $notice_id</div>
+                        <div class='info-item'><strong>🆑 Solicitation ID:</strong> $notice_id</div>
                         <div class='info-item'><strong>🔗 Related Notice:</strong> $related_notice</div>
                         <div class='info-item'><strong>🏢 Department Tiers:</strong> $department_tiers</div>
                         <div class='info-item'><strong>📊 Department Names:</strong> $department_names</div>
@@ -178,53 +162,43 @@
                 
                 $mapMarkersScript .= "
                     var marker = L.circleMarker([$x_coordinates, $y_coordinates], {
-                        radius: 6, // Marker size
-                        color: '#3388ff', // Border color
-                        fillColor: '#3388ff', // Fill color
-                        fillOpacity: 0.5 // Opacity
+                        radius: 6,
+                        color: '#3388ff',
+                        fillColor: '#3388ff',
+                        fillOpacity: 0.5
                     }).bindPopup(" . json_encode($string_display) . ");
                     markers.addLayer(marker);
                 ";
-                
             }
         } else {
             echo "No results found.";
         }
         
-        // Close the connection
         $conn->close();
-
     ?>
-    
 
     <div id="map"></div>
     
     <script>
         var map = L.map('map', {
-            renderer: L.canvas() // Enable Canvas rendering
+            renderer: L.canvas()
         }).setView([37.7749, -122.4194], 5);
     
-        // Add tile layer
         L.tileLayer('https://tile.openstreetmap.org/{z}/{x}/{y}.png', {
             maxZoom: 19,
             attribution: '&copy; <a href="http://www.openstreetmap.org/copyright">OpenStreetMap</a>'
         }).addTo(map);
     
-        // Create a MarkerClusterGroup
         var markers = L.markerClusterGroup({
-            disableClusteringAtZoom: 40, // Disable clustering at zoom level 18 and closer
-            maxClusterRadius: 40, // Cluster markers within a 40-pixel radius
-            spiderfyOnMaxZoom: true, // Allow spiderfying overlapping markers
-            showCoverageOnHover: false // Don't show cluster coverage area on hover
+            disableClusteringAtZoom: 40,
+            maxClusterRadius: 40,
+            spiderfyOnMaxZoom: true,
+            showCoverageOnHover: false
         });
     
-        // Add dynamically generated markers
         <?php echo $mapMarkersScript; ?>
     
-        // Add the MarkerClusterGroup to the map
         map.addLayer(markers);
     </script>
-
-
 </body>
 </html>

@@ -34,55 +34,91 @@
         position: relative;
     }
     
-    /* Base cluster style */
     .marker-cluster {
         background-clip: padding-box;
-        border-radius: 50%; /* Makes the cluster circular */
+        border-radius: 50%;
         color: black;
         text-align: center;
         font-size: 14px;
         font-weight: bold;
-        line-height: 40px; /* Align text vertically */
+        line-height: 40px;
         cursor: pointer;
     }
     
-    /* Small clusters */
     .marker-cluster-small {
-        background-color: #90ee90; /* Light green */
+        background-color: #90ee90;
         width: 40px;
         height: 40px;
     }
     
-    /* Medium clusters */
     .marker-cluster-medium {
-        background-color: #ffa500; /* Orange */
+        background-color: #ffa500;
         width: 50px;
         height: 50px;
     }
     
-    /* Large clusters */
     .marker-cluster-large {
-        background-color: #ff4500; /* Red */
+        background-color: #ff4500;
         width: 60px;
         height: 60px;
     }
     
     .leaflet-popup-content {
-        max-width: 300px; /* Set the maximum width for the popup */
-        white-space: normal; /* Ensure text wraps within the content */
-        overflow-wrap: break-word; /* Break long words to fit within the popup */
+        max-width: 600px;
+        white-space: normal;
+        overflow-wrap: break-word;
     }
 
-    /* Add scrolling for very large content */
     .leaflet-popup-content-wrapper {
-        max-height: 400px; /* Set a maximum height */
-        overflow-y: auto; /* Enable vertical scrolling if content exceeds height */
+        max-height: 400px;
+        overflow-y: auto;
     }
 
     .leaflet-popup-content a {
-        word-wrap: break-word; /* Break long links into multiple lines */
-        color: blue; /* Optional: Make links more readable */
+        word-wrap: break-word;
+        color: blue;
         text-decoration: underline;
+    }
+    
+    .info-card {
+        background: #ffffff;
+        border-radius: 16px;
+        box-shadow: 0 8px 16px rgba(0, 0, 0, 0.1);
+        padding: 24px;
+        max-width: 920px;
+        margin: 20px auto;
+        line-height: 1.8;
+        transition: transform 0.3s ease;
+    }
+    
+    .info-card:hover {
+        transform: translateY(-5px);
+    }
+    
+    .info-card strong {
+        display: block;
+        font-weight: bold;
+        font-size: 1.1em;
+        color: #2c3e50;
+        margin-bottom: 4px;
+    }
+    
+    .info-card a {
+        color: #2980b9;
+        text-decoration: none;
+        font-weight: 600;
+    }
+    
+    .info-card a:hover {
+        text-decoration: underline;
+    }
+    
+    .info-item {
+        background-color: #ecf0f1;
+        padding: 12px 16px;
+        border-radius: 8px;
+        margin-bottom: 14px;
+        font-size: 17px;
     }
     
     </style>
@@ -91,7 +127,6 @@
 </head>
 <body>
     
-
     <?php 
         
         $host = "localhost"; 
@@ -99,28 +134,23 @@
         $password = "Elchapillo34?nmddam";
         $dbname = "u978864605_wesonder";
         
-        // Connect to the database
         $conn = new mysqli($host, $username, $password, $dbname);
-        
         
         if ($conn->connect_error) {
             die("Connection failed: " . $conn->connect_error);
         }
         
-        // Markers that will later be displayed on the leaflet.js map
         $mapMarkersScript = "";
-
         
-        $sql = "SELECT * FROM piee_bids";
+        $sql = "SELECT * FROM finalized_piee_bids";
         $result = $conn->query($sql);
 
         if ($result->num_rows > 0) {
             while ($row = $result->fetch_assoc()) {
                 
-                // Assign variables based on the headers of the table from MySQL
-                $piee_link = $row['piee_link'];
-                $solicitation_number = $row['solicitation_number'];
-                $bid_phase = $row['bid_phase'];
+                $functional_url = $row['functional_url'];
+                $solicitation_value = $row['solicitation_value'];
+                $notice_type_element = $row['notice_type_element'];
                 $due_date = $row['due_date'];
                 $set_aside_code = $row['set_aside_code'];
                 $contact_name = $row['contact_name'];
@@ -134,38 +164,38 @@
                 $dodaac = $row['dodaac'];
                 $office_name = $row['office_name'];
                 $office_address = $row['office_address'];
-                $x_coordinates = $row['x_coordinates'];
-                $y_coordinates = $row['y_coordinates'];
+                $X_Coordinates = $row['X_Coordinates'];
+                $Y_Coordinates = $row['Y_Coordinates'];
 
-
-
-                
                 $string_display = "
-                    <strong>PIEE Link:</strong> <a href='$piee_link' target='_blank'>$piee_link</a><br>
-                    <strong>Solicitation Number: </strong> $solicitation_number <br>
-                    <strong>Bid Phase: </strong> $bid_phase <br>
-                    <strong>Due Date: </strong> $due_date <br>
-                    <strong>Set Aside Code: </strong> $set_aside_code <br>
-                    <strong>Contact Name: </strong> $contact_name <br>
-                    <strong>Description: </strong> $description <br>
-                    <strong>Subject: </strong> $subject <br>
-                    <strong>Posting Date: </strong> $posting_date <br>
-                    <strong>Product Service Code: </strong> $product_service_code <br>
-                    <strong>NAICS Code: </strong> $naics_code <br>
-                    <strong>Place of Performance: </strong> $place_of_performance <br>
-                    <strong>Address: </strong> $address <br>
-                    <strong>DODAAC: </strong> $dodaac <br>
-                    <strong>Office Name: </strong> $office_name <br>
-                    <strong>Office Address: </strong> $office_address <br>
-                    <strong>Coordinates: </strong> ($x_coordinates, $y_coordinates)<br>
+                    <div class='info-card'>
+                        <div class='info-item'><strong>🌐 Functional URL:</strong> <a href='$functional_url' target='_blank'>$functional_url</a></div>
+                        <div class='info-item'><strong>💰 Solicitation Value:</strong> $solicitation_value</div>
+                        <div class='info-item'><strong>📋 Notice Type:</strong> $notice_type_element</div>
+                        <div class='info-item'><strong>📅 Due Date:</strong> $due_date</div>
+                        <div class='info-item'><strong>🎯 Set Aside Code:</strong> $set_aside_code</div>
+                        <div class='info-item'><strong>👤 Contact Name:</strong> $contact_name</div>
+                        <div class='info-item'><strong>📝 Description:</strong> $description</div>
+                        <div class='info-item'><strong>📂 Subject:</strong> $subject</div>
+                        <div class='info-item'><strong>🗓️ Posting Date:</strong> $posting_date</div>
+                        <div class='info-item'><strong>🔧 Product Service Code:</strong> $product_service_code</div>
+                        <div class='info-item'><strong>📇 NAICS Code:</strong> $naics_code</div>
+                        <div class='info-item'><strong>📍 Place of Performance:</strong> $place_of_performance</div>
+                        <div class='info-item'><strong>🏠 Address:</strong> $address</div>
+                        <div class='info-item'><strong>🏢 DODAAC:</strong> $dodaac</div>
+                        <div class='info-item'><strong>🏛️ Office Name:</strong> $office_name</div>
+                        <div class='info-item'><strong>📬 Office Address:</strong> $office_address</div>
+                        <div class='info-item'><strong>🗺️ Coordinates:</strong> ($X_Coordinates, $Y_Coordinates)</div>
+                    </div>
                 ";
+
                 
                 $mapMarkersScript .= "
-                    var marker = L.circleMarker([$x_coordinates, $y_coordinates], {
-                        radius: 6, // Marker size
-                        color: '#3388ff', // Border color
-                        fillColor: '#3388ff', // Fill color
-                        fillOpacity: 0.5 // Opacity
+                    var marker = L.circleMarker([$X_Coordinates, $Y_Coordinates], {
+                        radius: 8,
+                        color: '#3388ff',
+                        fillColor: '#3388ff',
+                        fillOpacity: 0.5
                     }).bindPopup(" . json_encode($string_display) . ");
                     markers.addLayer(marker);
                 ";
@@ -175,40 +205,32 @@
             echo "No results found.";
         }
         
-        // Close the connection
         $conn->close();
-
     ?>
-    
 
     <div id="map"></div>
     
     <script>
         var map = L.map('map', {
-            renderer: L.canvas() // Enable Canvas rendering
+            renderer: L.canvas()
         }).setView([37.7749, -122.4194], 5);
     
-        // Add tile layer
         L.tileLayer('https://tile.openstreetmap.org/{z}/{x}/{y}.png', {
             maxZoom: 19,
             attribution: '&copy; <a href="http://www.openstreetmap.org/copyright">OpenStreetMap</a>'
         }).addTo(map);
     
-        // Create a MarkerClusterGroup
         var markers = L.markerClusterGroup({
-            disableClusteringAtZoom: 40, // Disable clustering at zoom level 18 and closer
-            maxClusterRadius: 40, // Cluster markers within a 40-pixel radius
-            spiderfyOnMaxZoom: true, // Allow spiderfying overlapping markers
-            showCoverageOnHover: false // Don't show cluster coverage area on hover
+            disableClusteringAtZoom: 40,
+            maxClusterRadius: 40,
+            spiderfyOnMaxZoom: true,
+            showCoverageOnHover: false
         });
     
-        // Add dynamically generated markers
         <?php echo $mapMarkersScript; ?>
     
-        // Add the MarkerClusterGroup to the map
         map.addLayer(markers);
     </script>
-
 
 </body>
 </html>
