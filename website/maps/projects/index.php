@@ -4,7 +4,7 @@
     <meta charset="UTF-8"/>
     <meta name="author" content="Damiam Alfaro"/>
     <meta name="description" content="WESONDER Projects"/>
-    <link rel="icon" type="image/png" href="../media/bauhaus_logo_transparent.png"/>
+    <link rel="icon" type="image/png" href="../../media/bauhaus_logo_transparent.png"/>
     <link href="../style.css" rel="stylesheet" type="text/css">
 
     <!-- Leaflet CSS -->
@@ -282,8 +282,8 @@
 
 
     <?php
-
         
+      
     ?>
     
 
@@ -323,6 +323,7 @@
                         var markers = L.markerClusterGroup();
                         
                         projects.forEach(project => {
+                            const project_number = project.project_number;
                             const project_name = project.project_name;
                             const awarding_body = project.awarding_body;
                             const project_id_number = project.project_id_number;
@@ -333,9 +334,17 @@
                             const x_coordinate = parseFloat(project.x_coordinates);
                             const y_coordinate = parseFloat(project.y_coordinates);
                             const project_county = project.county;
+                            const project_link = `
+                                <a href='https://services.dir.ca.gov/gsp?id=dir_projects&table=x_cdoi2_csm_portal_project&spa=1&filter=123TEXTQUERY321%3D${project_number}&p=1&o=start_date&d=asc'>
+                                    Project Source Link
+                                </a>
+                            `;
+                            
+                            
                             
                             const popupContent = `
                                 <div class='info-card'>
+                                    <div class='info-item'><strong>🆔 Project Number:</strong> ${project_number}</div>
                                     <div class='info-item'><strong>🏗️ Project Name:</strong> ${project_name}</div>
                                     <div class='info-item'><strong>🏛️ Awarding Body:</strong> ${awarding_body}</div>
                                     <div class='info-item'><strong>🔢 Project ID Number:</strong> ${project_id_number}</div>
@@ -343,6 +352,7 @@
                                     <div class='info-item'><strong>📅 Start Date:</strong> ${project_startdate}</div>
                                     <div class='info-item'><strong>📆 Finish Date:</strong> ${project_finishdate}</div>
                                     <div class='info-item'><strong>📍 Address:</strong> ${project_address}</div>
+                                    <div class='info-item'><strong>🔗 Project Link:</strong> ${project_link}</div>
                                 </div>
                             `;
 

@@ -38,6 +38,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     if ($result->num_rows > 0) {
         while ($row = $result->fetch_assoc()) {
             $projects[] = [
+                "project_number" => $row['project_number'],
                 "project_name" => $row['project_name'],
                 "awarding_body" => $row['awarding_body'],
                 "project_id_number" => $row['project_id_number'],
