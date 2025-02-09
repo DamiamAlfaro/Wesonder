@@ -129,19 +129,22 @@
                 $closing_date = $row['closing_date'];
                 $solicitation_url = $row['solicitation_url'];
                 $closing_time = $row['closing_time'];
-
-
                 
                 $string_display = "
-                    <strong>Name:</strong> $awarding_body <br>
-                    <strong>Bidnet Direct URL: </strong> <a href='$url' target='_blank'>$url</a><br>
-                    <strong>Solicitation Number: </strong> $solicitation_number <br>
-                    <strong>Solicitation Name: </strong> $solicitation_name <br>
-                    <strong>Opening Date: </strong> $opening_date <br>
-                    <strong>Closing Date: </strong> $closing_date <br>
-                    <strong>Closing Time: </strong> $closing_time <br>
-                    <strong>Solicitation Link: </strong> <a href='$solicitation_url' target='_blank'>$solicitation_url</a><br>
+                    <div style='font-family: \"Roboto\", sans-serif; color: #2f3640; padding: 12px; background: linear-gradient(135deg, #fdfbfb 0%, #ebedee 100%); border-radius: 10px; box-shadow: 0 4px 8px rgba(0,0,0,0.1);'>
+                        <h3 style='margin: 0 0 8px; font-size: 20px; color: #273c75;'>🏛️ $awarding_body</h3>
+                        <p style='margin: 6px 0;'><strong>🔗 URL:</strong> <a href='$url' target='_blank' style='color: #0097e6; text-decoration: none;'>Visit Site</a></p>
+                        <p style='margin: 4px 0;'><strong>📄 Solicitation #:</strong> <span style='color: #353b48;'>$solicitation_number</span></p>
+                        <p style='margin: 4px 0;'><strong>📝 Name:</strong> <span style='color: #353b48;'>$solicitation_name</span></p>
+                        <p style='margin: 4px 0;'><strong>📅 Opens:</strong> <span style='color: #4cd137;'>$opening_date</span></p>
+                        <p style='margin: 4px 0;'><strong>⏳ Closes:</strong> <span style='color: #e84118;'>$closing_date</span> at <strong>$closing_time</strong></p>
+                        <p style='margin: 6px 0;'><strong>📥 Details:</strong> <a href='$solicitation_url' target='_blank' style='color: #0097e6; text-decoration: none;'>View Solicitation</a></p>
+                    </div>
                 ";
+
+
+
+
                 
                 
                 $mapMarkersScript .= "
