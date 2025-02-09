@@ -218,13 +218,11 @@ def geolocation_segregation_and_fix(df):
     # this is where one asks oneself: "what is really important, what do I want to have control upon?"...
 
     
-    df['PostalCode'] = df['PostalCode'].astype(str).str.split("-").str[0]
+    df['Postal Code'] = df['Postal Code'].astype(str).str.split("-").str[0]
 
     df_cleaned = df[df['X_Coordinates'] != 0]
-    df_cleaned.to_csv('just_in_case_found.csv', index=False)
 
     df_segregated = df[df['X_Coordinates'] == 0]
-    df_segregated.to_csv('just_in_case_nonfound.csv', index=False)
 
 
     return df_cleaned, df_segregated
@@ -259,7 +257,7 @@ def dvbe_concatenation(found_df, nonfound_df):
 
     for index, row in nonfound_df.iterrows():
         
-        zip_code = row['PostalCode']
+        zip_code = row['Postal Code']
 
         if zip_code in df_post_offices['ZipCodeUsed'].values:
             
