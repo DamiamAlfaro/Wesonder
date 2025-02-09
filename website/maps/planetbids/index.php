@@ -27,14 +27,12 @@
     <title>Planetbids Active Bids</title>
     
     <style>
-    
     #map {
         height: 100vh;
         width: 100%;
         position: relative;
     }
     
-    /* Base cluster style */
     .marker-cluster {
         background-clip: padding-box;
         border-radius: 50%;
@@ -80,10 +78,53 @@
         color: blue;
         text-decoration: underline;
     }
-    
+
+    #DvbeForm {
+        position: absolute;
+        top: 20px;
+        right: 20px;
+        background-color: rgba(255, 255, 255, 0.9);
+        padding: 10px;
+        border-radius: 8px;
+        box-shadow: 0 2px 5px rgba(0, 0, 0, 0.3);
+        z-index: 1000;
+        height: auto;
+        max-height: 650px;
+        width: 240px;
+        overflow-y: auto;
+        font-size: 18px;
+        font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+    }
+
+    #DvbeForm .checkbox-container {
+        display: flex;
+        align-items: flex-start;
+        margin-bottom: 15px;
+    }
+
+    #DvbeForm .checkbox-container input[type="checkbox"] {
+        transform: scale(1.2);
+        margin-right: 12px;
+        margin-top: 6px;
+    }
+
+    #DvbeForm .checkbox-container label {
+        font-size: 18px;
+        font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+        line-height: 1.2;
+    }
     </style>
 </head>
 <body>
+    <form id="DvbeForm">
+        <strong>Select Filters</strong><br><br>
+        <div class="checkbox-container">
+            <input type="checkbox" id="filter23" name="filter23">
+            <label for="filter23">Show Active Bids related to Construction</label>
+        </div>
+    </form>
+    <div id="map"></div>
+
     <?php 
         $host = "localhost"; 
         $username = "u978864605_wesonder";
@@ -97,6 +138,7 @@
         }
         
         $mapMarkersScript = "
+            var allMarkers = [];
             var markers = L.markerClusterGroup({
                 iconCreateFunction: function(cluster) {
                     var childCount = cluster.getChildCount();
@@ -131,14 +173,10 @@
                 $solicitation_number = addslashes($row['solicitation_number']);
                 $bid_due_date = addslashes($row['bid_due_date']);
                 $bid_due_time = addslashes($row['bid_due_time']);
-                $bid_status = addslashes($row['bid_status']);
-                $submission_method = addslashes($row['submission_method']);
                 $county = addslashes($row['county']);
                 $x_coordinates = (float)$row['x_coordinates'];
                 $y_coordinates = (float)$row['y_coordinates'];
                 $naics_codes = addslashes($row['naics_codes']);
-                $naics_numeric_codes = addslashes($row['naics_numeric_codes']);
-                $naics_written_codes = addslashes($row['naics_written_codes']);
 
                 $key = "$x_coordinates,$y_coordinates";
                 if (isset($coordinates_tracker[$key])) {
@@ -150,12 +188,7 @@
                 }
 
                 $string_display = "
-                    <div style='
-                        padding: 15px; 
-                        font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
-                        color: #444; 
-                        border-left: 4px solid #444;
-                    '>
+                    <div style='padding: 15px; font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif; color: #444; border-left: 4px solid #444;'>
                         <h2 style='margin-bottom: 8px;'>📄 $bid_title</h2>
                         <p style='margin: 4px 0; font-size: 18px;'>🏢 <strong>$awarding_body</strong></p>
                         <p style='margin: 4px 0; font-size: 18px;'>#️⃣ <strong>$solicitation_number</strong></p>
@@ -163,14 +196,9 @@
                         <p style='margin: 4px 0; font-size: 18px;'>⏰ <strong>Due:</strong> $bid_due_date, $bid_due_time</p>
                         <p style='margin: 4px 0; font-size: 18px;'>📍 <strong>County:</strong> $county</p>
                         <p style='margin: 4px 0; font-size: 18px;'>🔢 <strong>NAICS:</strong> $naics_codes</p>
-                        <a href='$bid_url' target='_blank' style='
-                            color: #444; 
-                            text-decoration: underline;
-                            font-size: 18px
-                        '>🔗 View Bid</a>
+                        <a href='$bid_url' target='_blank' style='color: #444; text-decoration: underline; font-size: 18px;'>🔗 View Bid</a>
                     </div>
                 ";
-
 
                 $mapMarkersScript .= "
                     var marker = L.circleMarker([$x_coordinates, $y_coordinates], {
@@ -179,6 +207,9 @@
                         fillColor: '#3388ff',
                         fillOpacity: 0.5
                     }).bindPopup(" . json_encode($string_display) . ");
+
+                    marker.naics_codes = '$naics_codes';
+                    allMarkers.push(marker);
                     markers.addLayer(marker);
                 ";
             }
@@ -189,13 +220,11 @@
         $conn->close();
     ?>
 
-    <div id="map"></div>
-
     <script>
         var map = L.map('map', {
             renderer: L.canvas()
         }).setView([37.7749, -122.4194], 5);
-        
+
         L.tileLayer('https://tile.openstreetmap.org/{z}/{x}/{y}.png', {
             maxZoom: 19,
             attribution: '&copy; <a href="http://www.openstreetmap.org/copyright">OpenStreetMap</a>'
@@ -203,6 +232,21 @@
 
         <?php echo $mapMarkersScript; ?>
         map.addLayer(markers);
+
+        document.getElementById('filter23').addEventListener('change', function() {
+            markers.clearLayers();
+            if (this.checked) {
+                allMarkers.forEach(function(marker) {
+                    if (marker.naics_codes.split(',').some(code => code.startsWith('23'))) {
+                        markers.addLayer(marker);
+                    }
+                });
+            } else {
+                allMarkers.forEach(function(marker) {
+                    markers.addLayer(marker);
+                });
+            }
+        });
     </script>
 </body>
 </html>
