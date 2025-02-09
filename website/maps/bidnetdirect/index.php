@@ -34,54 +34,49 @@
         position: relative;
     }
     
-    /* Base cluster style */
     .marker-cluster {
         background-clip: padding-box;
-        border-radius: 50%; /* Makes the cluster circular */
+        border-radius: 50%;
         color: black;
         text-align: center;
         font-size: 14px;
         font-weight: bold;
-        line-height: 40px; /* Align text vertically */
+        line-height: 40px;
         cursor: pointer;
     }
     
-    /* Small clusters */
     .marker-cluster-small {
-        background-color: #90ee90; /* Light green */
+        background-color: #90ee90;
         width: 40px;
         height: 40px;
     }
     
-    /* Medium clusters */
     .marker-cluster-medium {
-        background-color: #ffa500; /* Orange */
+        background-color: #ffa500;
         width: 50px;
         height: 50px;
     }
     
-    /* Large clusters */
     .marker-cluster-large {
-        background-color: #ff4500; /* Red */
+        background-color: #ff4500;
         width: 60px;
         height: 60px;
     }
     
     .leaflet-popup-content {
-        max-width: 300px; /* Set the maximum width for the popup */
-        white-space: normal; /* Ensure text wraps within the content */
-        overflow-wrap: break-word; /* Break long words to fit within the popup */
+        max-width: 300px;
+        white-space: normal;
+        overflow-wrap: break-word;
     }
 
-    /* Add scrolling for very large content */
     .leaflet-popup-content-wrapper {
-        max-height: 400px; /* Set a maximum height */
-        overflow-y: auto; /* Enable vertical scrolling if content exceeds height */
+        max-height: 400px;
+        overflow-y: auto;
     }
 
     .leaflet-popup-content a {
-        word-wrap: break-word; /* Break long links into multiple lines */
-        color: blue; /* Optional: Make links more readable */
+        word-wrap: break-word;
+        color: blue;
         text-decoration: underline;
     }
     
@@ -90,7 +85,6 @@
 
 </head>
 <body>
-    
 
     <?php 
         
@@ -99,36 +93,31 @@
         $password = "Elchapillo34?nmddam";
         $dbname = "u978864605_wesonder";
         
-        // Connect to the database
         $conn = new mysqli($host, $username, $password, $dbname);
-        
         
         if ($conn->connect_error) {
             die("Connection failed: " . $conn->connect_error);
         }
         
-        // Markers that will later be displayed on the leaflet.js map
         $mapMarkersScript = "";
-
         
-        $sql = "SELECT * FROM bidnetdirect_bids WHERE solicitation_number != 'none'";
+        $sql = "SELECT * FROM finalized_bidnetdirect_bids WHERE SolicitationNumber != 'none'";
         $result = $conn->query($sql);
 
         if ($result->num_rows > 0) {
             while ($row = $result->fetch_assoc()) {
                 
-                // Assign variables based on the headers of the table from MySQL
-                $awarding_body = addslashes($row['awarding_body']);
-                $url = addslashes($row['url']);
-                $couty = addslashes($row['county']);
-                $x_coordinates = $row['x_coordinates'];
-                $y_coordinates = $row['y_coordinates'];
-                $solicitation_number = $row['solicitation_number'];
-                $solicitation_name = $row['solicitation_name'];
-                $opening_date = $row['opening_date'];
-                $closing_date = $row['closing_date'];
-                $solicitation_url = $row['solicitation_url'];
-                $closing_time = $row['closing_time'];
+                $awarding_body = addslashes($row['AwardingBody']);
+                $url = addslashes($row['AwardingBodyLink']);
+                $county = addslashes($row['County']);
+                $x_coordinates = $row['X_Coordinates'];
+                $y_coordinates = $row['Y_Coordinates'];
+                $solicitation_number = $row['SolicitationNumber'];
+                $solicitation_name = $row['BidTitle'];
+                $opening_date = $row['PostedDate'];
+                $closing_date = $row['DueDate'];
+                $solicitation_url = $row['BidLink'];
+                $closing_time = $row['DueTime'];
                 
                 $string_display = "
                     <div style='font-family: \"Roboto\", sans-serif; color: #2f3640; padding: 12px; background: linear-gradient(135deg, #fdfbfb 0%, #ebedee 100%); border-radius: 10px; box-shadow: 0 4px 8px rgba(0,0,0,0.1);'>
@@ -136,61 +125,48 @@
                         <p style='margin: 6px 0;'><strong>🔗 URL:</strong> <a href='$url' target='_blank' style='color: #0097e6; text-decoration: none;'>Visit Site</a></p>
                         <p style='margin: 4px 0;'><strong>📄 Solicitation #:</strong> <span style='color: #353b48;'>$solicitation_number</span></p>
                         <p style='margin: 4px 0;'><strong>📝 Name:</strong> <span style='color: #353b48;'>$solicitation_name</span></p>
-                        <p style='margin: 4px 0;'><strong>📅 Opens:</strong> <span style='color: #4cd137;'>$opening_date</span></p>
+                        <p style='margin: 4px 0;'><strong>🗓️ Opens:</strong> <span style='color: #4cd137;'>$opening_date</span></p>
                         <p style='margin: 4px 0;'><strong>⏳ Closes:</strong> <span style='color: #e84118;'>$closing_date</span> at <strong>$closing_time</strong></p>
                         <p style='margin: 6px 0;'><strong>📥 Details:</strong> <a href='$solicitation_url' target='_blank' style='color: #0097e6; text-decoration: none;'>View Solicitation</a></p>
                     </div>
                 ";
-
-
-
-
-                
                 
                 $mapMarkersScript .= "
                     var marker = L.circleMarker([$x_coordinates, $y_coordinates], {
-                        radius: 6, // Marker size
-                        color: '#3388ff', // Border color
-                        fillColor: '#3388ff', // Fill color
-                        fillOpacity: 0.5 // Opacity
+                        radius: 6,
+                        color: '#3388ff',
+                        fillColor: '#3388ff',
+                        fillOpacity: 0.5
                     }).bindPopup(" . json_encode($string_display) . ");
                     markers.addLayer(marker);
                 ";
-                
             }
         } else {
             echo "No results found.";
         }
         
-        // Close the connection
         $conn->close();
-
     ?>
-    
 
     <div id="map"></div>
     
     <script>
         var map = L.map('map', {
-            renderer: L.canvas() // Enable Canvas rendering
+            renderer: L.canvas()
         }).setView([37.7749, -122.4194], 5);
     
-        // Add tile layer
         L.tileLayer('https://tile.openstreetmap.org/{z}/{x}/{y}.png', {
             maxZoom: 19,
             attribution: '&copy; <a href="http://www.openstreetmap.org/copyright">OpenStreetMap</a>'
         }).addTo(map);
     
-        // Create a MarkerClusterGroup with custom options
         var markers = L.markerClusterGroup({
-            disableClusteringAtZoom: 18, // Disable clustering at zoom level 18 and closer
-            maxClusterRadius: 40, // Cluster markers within a 40-pixel radius
-            spiderfyOnMaxZoom: true, // Allow spiderfying overlapping markers
-            showCoverageOnHover: false, // Don't show cluster coverage area on hover
+            disableClusteringAtZoom: 18,
+            maxClusterRadius: 40,
+            spiderfyOnMaxZoom: true,
+            showCoverageOnHover: false,
             iconCreateFunction: function(cluster) {
-                // Customize cluster icon appearance
                 var childCount = cluster.getChildCount();
-    
                 var c = 'marker-cluster-';
                 if (childCount < 5) {
                     c += 'small';
@@ -199,7 +175,6 @@
                 } else {
                     c += 'large';
                 }
-    
                 return new L.DivIcon({
                     html: '<div><span>' + childCount + '</span></div>',
                     className: 'marker-cluster ' + c,
@@ -208,13 +183,10 @@
             }
         });
     
-        // Add dynamically generated markers
         <?php echo $mapMarkersScript; ?>
-    
-        // Add the MarkerClusterGroup to the map
+        
         map.addLayer(markers);
     </script>
-
 
 </body>
 </html>
