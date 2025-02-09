@@ -11,18 +11,16 @@
 }
 
 html, body {
-    background-color: #F5F5F5;  /* Keep your original background color */
+    background-color: #F5F5F5;
     margin: 0;
     padding: 0;
-    height: 400vh;  /* Adjust as needed */
+    height: 400vh;
     overflow-x: hidden;
     position: relative;
     font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
-    animation: fadeInEase 1.0s ease-out forwards;
+    animation: fadeInEase 0.6s ease-out forwards;
     opacity: 0;
 }
-
-
 
 /* Logo Background Setup */
 #background-logo {
@@ -30,56 +28,78 @@ html, body {
     top: 20%;
     left: 50%;
     transform: translate(-50%, 0);
-    width: 75vw;  /* Adjust size as needed */
-    opacity: 0.07; /* Light transparency for a subtle effect */
-    pointer-events: none;  /* So it doesn't interfere with clicks */
-    transition: transform 0.1s ease-out;  /* Smooth follow effect */
-    z-index: -1;  /* Ensure it stays in the background */
+    width: 75vw;
+    opacity: 0.07;
+    pointer-events: none;
+    transition: transform 0.1s ease-out;
+    z-index: -1;
 }
-
-
 
 main {
     display: block;
     width: 100%;
 }
 
-
-#video_container {
-    display: flex; /* Change to flex to center the video easily */
-    justify-content: center;
+#first_section {
+    display: flex;
+    justify-content: space-between;
     align-items: center;
-    width: 100vw; /* Initial full width */
-    height: 90vh; /* Initial full height */
-    margin: 0 auto; /* Center horizontally */
-    overflow: hidden;
-    position: relative;
-    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2); /* Optional: shadow for better aesthetics */
-
+    padding: 1rem;
+    background-color: #FBFBFB;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+    cursor: default;
 }
 
+#first_section h1 {
+    margin: 0 auto 0 4.5vw;
+    font-size: 3rem;
+    flex: 1;
+    font-weight: 450;
+}
 
+#first_section #section_logo {
+    flex: 1;
+    display: flex;
+    justify-content: flex-end;
+    margin-right: 4vw; /* Move the logo slightly to the left */
+}
+
+#first_section #section_logo img {
+    width: 150px;  /* Adjust size as needed */
+    height: auto;
+}
+
+#video_container {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    width: 88vw;
+    height: 90vh;
+    margin: 40px auto;
+    overflow: hidden;
+    position: relative;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.4);
+    border-radius: 10px;
+}
 
 #california_video {
     position: relative;
-    width: 100%; /* Make the video fill the container */
-    height: 100%; /* Maintain full height within the container */
+    width: 100%;
+    height: 100%;
     overflow: hidden;
 }
 
 #california_video video {
     width: 100%;
     height: 100%;
-    object-fit: cover; /* Ensure the video covers the container nicely */
+    object-fit: cover;
 }
-
-
 
 #overlay_logo {
     position: absolute;
-    top: 3.5vh; 
-    left: 3.5vw; 
-    width: 9.5vw; 
+    top: 3.5vh;
+    left: 3.5vw;
+    width: 9.5vw;
     height: auto;
 }
 
@@ -88,27 +108,24 @@ main {
     height: auto;
 }
 
-
 #overlay_text {
     position: absolute;
-    top: 15vh;           /* Adjust this as needed to center the text vertically */
+    top: 15vh;
     right: 3vw;
     color: white;
-    font-size: 5vw;      /* Change from 5.5vw to 5vw for better scaling */
-    line-height: 1.2;    /* Ensure consistent spacing between lines */
+    font-size: 5vw;
+    line-height: 1.2;
     font-weight: 310;
     text-align: right;
     padding: 1vw;
     border-radius: 0.5vw;
-    max-height: 80%;     /* Prevent text from exceeding the video height */
-    overflow: hidden;    /* Hide overflow if text becomes too large */
+    max-height: 80%;
+    overflow: hidden;
     display: flex;
     flex-direction: column;
-    justify-content: center;  /* Vertically center the text */
+    justify-content: center;
     cursor: default;
 }
-
-
 
 
 #new_section {
@@ -420,11 +437,27 @@ main {
 }
 
 .last-section-image img {
-    width: 100%;
+    width: 95%;
     height: auto;
     border-radius: 10px;         /* Rounded corners */
     box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);  /* Subtle shadow for depth */
 }
+
+.last-section-image figure {
+    margin: 0;                   /* Remove default margins */
+    text-align: center;          /* Center-align the caption */
+}
+
+.last-section-image figcaption {
+    font-size: 1.4em;            /* Slightly smaller than body text */
+    color: black;              /* Soft gray for less emphasis */
+    margin-top: 10px;            /* Space between image and caption */
+    font-style: italic;
+    font-weight: 400;
+    opacity: 0.7;
+    cursor: default;
+}
+
 
 /* Responsive Behavior for Smaller Screens */
 @media (max-width: 768px) {
@@ -459,15 +492,13 @@ main {
 /*FOOTER */
 
 
-/* Footer Styling */
 #wesonder-footer {
-    background-color: #D7D3BF;    /* Dark background for contrast */
-    color: #F8FAFC;               /* Light text */
+    background-color: rgba(183, 183, 183, 0.3);  /* 90% opacity for the background */
+    color: black;
     padding: 40px 20px;
     text-align: center;
     margin-top: 50px;
 }
-
 
 
 .footer-content {
@@ -475,7 +506,7 @@ main {
     flex-wrap: wrap;
     justify-content: space-between;
     align-items: center;
-    max-width: 1200px;
+    max-width: 1400px;
     margin: 0 auto;
     gap: 20px;
 }
@@ -494,30 +525,47 @@ main {
 }
 
 .footer-links a {
-    color: #F8FAFC;
+    color: black;
     text-decoration: none;
-    font-size: 1.1em;
+    font-size: 2.0em;
+    font-weight: 450;
     transition: color 0.3s ease;
+    padding: 10px;
+
 }
 
 .footer-links a:hover {
-    color: #00BFFF;  /* Highlight link on hover */
+    color: #6A9C89;
+    background-color: rgba(0, 0, 0, 0.1);
+    border-radius: 10px;
+    transition: 1s;
+}
+
+.footer-info {
+    font-size: 1.8em;
+    font-weight: 450;
+    cursor: default;
 }
 
 /* Footer Info */
 .footer-info p {
     margin: 5px 0;
-    font-size: 0.9em;
     cursor: default;
 }
 
 .footer-info a {
-    color: #F8FAFC;
+    color: black;
     text-decoration: none;
+    transition: 0s background-color;
+    padding: 10px;
+
 }
 
 .footer-info a:hover {
-    color: #00BFFF;
+    color: #6A9C89;
+    background-color: rgba(0, 0, 0, 0.1);
+    border-radius: 10px;
+    transition: 1s;
 }
 
 /* Responsive Footer */
@@ -535,13 +583,19 @@ main {
 
 .damiam-alfaro {
     cursor: default;
+    font-size: 1.8em;
+    display: block;
 }
 
 .damiam-alfaro a {
-    color: #F8FAFC;
+    color: black;
     text-decoration: none;
     transition: 0s background-color;
     padding: 10px;
+}
+
+.damiam-alfaro p {
+    font-size: 12px;
 }
 
 .damiam-alfaro a:hover {

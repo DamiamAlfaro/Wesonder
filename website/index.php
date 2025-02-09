@@ -20,24 +20,20 @@
 
     <main>
 
-        <div id='first_section'>
-            <h1>The thing is huge</h1>
+        <div id="first_section">
+            <h1>Wesonder</h1>
+            <div id="section_logo">
+                <img src="media/bauhaus_logo_circle_black.png" alt="Section Logo">
+            </div>
         </div>
-        
+
         <div id="video_container">
             <section id="california_video">
                 <video autoplay loop muted playsinline>
                     <source src="media/wesonder_reduced_r1.mp4" type="video/mp4">
                 </video>
-
             </section>
-            <div id="overlay_logo">
-                <img src="media/bauhaus_logo_transparent.png">
-            </div>
             <div id="overlay_text">
-                Wesonder<br>
-                <br>
-
                 Mapping<br>
                 the next<br>
                 opportunity.
@@ -154,8 +150,12 @@
 
                 <!-- Right Side (Image) -->
                 <div class="last-section-image">
-                    <img src="media/bauhaus_logo_circle_black.png" alt="Construction Team">
+                    <figure>
+                        <img src="media/habitat_57.jpg" alt="Habitat 57, Quebec">
+                        <figcaption>Habitat 67, Cité du Havre, Quebec, Canada</figcaption>
+                    </figure>
                 </div>
+
             </section>
         </div>
         
@@ -165,20 +165,17 @@
     <footer id="wesonder-footer">
         <div class="footer-content">
             <div class="footer-logo">
-                <img src="media/bauhaus_logo_transparent.png" alt="Wesonder Logo">
+                <img src="media/bauhaus_logo_circle_black.png" alt="Wesonder Logo">
             </div>
             <div class="footer-links">
-                <a href="#">Home</a>
-                <a href="#">About Us</a>
-                <a href="#">Contact</a>
-                <a href="#">Privacy Policy</a>
+                <a href="#">Sign Up</a>
             </div>
             <div class="footer-info">
-                <p>&copy; 2024 Wesonder. All Rights Reserved.</p>
-                <p>Email: <a href="mailto:support@wesonder.com">support@wesonder.com</a></p>
+                <p><a href="mailto:support@wesonder.com">support@wesonder.com</a></p>
             </div>
             <div class="damiam-alfaro">
                 A piece by <a href="https://damiamalfaro.com/" target="_blank">Damiam Alfaro</a>
+                <p>Copyright &copy; 2025 Damiam Alfaro</p>
             </div>
         </div>
     </footer>
