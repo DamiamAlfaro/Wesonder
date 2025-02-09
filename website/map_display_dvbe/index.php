@@ -220,21 +220,21 @@
                                     padding: 16px;
                                     line-height: 1.6;
                                     font-family: -apple-system, BlinkMacSystemFont, \"Segoe UI\", Roboto, \"Helvetica Neue\", Arial, sans-serif;
-                                    font-size: 14px;
+                                    font-size: 24px;
                                     color: #2c3e50;
                                 ">
-                                    <div style="margin-bottom: 10px;"><strong>🏢 Name:</strong> ${legal_business_name}</div>
-                                    <div style="margin-bottom: 10px;"><strong>📋 Certification Type:</strong> ${certification_type}</div>
-                                    <div style="margin-bottom: 10px;"><strong>📧 Email:</strong> <a href="mailto:${email_id}" style="color: #2980b9; text-decoration: none;">${email_id}</a></div>
-                                    <div style="margin-bottom: 10px;"><strong>📞 Phone:</strong> ${telephone}</div>
-                                    <div style="margin-bottom: 10px;"><strong>🔧 Licenses:</strong> ${license}</div>
-                                    <div style="margin-bottom: 10px;"><strong>🏷️ Classifications:</strong> 
+                                    <div style="margin-bottom: 10px; font-size: 16px;"><strong>🏢 Name:</strong> ${legal_business_name}</div>
+                                    <div style="margin-bottom: 10px; font-size: 16px;"><strong>📋 Certification Type:</strong> ${certification_type}</div>
+                                    <div style="margin-bottom: 10px; font-size: 16px;"><strong>📧 Email:</strong> <a href="mailto:${email_id}" style="color: #2980b9; text-decoration: none;">${email_id}</a></div>
+                                    <div style="margin-bottom: 10px; font-size: 16px;"><strong>📞 Phone:</strong> ${telephone}</div>
+                                    <div style="margin-bottom: 10px; font-size: 16px;"><strong>🔧 Licenses:</strong> ${license}</div>
+                                    <div style="margin-bottom: 10px; font-size: 16px;"><strong>🏷️ Classifications:</strong> 
                                         <div class="popup-classifications" style="background-color: #ecf0f1; padding: 8px; border-radius: 6px;">
                                             ${keywords}
                                         </div>
                                     </div>
-                                    <div style="margin-bottom: 10px;"><strong>🏗️ Industry Type:</strong> ${industry_type}</div>
-                                    <div style="margin-bottom: 10px;"><strong>📍 Address:</strong> ${complete_address}</div>
+                                    <div style="margin-bottom: 10px; font-size: 16px"><strong>🏗️ Industry Type:</strong> ${industry_type}</div>
+                                    <div style="margin-bottom: 10px; font-size: 16px"><strong>📍 Address:</strong> ${complete_address}</div>
                                 </div>
                             `;
                            
