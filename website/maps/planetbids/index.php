@@ -3,9 +3,9 @@
 <head>
     <meta charset="UTF-8"/>
     <meta name="author" content="Damiam Alfaro"/>
-    <meta name="description" content="WESONDER Map Display"/>
-    <link rel="icon" type="image/png" href="../media/bauhaus_logo_transparent.png"/>
-    <link href="../style.css" rel="stylesheet" type="text/css">
+    <meta name="description" content="Planetbids"/>
+    <link rel="icon" type="image/png" href="../../media/bauhaus_logo_transparent.png"/>
+    <link href="../../style.css" rel="stylesheet" type="text/css">
 
     <!-- Leaflet CSS -->
     <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"
@@ -24,7 +24,7 @@
     <!-- Leaflet MarkerCluster JS -->
     <script src="https://unpkg.com/leaflet.markercluster@1.5.3/dist/leaflet.markercluster.js"></script>
 
-    <title>Planetbids Bids</title>
+    <title>Planetbids Active Bids</title>
     
     <style>
     
@@ -37,84 +37,69 @@
     /* Base cluster style */
     .marker-cluster {
         background-clip: padding-box;
-        border-radius: 50%; /* Makes the cluster circular */
+        border-radius: 50%;
         color: black;
         text-align: center;
         font-size: 14px;
         font-weight: bold;
-        line-height: 40px; /* Align text vertically */
+        line-height: 40px;
         cursor: pointer;
     }
     
-    /* Small clusters */
     .marker-cluster-small {
-        background-color: #90ee90; /* Light green */
+        background-color: #90ee90;
         width: 40px;
         height: 40px;
     }
     
-    /* Medium clusters */
     .marker-cluster-medium {
-        background-color: #ffa500; /* Orange */
+        background-color: #ffa500;
         width: 50px;
         height: 50px;
     }
     
-    /* Large clusters */
     .marker-cluster-large {
-        background-color: #ff4500; /* Red */
+        background-color: #ff4500;
         width: 60px;
         height: 60px;
     }
     
     .leaflet-popup-content {
-        max-width: 300px; /* Set the maximum width for the popup */
-        white-space: normal; /* Ensure text wraps within the content */
-        overflow-wrap: break-word; /* Break long words to fit within the popup */
+        max-width: 300px;
+        white-space: normal;
+        overflow-wrap: break-word;
     }
 
-    /* Add scrolling for very large content */
     .leaflet-popup-content-wrapper {
-        max-height: 400px; /* Set a maximum height */
-        overflow-y: auto; /* Enable vertical scrolling if content exceeds height */
+        max-height: 400px;
+        overflow-y: auto;
     }
 
     .leaflet-popup-content a {
-        word-wrap: break-word; /* Break long links into multiple lines */
-        color: blue; /* Optional: Make links more readable */
+        word-wrap: break-word;
+        color: blue;
         text-decoration: underline;
     }
     
     </style>
-
-
 </head>
 <body>
-    
-
     <?php 
-        
         $host = "localhost"; 
         $username = "u978864605_wesonder";
         $password = "Elchapillo34?nmddam";
         $dbname = "u978864605_wesonder";
         
-        // Connect to the database
         $conn = new mysqli($host, $username, $password, $dbname);
-        
         
         if ($conn->connect_error) {
             die("Connection failed: " . $conn->connect_error);
         }
         
-        // Markers that will later be displayed on the leaflet.js map
         $mapMarkersScript = "
             var markers = L.markerClusterGroup({
                 iconCreateFunction: function(cluster) {
-                    // Calculate the number of markers in the cluster
                     var childCount = cluster.getChildCount();
-                    
-                    // Define a class based on the number of markers
                     var c = 'marker-cluster-'; 
                     if (childCount < 25) {
                         c += 'small';
@@ -123,101 +108,92 @@
                     } else {
                         c += 'large';
                     } 
-        
-                    // Return a custom cluster icon
                     return new L.DivIcon({ 
                         html: '<div><span>' + childCount + '</span></div>',
                         className: 'marker-cluster ' + c, 
-                        iconSize: [40, 40] // Size of the cluster icon
+                        iconSize: [40, 40]
                     });
                 }
             });
         ";
 
-        
-        $sql = "SELECT * FROM planetbids";
+        $sql = "SELECT * FROM planetbids_active_bids";
         $result = $conn->query($sql);
         
-        $coordinates_tracker = []; // To track occurrences of x, y pairs
+        $coordinates_tracker = [];
 
         if ($result->num_rows > 0) {
             while ($row = $result->fetch_assoc()) {
-                
-                // Assign variables based on the headers of the table from MySQL
-                $allegedab = addslashes($row['allegedab']);
-                $weblink = addslashes($row['weblink']);
+                $bid_url = addslashes($row['bid_url']);
+                $awarding_body = addslashes($row['awarding_body']);
+                $posted_date = addslashes($row['posted_date']);
+                $bid_title = addslashes($row['bid_title']);
+                $solicitation_number = addslashes($row['solicitation_number']);
+                $bid_due_date = addslashes($row['bid_due_date']);
+                $bid_due_time = addslashes($row['bid_due_time']);
+                $bid_status = addslashes($row['bid_status']);
+                $submission_method = addslashes($row['submission_method']);
                 $county = addslashes($row['county']);
-                $x_coordinates = (float)$row['x_coordinate'];
-                $y_coordinates = (float)$row['y_coordinate'];
-                $bid_url = $row['bid_url'];
-                $bid_ab = $row['bid_ab'];
-                $bid_posted_date = $row['bid_posted_date'];
-                $bid_title = $row['bid_title'];
-                $bid_invitation_id = $row['bid_invitation_id'];
-                
-                // Split the date due date variable into two for Date and Time
-                $bid_due_date = $row['bid_due_date'];
-                $parts = explode(" ",$bid_due_date);
-                $bid_due_day = $parts[0];
-                $bid_due_time = $parts[1];
-                
-                $bid_status = $row['bid_status'];
-                $bid_submission_method = $row['bid_submission_method'];
+                $x_coordinates = (float)$row['x_coordinates'];
+                $y_coordinates = (float)$row['y_coordinates'];
+                $naics_codes = addslashes($row['naics_codes']);
+                $naics_numeric_codes = addslashes($row['naics_numeric_codes']);
+                $naics_written_codes = addslashes($row['naics_written_codes']);
 
                 $key = "$x_coordinates,$y_coordinates";
                 if (isset($coordinates_tracker[$key])) {
-                    // Increment the counter for this coordinate pair
                     $coordinates_tracker[$key]++;
-        
-                    // Apply a small random variation
-                    $x_coordinates += mt_rand(-10, 10) / 1000; // Adjust to your precision needs
+                    $x_coordinates += mt_rand(-10, 10) / 1000;
                     $y_coordinates += mt_rand(-10, 10) / 1000;
                 } else {
-                    // Initialize the counter for this coordinate pair
                     $coordinates_tracker[$key] = 1;
                 }
 
-                
                 $string_display = "
-                    <strong>Name:</strong> $bid_ab <br>
-                    <strong>Bid URL: </strong> <a href='$bid_url' target='_blank'>$bid_url</a><br>
-                    <strong>Solicitation Number: </strong> $bid_invitation_id <br>
-                    <strong>Solicitation Name: </strong> $bid_title <br>
-                    <strong>Opening Date: </strong> $bid_posted_date <br>
-                    <strong>Closing Date: </strong> $bid_due_day <br>
-                    <strong>Closing Time: </strong> $bid_due_time <br>
-                    <strong>Submission Method: </strong> $bid_submission_method<br>
-                    <strong>X: </strong> $x_coordinates<br>
-                    <strong>Y: </strong> $y_coordinates<br>
+                    <div style='
+                        padding: 15px; 
+                        font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+                        color: #444; 
+                        border-left: 4px solid #444;
+                    '>
+                        <h2 style='margin-bottom: 8px;'>📄 $bid_title</h2>
+                        <p style='margin: 4px 0; font-size: 18px;'>🏢 <strong>$awarding_body</strong></p>
+                        <p style='margin: 4px 0; font-size: 18px;'>#️⃣ <strong>$solicitation_number</strong></p>
+                        <p style='margin: 4px 0; font-size: 18px;'>🗓️ <strong>Posted:</strong> $posted_date</p>
+                        <p style='margin: 4px 0; font-size: 18px;'>⏰ <strong>Due:</strong> $bid_due_date, $bid_due_time</p>
+                        <p style='margin: 4px 0; font-size: 18px;'>📍 <strong>County:</strong> $county</p>
+                        <p style='margin: 4px 0; font-size: 18px;'>🔢 <strong>NAICS:</strong> $naics_codes</p>
+                        <a href='$bid_url' target='_blank' style='
+                            color: #444; 
+                            text-decoration: underline;
+                            font-size: 18px
+                        '>🔗 View Bid</a>
+                    </div>
                 ";
-                
-                
+
+
                 $mapMarkersScript .= "
                     var marker = L.circleMarker([$x_coordinates, $y_coordinates], {
-                        radius: 6, // Marker size
-                        color: '#3388ff', // Border color
-                        fillColor: '#3388ff', // Fill color
-                        fillOpacity: 0.5 // Opacity
+                        radius: 7,
+                        color: '#3388ff',
+                        fillColor: '#3388ff',
+                        fillOpacity: 0.5
                     }).bindPopup(" . json_encode($string_display) . ");
                     markers.addLayer(marker);
                 ";
-                
             }
         } else {
             echo "No results found.";
         }
         
-        // Close the connection
         $conn->close();
-
     ?>
-    
 
     <div id="map"></div>
 
     <script>
         var map = L.map('map', {
-            renderer: L.canvas() // Enable Canvas rendering
+            renderer: L.canvas()
         }).setView([37.7749, -122.4194], 5);
         
         L.tileLayer('https://tile.openstreetmap.org/{z}/{x}/{y}.png', {
@@ -225,15 +201,8 @@
             attribution: '&copy; <a href="http://www.openstreetmap.org/copyright">OpenStreetMap</a>'
         }).addTo(map);
 
-        
         <?php echo $mapMarkersScript; ?>
         map.addLayer(markers);
-        
-        
-        
-        
     </script>
-
-
 </body>
 </html>
