@@ -39,7 +39,8 @@
             top: 20px; /* Distance from the top */
             right: 20px; /* Distance from the right */
             background-color: rgba(255, 255, 255, 0.9); /* Semi-transparent white background */
-            padding: 10px; /* Padding for better spacing */
+            line-height: 160%;
+            padding: 20px; /* Padding for better spacing */
             border-radius: 8px; /* Rounded corners */
             box-shadow: 0 2px 5px rgba(0, 0, 0, 0.3); /* Add a slight shadow */
             z-index: 1000; /* Ensure it is above the map */
@@ -49,6 +50,11 @@
             overflow-y: auto; /* Enable scrolling for vertical overflow */
         }
         
+        #checkbox-title {
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+            font-weight: 350;
+        }
+        
         #checkboxForm input[type="checkbox"] {
             transform: scale(1.3);
             margin-right: 10px; /* Add spacing between checkbox and label */
@@ -56,8 +62,46 @@
         
         #checkboxForm input[type="checkbox"] + label {
             font-size: 20px; /* Adjust font size */
-            font-family: Optima;
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+            font-weight: 300;
         }
+        
+        .info-card {
+            background: #ffffff;
+            border-radius: 16px;
+            box-shadow: 0 8px 16px rgba(0, 0, 0, 0.1);
+            padding: 24px;
+            max-width: 300px;  /* Adjust width to fit inside the popup */
+            line-height: 1.6;
+            transition: transform 0.3s ease;
+        }
+        
+        .info-card strong {
+            display: block;
+            font-weight: bold;
+            font-size: 1.1em;
+            color: #2c3e50;
+            margin-bottom: 4px;
+        }
+        
+        .info-item {
+            background-color: #ecf0f1;
+            padding: 10px 14px;
+            border-radius: 8px;
+            margin-bottom: 12px;
+            font-size: 15px;
+        }
+        
+        .info-card a {
+            color: #2980b9;
+            text-decoration: none;
+            font-weight: 600;
+        }
+        
+        .info-card a:hover {
+            text-decoration: underline;
+        }
+
         
     </style>
     
@@ -67,6 +111,9 @@
 <body>
     
     <form id="checkboxForm">
+        
+        <strong id='checkbox-title'>Select a County</strong><br><br>
+        
         <input type="checkbox" id="county1" name="county1" value="Alameda" onclick="handleCheckboxClick(this)">
         <label for="county1">Alameda</label><br>
     
@@ -288,17 +335,20 @@
                             const project_county = project.county;
                             
                             const popupContent = `
-                                <strong>Project Name:</strong> ${project_name}<br>
-                                <strong>Awarding Body:</strong> ${awarding_body}<br>
-                                <strong>Project ID Number:</strong> ${project_id_number}<br>
-                                <strong>Description:</strong> ${project_description}<br>
-                                <strong>Start Date:</strong> ${project_startdate}<br>
-                                <strong>Finish Date:</strong> ${project_finishdate}<br>
-                                <strong>Address:</strong> ${project_address}<br>
+                                <div class='info-card'>
+                                    <div class='info-item'><strong>🏗️ Project Name:</strong> ${project_name}</div>
+                                    <div class='info-item'><strong>🏛️ Awarding Body:</strong> ${awarding_body}</div>
+                                    <div class='info-item'><strong>🔢 Project ID Number:</strong> ${project_id_number}</div>
+                                    <div class='info-item'><strong>📝 Description:</strong> ${project_description}</div>
+                                    <div class='info-item'><strong>📅 Start Date:</strong> ${project_startdate}</div>
+                                    <div class='info-item'><strong>📆 Finish Date:</strong> ${project_finishdate}</div>
+                                    <div class='info-item'><strong>📍 Address:</strong> ${project_address}</div>
+                                </div>
                             `;
+
                            
                             var marker = L.circleMarker([x_coordinate, y_coordinate], {
-                                radius: 6, // Marker size
+                                radius: 8, // Marker size
                                 color: '#3388ff', // Border color
                                 fillColor: '#3388ff', // Fill color
                                 fillOpacity: 0.5 // Opacity
