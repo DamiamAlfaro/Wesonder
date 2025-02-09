@@ -81,8 +81,8 @@
 
     #DvbeForm {
         position: absolute;
-        top: 20px;
-        right: 20px;
+        top: 40px;
+        right: 40px;
         background-color: rgba(255, 255, 255, 0.9);
         padding: 10px;
         border-radius: 8px;
@@ -120,7 +120,7 @@
         <strong>Select Filters</strong><br><br>
         <div class="checkbox-container">
             <input type="checkbox" id="filter23" name="filter23">
-            <label for="filter23">Show Active Bids related to Construction</label>
+            <label for="filter23">Show Active Bids related to Construction 🏗️</label>
         </div>
     </form>
     <div id="map"></div>
