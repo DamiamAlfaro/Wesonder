@@ -48,7 +48,7 @@
             width: 240px; /* Fixed width */
             overflow-y: auto; /* Enable scrolling for vertical overflow */
             font-size: 18px;
-            font-family: Optima;
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;;
         }
         
         #DvbeForm .checkbox-container {
@@ -59,13 +59,13 @@
         
         #DvbeForm .checkbox-container input[type="checkbox"] {
             transform: scale(1.2);
-            margin-right: 10px; /* Add spacing between checkbox and label */
-            margin-top: 2px; /* Adjust alignment with text */
+            margin-right: 12px; /* Add spacing between checkbox and label */
+            margin-top: 6px; /* Adjust alignment with text */
         }
         
         #DvbeForm .checkbox-container label {
             font-size: 18px; /* Adjust font size */
-            font-family: Optima;
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;;
             line-height: 1.2; /* Add better spacing for multiple lines */
         }
         
@@ -91,17 +91,17 @@
         
         <div class="checkbox-container">
             <input type="checkbox" id="license1" name="license1" value="DVBE" onclick="DvbeCheckboxingClick(this)">
-            <label for="license1">Disabled Veteran Business Enterprise</label>
+            <label for="license1">Disabled Veteran Business Enterprise (DVBE)</label>
         </div>
         
         <div class="checkbox-container">
             <input type="checkbox" id="license2" name="license2" value="SB" onclick="DvbeCheckboxingClick(this)">
-            <label for="license2">Small Business</label>
+            <label for="license2">Small Business (SB)</label>
         </div>
         
         <div class="checkbox-container">
             <input type="checkbox" id="license3" name="license3" value="SB(Micro)" onclick="DvbeCheckboxingClick(this)">
-            <label for="license3">Small Business (Micro)</label>
+            <label for="license3">Small Business (SB - Micro)</label>
         </div>
     </form>
 
@@ -154,32 +154,34 @@
                                 // Get the count of markers in the cluster
                                 var count = cluster.getChildCount();
                         
-                                // Define border and fill colors dynamically
-                                var clusterFillColor = count < 10 ? '#68c4cc' : count < 50 ? '#ffa500' : '#ff5733'; // Fill colors
-                                var clusterBorderColor = count < 10 ? '#1f5572' : count < 50 ? '#cc8400' : '#b53324'; // Border colors
+                                // Define slightly darker, yet still soft fill and border colors dynamically
+                                var clusterFillColor = count < 10 ? '#3A7D44' : count < 50 ? '#497D74' : '#818C78'; // Slightly darker fill colors
+                                var clusterBorderColor = count < 10 ? '#3F4F44' : count < 50 ? '#71BBB2' : '#A7B49E'; // Slightly darker border colors
                         
-                                // Create the custom cluster icon
+                                // Create the custom cluster icon with a minimalistic design
                                 return L.divIcon({
                                     html: `
                                         <div style="
                                             background-color: ${clusterFillColor}; 
-                                            border: 3px solid ${clusterBorderColor}; 
+                                            border: 2px solid ${clusterBorderColor}; 
                                             border-radius: 50%; 
-                                            color: black; 
+                                            color: #333; 
                                             text-align: center; 
                                             line-height: 35px; 
                                             width: 35px; 
                                             height: 35px;
-                                            font-weight: bold;
-                                            font-size: 13px;
+                                            font-weight: 500;
+                                            font-size: 14px;
+                                            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
                                         ">
                                             ${count}
                                         </div>`,
                                     className: 'cluster-icon',
-                                    iconSize: [20, 20] // Size of the cluster icon
+                                    iconSize: [30, 30] // Slightly larger for better visibility
                                 });
                             }
                         });
+
 
                         
                         dvbes.forEach(dvbe_entity => {
