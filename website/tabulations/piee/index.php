@@ -20,10 +20,10 @@
 
     // Valid columns for sorting and searching
     $valid_columns = [
-        'functional_url', 'solicitation_value', 'notice_type_element', 'due_date', 'set_aside_code', 
-        'contact_name', 'description', 'subject', 'posting_date', 'product_service_code', 
-        'naics_code', 'place_of_performance', 'address', 'dodaac', 'office_name', 
-        'office_address', 'X_Coordinates', 'Y_Coordinates'
+        'functional_url', 'solicitation_value', 'notice_type_element', 'due_date', 'posting_date', 'set_aside_code', 
+        'contact_name', 'description', 'subject', 'product_service_code', 
+        'naics_code', 'dodaac', 
+        'office_address'
     ];
 
     $sort_column = isset($_GET['sort']) && in_array($_GET['sort'], $valid_columns) ? $_GET['sort'] : 'subject';
@@ -99,7 +99,7 @@
             text-align: center;
         }
         th {
-            background-color: #729762;
+            background-color: #23486A;
             color: white;
             text-transform: uppercase;
             position: sticky;
@@ -162,17 +162,24 @@
             border-radius: 4px;
         }
         .hidden-description {
+            display: block;
             white-space: nowrap;
             overflow: hidden;
             text-overflow: ellipsis;
-            max-width: 150px;
+            max-width: 300px;
+            transition: all 0.3s ease-in-out;
+            text-decoration: underline;
         }
         .hidden-description:hover {
             white-space: normal;
-            overflow: visible;
+            overflow: hidden;
+            text-overflow: clip;
+            max-height: 100%;
             background-color: #f9fafb;
-            position: relative;
-            z-index: 1;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+            padding: 10px;
+            font-size: 20px;
+            text-decoration: none;
         }
     </style>
 </head>
