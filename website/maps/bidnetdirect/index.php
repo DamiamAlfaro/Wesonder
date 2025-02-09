@@ -192,9 +192,9 @@
                 var childCount = cluster.getChildCount();
     
                 var c = 'marker-cluster-';
-                if (childCount < 25) {
+                if (childCount < 5) {
                     c += 'small';
-                } else if (childCount < 350) {
+                } else if (childCount < 25) {
                     c += 'medium';
                 } else {
                     c += 'large';
