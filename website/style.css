@@ -128,17 +128,12 @@ main {
     overflow: hidden;               /* Ensures content stays within rounded corners */
 
     /* Existing Animation */
-    opacity: 0;                     /* Hidden initially */
+    opacity: 1;                     /* Hidden initially */
     transform: translateY(50px);    /* Slight downward offset */
     transition: opacity 1.5s ease-out, transform 1.5s ease-out; /* Smooth transition */
 }
 
 
-/* When in Viewport */
-#new_section.visible {
-    opacity: 1;                     /* Fade in */
-    transform: translateY(0);       /* Slide up into place */
-}
 
 #new_section:hover {
     box-shadow: 0 12px 18px rgba(0, 0, 0, 0.3); /* Deeper shadow on hover */
@@ -249,15 +244,11 @@ main {
     text-align: left;
     margin: 50px auto;
     width: 90%;
-    opacity: 0;
+    opacity: 1;
     transform: translateY(50px); /* Slide slightly from below */
     transition: opacity 1.5s ease-out, transform 1.5s ease-out;
 }
 
-#wesonder_functionality.visible {
-    opacity: 1;
-    transform: translateY(0); /* Slide into place */
-}
 
 /* Main Heading */
 #wesonder_functionality h1 {
@@ -355,7 +346,7 @@ main {
     text-align: left;
     margin: 185px auto;
     width: 90%;
-    opacity: 0;  /* Make it hidden initially */
+    opacity: 1;  /* Make it hidden initially */
     transform: translateY(50px);  /* Slide from below */
     transition: opacity 1.5s ease-out, transform 1.5s ease-out; /* Smooth transition */
 }

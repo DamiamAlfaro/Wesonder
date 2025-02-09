@@ -17,9 +17,12 @@
 
     <img src="media/bauhaus_logo_circle_black.png" id="background-logo" alt="Background Logo">
 
-    <nav>Navar</nav>
 
     <main>
+
+        <div id='first_section'>
+            <h1>The thing is huge</h1>
+        </div>
         
         <div id="video_container">
             <section id="california_video">

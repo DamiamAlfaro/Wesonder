@@ -11,23 +11,6 @@ document.addEventListener("scroll", () => {
 
 
 
-document.addEventListener("DOMContentLoaded", () => {
-    const newSection = document.getElementById("new_section");
-
-    const observer = new IntersectionObserver((entries) => {
-        entries.forEach(entry => {
-            if (entry.isIntersecting) {
-                newSection.classList.add("visible"); // Trigger the animation
-                observer.unobserve(newSection);      // Stop observing after animation (optional)
-            }
-        });
-    }, {
-        threshold: 0.15 // Trigger when xx% is visible
-    });
-
-    observer.observe(newSection);
-});
-
 
 document.addEventListener('DOMContentLoaded', () => {
     let currentSlide = 0;
@@ -61,28 +44,6 @@ document.addEventListener('DOMContentLoaded', () => {
             changeSlide(direction);
         });
     });
-});
-
-
-document.addEventListener("DOMContentLoaded", () => {
-    const newSection = document.getElementById("new_section");
-    const wesonderFunctionality = document.getElementById("wesonder_functionality");
-    const wesonderLastSection = document.getElementById("wesonder-last-section");  // Add this line
-
-    const observer = new IntersectionObserver((entries) => {
-        entries.forEach(entry => {
-            if (entry.isIntersecting) {
-                entry.target.classList.add("visible"); // Trigger the animation
-                observer.unobserve(entry.target);      // Stop observing after animation (optional)
-            }
-        }); 
-    }, {
-        threshold: 0.15 // Trigger when 60% is visible
-    });
-
-    observer.observe(newSection);
-    observer.observe(wesonderFunctionality);
-    observer.observe(wesonderLastSection);  // Add this line to observe the last section
 });
 
 
