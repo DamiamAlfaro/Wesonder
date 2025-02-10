@@ -168,7 +168,7 @@
                 <img src="media/bauhaus_logo_circle_black.png" alt="Wesonder Logo">
             </div>
             <div class="footer-links">
-                <a href="#">Sign Up</a>
+                <a href="payments/public/checkout.html">Sign Up</a>
             </div>
             <div class="footer-info">
                 <p><a href="mailto:support@wesonder.com">support@wesonder.com</a></p>
