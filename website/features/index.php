@@ -33,7 +33,7 @@
             display: flex;
             justify-content: space-between;
             align-items: flex-start;
-            width: 80%;
+            width: 64%;
             gap: 2rem;
         }
 
@@ -45,6 +45,12 @@
             display: flex;
             flex-direction: column;
             max-width: 40%;
+            transition: transform 0.5s ease, box-shadow 0.5s ease;
+        }
+        
+        .maps:hover, .tabulations:hover {
+            transform: translateY(-10px);
+            box-shadow: 0 8px 25px rgba(0, 0, 0, 0.3);
         }
 
         img {
@@ -76,6 +82,23 @@
           border: 1px solid #ddd;
           position: relative;
         }
+
+        a {
+            display: block;
+            background: #ffffff;
+            border: 1px solid #ddd;
+            border-radius: 8px;
+            padding: 0.5rem;
+            text-decoration: none;
+            color: black;
+            transition: transform 0.5s ease, box-shadow 0.5s ease;
+        }
+
+        a:hover {
+            transform: translateY(-10px);
+            box-shadow: 0 8px 25px rgba(0, 0, 0, 0.3);
+        }
+
   </style>
 </head>
 <body>
@@ -91,35 +114,35 @@
                 <ul>
                     <li>
                         <span id="contractors-icon"></span>
-                        <span class="name">Contractors</span>
+                        <a href="maps/contractors"><span class="name">Contractors</span></a>
                     </li>
                     <li>
                         <span id="awarding-bodies-icon"></span>
-                        <span class="name">Awarding Bodies</span>
+                        <a href="maps/awarding_bodies"><span class="name">Awarding Bodies</span></a>
                     </li>
                     <li>
                         <span id="dvbe-icon"></span>
-                        <span class="name">DVBE</span>
+                        <a href="maps/dvbe"><span class="name">DVBE</span></a>
                     </li>
                     <li>
                         <span id="planetbids-icon"></span>
-                        <span class="name">Planetbids</span>
+                        <a href="maps/planetbids"><span class="name">Planetbids</span></a>
                     </li>
                     <li>
                         <span id="bidnet-icon"></span>
-                        <span class="name">Bidnet Direct</span>
+                        <a href="maps/bidnetdirect"><span class="name">Bidnet Direct</span></a>
                     </li>
                     <li>
                         <span id="samgov-icon"></span>
-                        <span class="name">SAM.gov</span>
+                        <a href="maps/sam_gov"><span class="name">SAM.gov</span></a>
                     </li>
                     <li>
                         <span id="piee-icon"></span>
-                        <span class="name">PIEE</span>
+                        <a href="maps/piee"><span class="name">PIEE</span></a>
                     </li>
                     <li>
                         <span id="projects-icon"></span>
-                        <span class="name">Projects</span>
+                        <a href="maps/projects"><span class="name">Projects</span></a>
                     </li>
                 </ul>
             </div>
@@ -132,39 +155,39 @@
                 <ul>
                     <li>
                         <span id="contractors-icon"></span>
-                        <span class="name">Contractors</span>
+                        <a href="tabulations/contractors"><span class="name">Contractors</span></a>
                     </li>
                     <li>
                         <span id="awarding-bodies-icon"></span>
-                        <span class="name">Awarding Bodies</span>
+                        <a href="tabulations/awarding_bodies"><span class="name">Awarding Bodies</span></a>
                     </li>
                     <li>
                         <span id="dvbe-icon"></span>
-                        <span class="name">DVBE</span>
+                        <a href="tabulations/dvbe"><span class="name">DVBE</span></a>
                     </li>
                     <li>
                         <span id="elbe-icon"></span>
-                        <span class="name">ELBE/ELBE</span>
+                        <a href="tabulations/slbe_elbe"><span class="name">ELBE/ELBE</span></a>
                     </li>
                     <li>
                         <span id="planetbids-icon"></span>
-                        <span class="name">Planetbids</span>
+                        <a href="tabulations/planetbids"><span class="name">Planetbids</span></a>
                     </li>
                     <li>
                         <span id="bidnet-icon"></span>
-                        <span class="name">Bidnet Direct</span>
+                        <a href="tabulations/bidnetdirect"><span class="name">Bidnet Direct</span></a>
                     </li>
                     <li>
                         <span id="samgov-icon"></span>
-                        <span class="name">SAM.gov</span>
+                        <a href="tabulations/sam_gov"><span class="name">SAM.gov</span></a>
                     </li>
                     <li>
                         <span id="piee-icon"></span>
-                        <span class="name">PIEE</span>
+                        <a href="tabulations/piee"><span class="name">PIEE</span></a>
                     </li>
                     <li>
                         <span id="projects-icon"></span>
-                        <span class="name">Projects</span>
+                        <a href="tabulations/projects"><span class="name">Projects</span></a>
                     </li>
                 </ul>
             </div>
