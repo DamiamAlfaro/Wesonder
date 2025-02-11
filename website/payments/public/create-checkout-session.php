@@ -7,7 +7,7 @@ require_once '../secrets.php';
 
 header('Content-Type: application/json');
 
-$YOUR_DOMAIN = 'https://wesonder.com/payments/public/';
+$YOUR_DOMAIN = 'https://wesonder.com/';
 
 try {
   // Use the price_id directly from the form POST data
@@ -20,8 +20,8 @@ try {
       'quantity' => 1,
     ]],
     'mode' => 'subscription',
-    'success_url' => $YOUR_DOMAIN . 'success.html?session_id={CHECKOUT_SESSION_ID}',
-    'cancel_url' => $YOUR_DOMAIN . 'cancel.html',
+    'success_url' => $YOUR_DOMAIN . 'features/index.php?session_id={CHECKOUT_SESSION_ID}',
+    'cancel_url' => $YOUR_DOMAIN . 'payments/public/signup.php',
   ]);
 
   // Redirect to the checkout session

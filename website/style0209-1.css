@@ -1,0 +1,605 @@
+/* Keyframes for Fade-In Effect */
+@keyframes fadeInEase {
+    from {
+        opacity: 0;
+        transform: translateX(20px); /* Slight upward motion */
+    }
+    to {
+        opacity: 1;
+        transform: translateX(0);
+    }
+}
+
+html, body {
+    background-color: #F5F5F5;
+    margin: 0;
+    padding: 0;
+    height: 400vh;
+    overflow-x: hidden;
+    position: relative;
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+    animation: fadeInEase 0.4s ease-out forwards;
+    opacity: 0;
+}
+
+/* Logo Background Setup */
+#background-logo {
+    position: fixed;
+    top: 20%;
+    left: 50%;
+    transform: translate(-50%, 0);
+    width: 75vw;
+    opacity: 0.07;
+    pointer-events: none;
+    transition: transform 0.1s ease-out;
+    z-index: -1;
+}
+
+main {
+    display: block;
+    width: 100%;
+}
+
+#first_section {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 1rem;
+    background-color: #FBFBFB;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+    cursor: default;
+}
+
+#first_section h1 {
+    margin: 0 auto 0 4.5vw;
+    font-size: 3rem;
+    flex: 1;
+    font-weight: 450;
+}
+
+#first_section #section_logo {
+    flex: 1;
+    display: flex;
+    justify-content: flex-end;
+    margin-right: 4vw; /* Move the logo slightly to the left */
+}
+
+#first_section #section_logo img {
+    width: 150px;  /* Adjust size as needed */
+    height: auto;
+}
+
+#video_container {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    width: 88vw;
+    height: 90vh;
+    margin: 40px auto;
+    overflow: hidden;
+    position: relative;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.4);
+    border-radius: 10px;
+}
+
+#california_video {
+    position: relative;
+    width: 100%;
+    height: 100%;
+    overflow: hidden;
+}
+
+#california_video video {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+
+#overlay_logo {
+    position: absolute;
+    top: 3.5vh;
+    left: 3.5vw;
+    width: 9.5vw;
+    height: auto;
+}
+
+#overlay_logo img {
+    width: 100%;
+    height: auto;
+}
+
+#overlay_text {
+    position: absolute;
+    top: 15vh;
+    right: 3vw;
+    color: white;
+    font-size: 5vw;
+    line-height: 1.2;
+    font-weight: 310;
+    text-align: right;
+    padding: 1vw;
+    border-radius: 0.5vw;
+    max-height: 80%;
+    overflow: hidden;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    cursor: default;
+}
+
+
+#new_section {
+    margin: 18% auto;               /* Center horizontally with margin at the top */
+    display: flex;                  /* Enables side-by-side layout */
+    flex-wrap: wrap;                /* Ensures responsiveness on small screens */
+    background-color: #F8FAFC;
+    padding: 40px 20px;
+    align-items: center;            /* Vertically centers content */
+    justify-content: center;        /* Horizontally centers content */
+    gap: 20px;                      /* Space between video and text */
+    width: 90%;                     /* Slightly narrower for the border effect */
+
+    /* New Styles for Rounded Border */
+    box-shadow: 0 0 20px rgba(0, 0, 0, 0.4);      /* Black border acting as the margin */
+    border-radius: 20px;            /* Rounded corners */
+    overflow: hidden;               /* Ensures content stays within rounded corners */
+
+    /* Existing Animation */
+    opacity: 1;                     /* Hidden initially */
+    transform: translateY(50px);    /* Slight downward offset */
+    transition: opacity 1.5s ease-out, transform 1.5s ease-out; /* Smooth transition */
+}
+
+
+
+#new_section:hover {
+    box-shadow: 0 12px 18px rgba(0, 0, 0, 0.3); /* Deeper shadow on hover */
+    transform: translateY(-5px);              /* Slight lift effect */
+    transition: all 0.5s ease-in-out;
+}
+
+
+/* Video Styling */
+.video-wrapper {
+    flex: 1;                      /* Takes equal space with text */
+    max-width: 55%;               /* Limits width to half the section */
+}
+
+.video-wrapper video {
+    width: 100%;
+    height: auto;
+    border-radius: 8px;           /* Adds rounded corners */
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 1);
+}
+
+.text-wrapper {
+    flex: 1;
+    max-width: 45%;
+    padding: 20px;
+    display: flex;
+    flex-direction: column;   /* Stack children vertically */
+    align-items: center;      /* Center content horizontally */
+    justify-content: center;  /* Center content vertically */
+    text-align: center;
+}
+
+/* Title Styling */
+.text-wrapper h4 {
+    font-size: 2.2vw;         /* Responsive font size */
+    color: #222;
+    margin-bottom: 15px;      /* Adds space below the heading */
+    font-weight: 600;         /* Makes the title bolder */
+    cursor: default;
+}
+
+/* Paragraph Styling */
+.text-wrapper p {
+    font-size: 1.6vw;         /* Responsive font size */
+    line-height: 1.6;         /* Increases readability */
+    color: #444;
+    max-width: 90%;           /* Limits paragraph width for better readability */
+    cursor: default;
+}
+
+
+.content-slider {
+    position: relative;
+    overflow: hidden;
+}
+
+.slide {
+    opacity: 0;
+    transform: translateX(100%);
+    transition: transform 0.8s ease-in-out, opacity 0.8s ease-in-out;
+    display: none;
+}
+
+.slide.active {
+    display: flex;
+    opacity: 1;
+    transform: translateX(0);
+}
+
+.slide.slide-out-left {
+    transform: translateX(-100%);
+    opacity: 0;
+}
+
+.slide.slide-out-right {
+    transform: translateX(100%);
+    opacity: 0;
+}
+
+
+.nav-button {
+    position: absolute;
+    top: 50%;
+    transform: translateY(-50%);
+    background-color: rgba(0, 0, 0, 0.2);
+    color: white;
+    border: none;
+    padding: 5px;
+    cursor: pointer;
+    font-size: 2em;
+    border-radius: 5px;
+}
+
+.nav-button.left {
+    left: 10px;
+}
+
+.nav-button.right {
+    right: 10px;
+}
+
+
+
+
+/* Container: Clean Layout */
+#wesonder_functionality {
+    padding: 20px;
+    text-align: left;
+    margin: 50px auto;
+    width: 90%;
+    opacity: 1;
+    transform: translateY(50px); /* Slide slightly from below */
+    transition: opacity 1.5s ease-out, transform 1.5s ease-out;
+}
+
+
+/* Main Heading */
+#wesonder_functionality h1 {
+    font-size: 3.6em;
+    color: #1a202c;
+    margin-bottom: 40px;
+    font-weight: 700;
+    letter-spacing: 1px;
+    animation: fadeInDown 1s ease-out;
+    cursor: default;
+}
+
+/* Independent Section with Background */
+#independent_section {
+    background-color: #ffffff;
+    padding: 40px 20px;
+    text-align: left;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+    margin: 20px auto;
+    border-radius: 15px;
+    width: 100%;
+    transition: transform 0.5s ease, box-shadow 0.5s ease;
+}
+
+#independent_section:hover {
+    transform: translateY(-10px);
+    box-shadow: 0 8px 25px rgba(0, 0, 0, 0.3);
+}
+
+#independent-section-images {
+    margin-left: 35px;
+    margin-bottom: 5%;
+}
+
+/* Content Styling */
+.independent-content h2 {
+    font-size: 2.8em;
+    color: #2d3748;
+    margin-bottom: 35px;
+    margin-left: 35px;
+    font-weight: 600;
+    cursor: default;
+    line-height: 1.5;
+}
+
+.independent-content p {
+    font-size: 1.7em;
+    color: #4a5568;
+    max-width: 90%;
+    margin: 0 auto 20px;
+    line-height: 1.6;
+}
+
+.independent-content img {
+    width: 240px;          /* Fixed width */
+    height: 240px;         /* Fixed height */
+    object-fit: contain;   /* Ensures images are fully visible without distortion */
+    margin: 10px;          /* Space between images */
+    border-radius: 10px;   /* Optional: Adds subtle rounded corners */
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1); /* Optional: Adds a slight shadow for aesthetics */
+    transition: transform 0.5s ease, box-shadow 0.5s ease;
+    padding: 10px;
+}
+
+.independent-content img:hover {
+    transform: translateY(-8px);
+    box-shadow: 0 8px 25px rgba(0, 0, 0, 0.3);
+}
+
+
+/* Simple Fade-In Animation */
+@keyframes fadeInDown {
+    from {
+        opacity: 0;
+        transform: translateY(-30px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+
+
+
+
+
+
+
+/*LAST SECTION*/
+
+/* Initial hidden state */
+#wesonder-last-section {
+    padding: 20px;
+    text-align: left;
+    margin: 185px auto;
+    width: 90%;
+    opacity: 1;  /* Make it hidden initially */
+    transform: translateY(50px);  /* Slide from below */
+    transition: opacity 1.5s ease-out, transform 1.5s ease-out; /* Smooth transition */
+}
+
+/* When visible (after scrolling 60%) */
+#wesonder-last-section.visible {
+    opacity: 1;  /* Fade in */
+    transform: translateY(0);  /* Slide into place */
+}
+
+
+#wesonder-last-section h1 {
+    font-size: 3em;
+    color: #1a202c;
+    margin-bottom: 40px;
+    font-weight: 700;
+    letter-spacing: 1px;
+    animation: fadeInDown 1s ease-out;
+    cursor: default;
+}
+
+/* Container for Last Section Split */
+#last-section {
+    display: flex;               /* Enables side-by-side layout */
+    flex-wrap: wrap;             /* Allows wrapping on smaller screens */
+    align-items: center;         /* Vertical alignment */
+    justify-content: space-between;
+    gap: 20px;                   /* Space between text and image */
+    margin-top: 40px;            /* Space from the text above */
+    background-color: #F8FAFC;   /* Light background */
+    padding: 20px;
+    border-radius: 15px;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+    transition: transform 0.5s ease, box-shadow 0.5s ease;
+}
+
+#last-section:hover {
+    transform: translateY(-10px);
+    box-shadow: 0 8px 25px rgba(0, 0, 0, 0.3);
+}
+
+/* Left Side (Text) */
+.last-section-text {
+    flex: 1;                     /* Takes up equal space with image */
+    max-width: 50%;              /* Limit width to half */
+    padding: 20px;
+    text-align: left;
+    cursor: default;
+}
+
+.last-section-text h2 {
+    font-size: 2.5em;
+    color: #2d3748;
+    margin-bottom: 15px;
+}
+
+.last-section-text p {
+    font-size: 1.5em;
+    line-height: 1.8;
+    color: #4a5568;
+    margin-bottom: 15px;
+}
+
+/* Right Side (Image) */
+.last-section-image {
+    flex: 1;                     /* Takes up equal space with text */
+    max-width: 50%;
+    display: flex;
+    justify-content: center;     /* Center the image horizontally */
+    align-items: center;         /* Center the image vertically */
+}
+
+.last-section-image img {
+    width: 95%;
+    height: auto;
+    border-radius: 10px;         /* Rounded corners */
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);  /* Subtle shadow for depth */
+}
+
+.last-section-image figure {
+    margin: 0;                   /* Remove default margins */
+    text-align: center;          /* Center-align the caption */
+}
+
+.last-section-image figcaption {
+    font-size: 1.4em;            /* Slightly smaller than body text */
+    color: black;              /* Soft gray for less emphasis */
+    margin-top: 10px;            /* Space between image and caption */
+    font-style: italic;
+    font-weight: 400;
+    opacity: 0.7;
+    cursor: default;
+}
+
+
+/* Responsive Behavior for Smaller Screens */
+@media (max-width: 768px) {
+    #last-section {
+        flex-direction: column;  /* Stack vertically on small screens */
+    }
+
+    .last-section-text, .last-section-image {
+        max-width: 100%;         /* Full width for both on small screens */
+    }
+}
+
+/* Typing effect base */
+.typing {
+    display: inline-block;        /* Ensure the element behaves like inline text */
+    border-right: 2px solid #1a202c;  /* Blinking cursor */
+    white-space: nowrap;         /* Prevent text from wrapping */
+    overflow: hidden;            /* Hide overflowing text */
+    animation: blink 0.7s step-end infinite;  /* Blinking animation */
+}
+
+/* Blinking Cursor Animation */
+@keyframes blink {
+    from { border-color: transparent; }
+    to { border-color: #1a202c; }
+}
+
+
+
+
+
+/*FOOTER */
+
+
+#wesonder-footer {
+    background-color: rgba(183, 183, 183, 0.3);  /* 90% opacity for the background */
+    color: black;
+    padding: 40px 20px;
+    text-align: center;
+    margin-top: 50px;
+}
+
+
+.footer-content {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: space-between;
+    align-items: center;
+    max-width: 1400px;
+    margin: 0 auto;
+    gap: 20px;
+}
+
+/* Footer Logo */
+.footer-logo img {
+    width: 120px;
+    height: auto;
+    border-radius: 8px;
+}
+
+/* Footer Links */
+.footer-links {
+    display: flex;
+    gap: 20px;
+}
+
+.footer-links a {
+    color: black;
+    text-decoration: none;
+    font-size: 2.0em;
+    font-weight: 450;
+    transition: color 0.3s ease;
+    padding: 10px;
+
+}
+
+.footer-links a:hover {
+    color: #6A9C89;
+    background-color: rgba(0, 0, 0, 0.1);
+    border-radius: 10px;
+    transition: 1s;
+}
+
+.footer-info {
+    font-size: 1.8em;
+    font-weight: 450;
+    cursor: default;
+}
+
+/* Footer Info */
+.footer-info p {
+    margin: 5px 0;
+    cursor: default;
+}
+
+.footer-info a {
+    color: black;
+    text-decoration: none;
+    transition: 0s background-color;
+    padding: 10px;
+
+}
+
+.footer-info a:hover {
+    color: #6A9C89;
+    background-color: rgba(0, 0, 0, 0.1);
+    border-radius: 10px;
+    transition: 1s;
+}
+
+/* Responsive Footer */
+@media (max-width: 768px) {
+    .footer-content {
+        flex-direction: column;
+        text-align: center;
+    }
+    
+    .footer-links {
+        flex-direction: column;
+        gap: 10px;
+    }
+}
+
+.damiam-alfaro {
+    cursor: default;
+    font-size: 1.8em;
+    display: block;
+}
+
+.damiam-alfaro a {
+    color: black;
+    text-decoration: none;
+    transition: 0s background-color;
+    padding: 10px;
+}
+
+.damiam-alfaro p {
+    font-size: 12px;
+}
+
+.damiam-alfaro a:hover {
+    background-color: rgba(0, 0, 0, 0.1);
+    border-radius: 10px;
+    transition: 1s;
+}

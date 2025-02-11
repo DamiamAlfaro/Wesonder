@@ -6,7 +6,8 @@
     <meta name="description" content="WESONDER Map Display"/>
     <link rel="icon" href="pictures/" type="image/x-icon"/>
     <link rel="icon" type="image/png" href="media/bauhaus_logo_transparent.png"/>
-    <link href="style.css" rel="stylesheet" type="text/css">
+    <link href="style0209-1.css" rel="stylesheet" type="text/css">
+
 
 
     <title>Wesonder</title>
@@ -22,6 +23,7 @@
 
         <div id="first_section">
             <h1>Wesonder</h1>
+            <a style="text-decoration: none; font-size: 40px; color: black; font-weight: 400;" href="payments/public/signup.php">Sign Up</a>
             <div id="section_logo">
                 <img src="media/bauhaus_logo_circle_black.png" alt="Section Logo">
             </div>
@@ -168,7 +170,7 @@
                 <img src="media/bauhaus_logo_circle_black.png" alt="Wesonder Logo">
             </div>
             <div class="footer-links">
-                <a href="payments/public/checkout.html">Sign Up</a>
+                <a href="payments/public/signup.php">Sign Up</a>
             </div>
             <div class="footer-info">
                 <p><a href="mailto:support@wesonder.com">support@wesonder.com</a></p>
@@ -181,7 +183,7 @@
     </footer>
 
 
-    <script type="text/javascript" src="script.js"></script>
+    <script type="text/javascript" src="script0209-1.js"></script>
 
 
 </body>
