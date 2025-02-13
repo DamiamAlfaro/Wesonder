@@ -6,7 +6,7 @@
     <meta name="description" content="WESONDER Map Display"/>
     <link rel="icon" href="pictures/" type="image/x-icon"/>
     <link rel="icon" type="image/png" href="media/bauhaus_logo_transparent.png"/>
-    <link href="style0209-1.css" rel="stylesheet" type="text/css">
+    <link href="style0212.css" rel="stylesheet" type="text/css">
 
 
 
@@ -23,11 +23,15 @@
 
         <div id="first_section">
             <h1>Wesonder</h1>
-            <a style="text-decoration: none; font-size: 40px; color: black; font-weight: 400;" href="payments/public/signup.php">Sign Up</a>
+            <div id="nav_links">
+                <a href="payments/public/signup.php">Sign Up</a>
+                <a href="login/">Login</a>
+            </div>
             <div id="section_logo">
                 <img src="media/bauhaus_logo_circle_black.png" alt="Section Logo">
             </div>
         </div>
+
 
         <div id="video_container">
             <section id="california_video">
@@ -47,7 +51,7 @@
             <div class="content-slider">
                 <div class="slide active">
                     <div class="video-wrapper">
-                        <video autoplay loop muted playsinline>
+                        <video autoplay loop muted playsinline preload="auto">
                             <source src="media/contractors_illustration_r1.mp4" type="video/mp4">
                         </video>
                     </div>
