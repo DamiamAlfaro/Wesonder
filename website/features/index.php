@@ -1,5 +1,5 @@
 <?php
-include '../auth_check.php';  // Restrict access
+include '../session_check.php';
 ?>
 
 <!DOCTYPE html>
@@ -19,6 +19,7 @@ include '../auth_check.php';  // Restrict access
           align-items: center;
           height: 100vh;
           margin: 0;
+          position: relative;
         }
 
         #background-logo {
@@ -101,6 +102,29 @@ include '../auth_check.php';  // Restrict access
         a:hover {
             transform: translateY(-10px);
             box-shadow: 0 8px 25px rgba(0, 0, 0, 0.3);
+        }
+
+        /* Logout button styling */
+        .logout-container {
+            position: absolute;
+            bottom: 20px;
+            left: 50%;
+            transform: translateX(-50%);
+            text-align: center;
+        }
+
+        .logout-container a {
+            display: inline-block;
+            padding: 10px 20px;
+            background: #dc3545;
+            color: white;
+            text-decoration: none;
+            border-radius: 5px;
+            font-weight: bold;
+        }
+
+        .logout-container a:hover {
+            background: #c82333;
         }
 
   </style>
@@ -197,6 +221,8 @@ include '../auth_check.php';  // Restrict access
             </div>
         </div>
     </section>
+
+
 
 </body>
 </html>

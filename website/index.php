@@ -23,10 +23,10 @@
 
         <div id="first_section">
             <h1>Wesonder</h1>
-            <div id="nav_links">
-                <a href="payments/public/signup.php">Sign Up</a>
-                <a href="login/">Login</a>
-            </div>
+            <!--<div id="nav_links">-->
+            <!--    <a href="signup.php">Sign Up</a>-->
+            <!--    <a href="login/login.php">Login</a>-->
+            <!--</div>-->
             <div id="section_logo">
                 <img src="media/bauhaus_logo_circle_black.png" alt="Section Logo">
             </div>
