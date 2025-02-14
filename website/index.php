@@ -6,7 +6,7 @@
     <meta name="description" content="WESONDER Map Display"/>
     <link rel="icon" href="pictures/" type="image/x-icon"/>
     <link rel="icon" type="image/png" href="media/bauhaus_logo_transparent.png"/>
-    <link href="style0213-10.css" rel="stylesheet" type="text/css">
+    <link href="style0213-15.css" rel="stylesheet" type="text/css">
 
 
 
@@ -39,9 +39,6 @@
             </div>
         </div>
         
-
-
-
 
         <div id="video_container">
             <section id="california_video">
@@ -197,7 +194,7 @@
     </footer>
 
 
-    <script type="text/javascript" src="script0203-10.js"></script>
+    <script type="text/javascript" src="script0213-15.js"></script>
 
 
 </body>
