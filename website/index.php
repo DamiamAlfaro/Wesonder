@@ -6,7 +6,7 @@
     <meta name="description" content="WESONDER Map Display"/>
     <link rel="icon" href="pictures/" type="image/x-icon"/>
     <link rel="icon" type="image/png" href="media/bauhaus_logo_transparent.png"/>
-    <link href="style.css" rel="stylesheet" type="text/css">
+    <link href="style0213-8.css" rel="stylesheet" type="text/css">
 
 
 
@@ -23,14 +23,27 @@
 
         <div id="first_section">
             <h1>Wesonder</h1>
-            <!--<div id="nav_links">-->
-            <!--    <a href="signup.php">Sign Up</a>-->
-            <!--    <a href="login/login.php">Login</a>-->
-            <!--</div>-->
+            <div id="nav_links">
+                <a href="">Login</a>
+            </div>
             <div id="section_logo">
                 <img src="media/bauhaus_logo_circle_black.png" alt="Section Logo">
             </div>
         </div>
+        
+        <!-- Background Blur Overlay -->
+        <div id="login_overlay" onclick="closeLoginBox()"></div>
+        
+        <!-- Login Box -->
+        <div id="login_container">
+            <div id="login_box">
+                <h2>Login</h2>
+                <input type="email" id="email_input" placeholder="Enter your email">
+                <button id="submit_button">Submit</button>
+                <button id="close_button" onclick="closeLoginBox()">Close</button>
+            </div>
+        </div>
+
 
 
         <div id="video_container">
@@ -187,7 +200,7 @@
     </footer>
 
 
-    <script type="text/javascript" src="script0209-1.js"></script>
+    <script type="text/javascript" src="script1.js"></script>
 
 
 </body>
