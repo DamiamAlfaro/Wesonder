@@ -100,6 +100,3 @@ function typeHeadings(headings) {
 
     typeHeading();  // Start typing the first heading
 }
-
-
-
