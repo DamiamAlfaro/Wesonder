@@ -78,12 +78,12 @@
         }
         
         .maps-features {
-        	width: 40em;
-        	height: 10vh;
-        	margin: 0 auto;
-        	background: #fff;
-        	border: 1px solid #ddd;
-        	position: relative;
+            width: 40em;
+            height: 10vh;
+            margin: 0 auto;
+            background: #fff;
+            border: 1px solid #ddd;
+            position: relative;
         }
 
         a {
@@ -220,6 +220,9 @@
         </div>
     </section>
 
+    <form action="../logout.php" method="POST">
+        <button type="submit">Logout</button>
+    </form>
 
 
 </body>
