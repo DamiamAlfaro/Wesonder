@@ -1,6 +1,4 @@
-<?php
-include '../session_check.php';
-?>
+<?php include('../auth.php'); ?>
 
 <!DOCTYPE html>
 <html>
