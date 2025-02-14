@@ -1,4 +1,6 @@
-<?php include('../auth.php'); ?>
+<?php 
+require_once 'auth_check.php'; // Ensure only authorized users can access
+?>
 
 <!DOCTYPE html>
 <html>
@@ -78,12 +80,12 @@
         }
         
         .maps-features {
-            width: 40em;
-            height: 10vh;
-            margin: 0 auto;
-            background: #fff;
-            border: 1px solid #ddd;
-            position: relative;
+        	width: 40em;
+        	height: 10vh;
+        	margin: 0 auto;
+        	background: #fff;
+        	border: 1px solid #ddd;
+        	position: relative;
         }
 
         a {
