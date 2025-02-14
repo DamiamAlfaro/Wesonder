@@ -24,7 +24,14 @@
         <div id="first_section">
             <h1>Wesonder</h1>
             <div id="nav_links">
-                <a href="payments/public/">Login</a>
+                <!-- Inline Login Form -->
+                <form action="login.php" method="POST" id="login_form">
+                    <input type="email" name="email" placeholder="Email" required>
+                    <input type="password" name="password" placeholder="Password" required>
+                    <button type="submit">Login</button>
+                </form>
+                
+                <!-- Sign Up Link -->
                 <a href="payments/public/signup.php">Sign Up</a>
             </div>
             <div id="section_logo">
@@ -32,18 +39,7 @@
             </div>
         </div>
         
-        <!-- Background Blur Overlay -->
-        <div id="login_overlay" onclick="closeLoginBox()"></div>
-        
-        <!-- Login Box -->
-        <div id="login_container">
-            <div id="login_box">
-                <h2>Login</h2>
-                <input type="email" id="email_input" placeholder="Enter your email">
-                <button id="submit_button">Submit</button>
-                <button id="close_button" onclick="closeLoginBox()">Close</button>
-            </div>
-        </div>
+
 
 
 

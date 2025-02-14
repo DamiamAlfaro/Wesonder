@@ -51,7 +51,7 @@ if ($event->type == 'checkout.session.completed') {
         $stmt->close();
 
         // Insert into users table
-        $insert_stmt = $conn->prepare("INSERT INTO users (name, last_name, email, company_name, password_hash, stripe_customer_id, stripe_subscription_id, subscription_status, created_at) VALUES (?, ?, ?, ?, ?, ?, ?, 'active', ?)");
+        $insert_stmt = $conn->prepare("INSERT INTO users (name, last_name, email, company_name, password_hash, stripe_customer_id, stripe_subscription_id, subscription_status, created_at) VALUES (?, ?, ?, ?, ?, ?, ?, 'paid', ?)");
         $insert_stmt->bind_param(
             "ssssssss",
             $first_name,
