@@ -130,6 +130,11 @@ require_once 'auth_check.php'; // Ensure only authorized users can access
   </style>
 </head>
 <body>
+    
+    <?php if (isset($_GET['message'])): ?>
+        <p style="color: red; font-weight: bold;"><?php echo htmlspecialchars($_GET['message']); ?></p>
+    <?php endif; ?>
+
 
     <img src="../../media/bauhaus_logo_circle_black.png" id="background-logo" alt="Background Logo">
 
@@ -225,6 +230,13 @@ require_once 'auth_check.php'; // Ensure only authorized users can access
     <form action="../logout.php" method="POST">
         <button type="submit">Logout</button>
     </form>
+    
+    <form action="../payments/public/cancel_subscription.php" method="POST">
+        <button type="submit" style="background: #dc3545; color: white; padding: 10px; border: none; border-radius: 5px; font-weight: bold;">
+            Cancel Subscription
+        </button>
+    </form>
+
 
 
 </body>
