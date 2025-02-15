@@ -46,7 +46,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
                 $_SESSION["last_name"] = $last_name;
                 $_SESSION["subscription_status"] = $subscription_status;
 
-                header("Location: features/index.php");
+                header("Location: features/");
                 exit;
             } else {
                 die("Your subscription is not active. Please renew.");
