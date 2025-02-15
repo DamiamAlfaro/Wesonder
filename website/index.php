@@ -24,20 +24,59 @@
         <div id="first_section">
             <h1>Wesonder</h1>
             <div id="nav_links">
-                <!-- Inline Login Form -->
-                <form action="login.php" method="POST" id="login_form">
-                    <input type="email" name="email" placeholder="Email" required>
-                    <input type="password" name="password" placeholder="Password" required>
-                    <button type="submit">Login</button>
-                </form>
-                
-                <!-- Sign Up Link -->
+                <!-- Login & Sign Up Links -->
+                <a href="#" id="login_btn">Login</a>
                 <a href="payments/public/signup.php">Sign Up</a>
             </div>
             <div id="section_logo">
                 <img src="media/bauhaus_logo_circle_black.png" alt="Section Logo">
             </div>
         </div>
+
+
+        <!-- Hidden Login Modal -->
+        <div id="login_modal" class="modal">
+            <div class="modal_content">
+                <span class="close">&times;</span>
+                <h2>Login</h2>
+                <form action="login.php" method="POST" id="login_form">
+                    <input type="email" name="email" placeholder="Email" required>
+                    <input type="password" name="password" placeholder="Password" required>
+                    <button type="submit">Login</button>
+                </form>
+            </div>
+        </div>
+
+        <script>
+            document.addEventListener("DOMContentLoaded", function () {
+                const loginBtn = document.getElementById("login_btn");
+                const modal = document.getElementById("login_modal");
+                const closeBtn = document.querySelector(".close");
+
+                // Ensure the modal is hidden when the page loads
+                modal.style.display = "none";
+
+                // Show modal when login link is clicked
+                loginBtn.addEventListener("click", function (e) {
+                    e.preventDefault();
+                    modal.style.display = "flex"; // Show modal
+                });
+
+                // Close modal when close button is clicked
+                closeBtn.addEventListener("click", function () {
+                    modal.style.display = "none"; // Hide modal
+                });
+
+                // Close modal when clicking outside the box
+                window.addEventListener("click", function (e) {
+                    if (e.target === modal) {
+                        modal.style.display = "none"; // Hide modal
+                    }
+                });
+            });
+        </script>
+
+
         
 
         <div id="video_container">

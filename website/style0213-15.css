@@ -69,6 +69,7 @@ main {
     font-size: 40px;
     color: black;
     font-weight: 400;
+    cursor: pointer;
 }
 
 #first_section #section_logo {
@@ -83,67 +84,66 @@ main {
     height: auto;
 }
 
-/* Background Blur Effect */
-#login_overlay {
+/* Modal Background */
+.modal {
+    display: none; /* Ensures it's hidden initially */
     position: fixed;
-    top: 0;
+    z-index: 1000;
     left: 0;
+    top: 0;
     width: 100%;
     height: 100%;
-    background: rgba(0, 0, 0, 0.3); /* Dark overlay effect */
-    backdrop-filter: blur(8px); /* Blur effect */
-    display: none;
-    z-index: 999;
+    background-color: rgba(0, 0, 0, 0.4); /* Transparent Black Background */
+    justify-content: center;
+    align-items: center;
 }
 
-/* Login Box Styling */
-#login_container {
-    position: fixed;
-    top: 10%;
-    left: 50%;
-    transform: translate(-50%, -50%);
-    background: white;
-    padding: 20px;
-    box-shadow: 0px 4px 15px rgba(0, 0, 0, 0.2);
-    border-radius: 10px;
-    display: none;
-    z-index: 1000;
-}
-
-#login_box {
+/* Modal Content */
+.modal_content {
+    background-color: #fff;
+    padding: 2rem;
+    border-radius: 8px;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
+    text-align: center;
+    width: 300px;
+    position: relative;
     display: flex;
     flex-direction: column;
-    align-items: center;
-    gap: 10px;
 }
 
-#email_input {
+/* Close Button */
+.close {
+    position: absolute;
+    top: 10px;
+    right: 15px;
+    font-size: 1.5rem;
+    cursor: pointer;
+}
+
+
+/* Form Inputs */
+#login_form input {
+    width: 100%;
     padding: 10px;
-    font-size: 16px;
-    width: 250px;
+    margin: 10px 0;
     border: 1px solid #ccc;
     border-radius: 5px;
 }
 
-#submit_button, #close_button {
-    padding: 10px 15px;
-    font-size: 16px;
-    border: none;
-    cursor: pointer;
-    border-radius: 5px;
-}
-
-#submit_button {
-    background-color: #007BFF;
+/* Login Button */
+#login_form button {
+    width: 100%;
+    padding: 10px;
+    background-color: black;
     color: white;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
 }
 
-#close_button {
-    background-color: #ccc;
-    color: black;
+#login_form button:hover {
+    background-color: #333;
 }
-
-
 
 
 #video_container {
