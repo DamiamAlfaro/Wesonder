@@ -29,7 +29,7 @@ html, body {
     left: 0;
     width: 100%;
     height: 100%;
-    z-index: -1; /* Ensure it's behind all content */
+    z-index: -1; /* Keeps all images behind content */
     display: flex;
     flex-direction: column;
     align-items: center;
@@ -38,10 +38,10 @@ html, body {
 /* First background image (Bauhaus logo) */
 .background-logo.first-bg {
     position: absolute;
-    top: 10%;  /* Adjust height as needed */
+    top: 10%;  /* Adjusted height */
     left: 50%;
     transform: translateX(-50%);
-    width: 85vw;
+    width: 86vw;
     opacity: 0.07;
     pointer-events: none;
 }
@@ -49,13 +49,48 @@ html, body {
 /* Second background image (Perhaps Another) */
 .background-logo.second-bg {
     position: absolute;
-    top: 45%;  /* Move it further down */
+    top: 35%;  /* Moved further down */
     left: 50%;
     transform: translateX(-50%);
-    width: 85vw;
+    width: 86vw;
     opacity: 0.07;
     pointer-events: none;
 }
+
+/* Third background image */
+.background-logo.third-bg {
+    position: absolute;
+    top: 60%;  /* Lower than the second */
+    left: 50%;
+    transform: translateX(-50%);
+    width: 68vw;
+    opacity: 0.07;
+    pointer-events: none;
+}
+
+/* Fourth background image */
+.background-logo.fourth-bg {
+    position: absolute;
+    top: 85%;  /* Ensure spacing below the third */
+    left: 50%;
+    transform: translateX(-50%);
+    width: 68vw;
+    opacity: 0.07;
+    pointer-events: none;
+}
+
+/* Fifth background image */
+.background-logo.fifth-bg {
+    position: absolute;
+    top: 120%;  /* Spaced below the fourth */
+    left: 50%;
+    transform: translateX(-50%);
+    width: 75vw;
+    opacity: 0.07;
+    pointer-events: none;
+}
+
+
 
 
 
@@ -265,6 +300,11 @@ main {
     opacity: 0;
     transform: translateY(50px);
     transition: opacity 0.8s ease-out, transform 0.8s ease-out;
+}
+
+.card:hover {
+    transform: translateY(-8px);
+    box-shadow: 0 8px 25px rgba(0, 0, 0, 0.3);
 }
 
 .video-wrapper {
