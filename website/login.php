@@ -17,7 +17,11 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
 
     // Validate email format
     if (!filter_var($email, FILTER_VALIDATE_EMAIL)) {
-        die("Invalid email format.");
+        echo '<div style="background-color: #ffdddd; color: #d8000c; padding: 15px; border: 1px solid #d8000c; text-align: center; font-size: 16px; margin-top: 20px; border-radius: 5px;">
+                ⚠️ Invalid email format.<br><br>
+                <button onclick="history.back()" style="background-color: #d8000c; color: white; padding: 10px 15px; border: none; border-radius: 5px; cursor: pointer;">🔙 Go Back</button>
+              </div>';
+        exit;
     }
 
     // Retrieve user from database
@@ -49,13 +53,27 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
                 header("Location: features/");
                 exit;
             } else {
-                die("Your subscription is not active. Please renew.");
+                echo '<div style="background-color: #ffdddd; color: #d8000c; padding: 15px; border: 1px solid #d8000c; text-align: center; font-size: 16px; margin-top: 20px; border-radius: 5px;">
+                        🚫 Your subscription is not active. Please renew.<br><br>
+                        <button onclick="history.back()" style="background-color: #d8000c; color: white; padding: 10px 15px; border: none; border-radius: 5px; cursor: pointer;">🔙 Go Back</button>
+                      </div>';
+                exit;
             }
         } else {
-            die("Invalid email or password.");
+            echo '<div style="background-color: #ffdddd; color: #d8000c; padding: 15px; border: 1px solid #d8000c; text-align: center; font-size: 16px; margin-top: 20px; border-radius: 5px;">
+                    ⚠️ Invalid email or password.<br><br>
+                    <button onclick="history.back()" style="background-color: #d8000c; color: white; padding: 10px 15px; border: none; border-radius: 5px; cursor: pointer;">🔙 Go Back</button>
+                  </div>';
+            exit;
         }
     } else {
-        die("User not found.");
+        echo '<div style="background-color: #ffdddd; color: #d8000c; padding: 15px; border: 1px solid #d8000c; text-align: center; font-size: 16px; margin-top: 20px; border-radius: 5px;">
+                ⚠️ User not found. Please check your credentials.<br><br>
+                <button onclick="history.back()" style="background-color: #d8000c; color: white; padding: 10px 15px; border: none; border-radius: 5px; cursor: pointer;">🔙 Go Back</button>
+              </div>';
+        exit;
+
+
     }
 }
 

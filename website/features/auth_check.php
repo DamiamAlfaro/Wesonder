@@ -1,6 +1,6 @@
 <?php
 session_start();
-require_once '../payments/secrets.php'; // Ensure it includes DB credentials
+require_once $_SERVER['DOCUMENT_ROOT'] . '/payments/secrets.php';
 
 // Connect to the database
 $conn = new mysqli($servername, $username, $password_db, $dbname);
