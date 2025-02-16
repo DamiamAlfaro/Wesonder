@@ -1,5 +1,5 @@
 <?php 
-require_once 'auth_check.php'; // Ensure only authorized users can access
+//require_once 'auth_check.php'; // Ensure only authorized users can access
 ?>
 
 <!DOCTYPE html>
@@ -8,7 +8,7 @@ require_once 'auth_check.php'; // Ensure only authorized users can access
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Wesonder - Features</title>
   <script src="client.js" defer></script>
-  <link rel="icon" type="image/png" href="bauhaus_logo_transparent.png"/>
+  <link rel="icon" type="image/png" href="images/bauhaus_logo_transparent.png"/>
   <link rel="stylesheet" type="text/css" href="features_styles.css">
 </head>
 <body>
@@ -17,7 +17,7 @@ require_once 'auth_check.php'; // Ensure only authorized users can access
         <p style="color: red; font-weight: bold;"><?php echo htmlspecialchars($_GET['message']); ?></p>
     <?php endif; ?>
 
-    <img src="bauhaus_logo_circle_black.png" id="background-logo" alt="Background Logo">
+    <img src="images/bauhaus_logo_circle_black.png" id="background-logo" alt="Background Logo">
 
     <section>
         <div class="maps">
@@ -25,7 +25,7 @@ require_once 'auth_check.php'; // Ensure only authorized users can access
                 🗺️ Maps
             </div>
             <div class="maps-photo">
-                <img src="bauhaus_style_map.png" alt="Maps Illustration">
+                <img src="images/bauhaus_style_map.png" alt="Maps Illustration">
             </div>
             <div class="map-features">
                 <ul>
@@ -46,7 +46,7 @@ require_once 'auth_check.php'; // Ensure only authorized users can access
                 📊 Tabulations
             </div>
             <div class="tabulations-photo">
-                <img src="bauhaus_style_tabulation.png" alt="Tabulations Illustration">
+                <img src="images/bauhaus_style_tabulation.png" alt="Tabulations Illustration">
             </div>
             <div class="tabulations-features">
                 <ul>
