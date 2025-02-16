@@ -112,6 +112,26 @@
         text-decoration: underline;
     }
     
+        /* Go Back Button */
+    #back-button {
+        position: absolute;
+        top: 20px;
+        left: 20px;
+        background: #007acc;
+        color: white;
+        padding: 10px 15px;
+        font-size: 16px;
+        font-weight: bold;
+        border: none;
+        border-radius: 5px;
+        cursor: pointer;
+        z-index: 1000; /* Ensure it's above other elements */
+    }
+
+    #back-button:hover {
+        background: #005f99;
+    }
+    
     </style>
 
 
@@ -179,6 +199,8 @@
         
         $conn->close();
     ?>
+
+    <button id="back-button" onclick="history.back();">⬅ Go Back</button>
 
     <div id="map"></div>
     
