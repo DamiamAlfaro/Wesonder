@@ -180,8 +180,8 @@ main {
     display: flex;
     justify-content: center;
     align-items: center;
-    width: 75vw;
-    height: 68vh;
+    width: 72vw;
+    height: 75vh;
     margin: 70px auto;
     overflow: hidden;
     position: relative;
@@ -217,10 +217,10 @@ main {
 
 #overlay_text {
     position: absolute;
-    top: 15vh;
+    top: 18vh;
     right: 3vw;
     color: white;
-    font-size: 5vw;
+    font-size: 4vw;
     line-height: 1.2;
     font-weight: 310;
     text-align: right;
@@ -260,7 +260,7 @@ main {
     padding: 20px;
     border-radius: 15px;
     box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
-    max-width: 60vw;
+    max-width: 55vw;
     width: 100%;
     opacity: 0;
     transform: translateY(50px);
@@ -269,7 +269,7 @@ main {
 
 .video-wrapper {
     width: 100%;
-    max-width: 840px;
+    max-width: 800px;
 }
 
 .video-wrapper video {
@@ -279,19 +279,20 @@ main {
 }
 
 .text-wrapper {
+    width: 70%;
     text-align: center;
     padding: 20px;
 }
 
 .text-wrapper h4 {
-    font-size: 1.8rem;
+    font-size: 2.0rem;
     color: #222;
     font-weight: bold;
     margin-bottom: 10px;
 }
 
 .text-wrapper p {
-    font-size: 1.2rem;
+    font-size: 1.4rem;
     color: #444;
     line-height: 1.5;
 }
