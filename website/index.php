@@ -6,7 +6,7 @@
     <meta name="description" content="WESONDER Map Display"/>
     <link rel="icon" href="pictures/" type="image/x-icon"/>
     <link rel="icon" type="image/png" href="media/bauhaus_logo_transparent.png"/>
-    <link href="style0215.css" rel="stylesheet" type="text/css">
+    <link href="style0215-1.css" rel="stylesheet" type="text/css">
 
 
 
@@ -236,7 +236,7 @@
     </footer>
 
 
-    <script type="text/javascript" src="script0215.js"></script>
+    <script type="text/javascript" src="script0215-1.js"></script>
 
 
 </body>
