@@ -12,40 +12,20 @@ document.addEventListener("scroll", () => {
 
 
 
-document.addEventListener('DOMContentLoaded', () => {
-    let currentSlide = 0;
-    const slides = document.querySelectorAll('.slide');
-    const navButtons = document.querySelectorAll('.nav-button');
-    let isAnimating = false; // Lock variable to prevent rapid clicks
+document.addEventListener("DOMContentLoaded", () => {
+    const cards = document.querySelectorAll(".card");
 
-    slides[currentSlide].classList.add('active');
-
-    function changeSlide(direction) {
-        if (isAnimating) return; // Exit if animation is in progress
-        isAnimating = true;      // Lock animation
-
-        const previousSlide = slides[currentSlide];
-        const slideOutClass = direction === 1 ? 'slide-out-left' : 'slide-out-right';
-
-        previousSlide.classList.add(slideOutClass);
-
-        setTimeout(() => {
-            previousSlide.classList.remove('active', slideOutClass);
-            currentSlide = (currentSlide + direction + slides.length) % slides.length;
-            slides[currentSlide].classList.add('active');
-
-            isAnimating = false; // Unlock after animation completes
-        }, 800); // Match this to your CSS transition duration (0.8s)
-    }
-
-    navButtons.forEach(button => {
-        button.addEventListener('click', (e) => {
-            const direction = e.target.classList.contains('left') ? -1 : 1;
-            changeSlide(direction);
+    const observer = new IntersectionObserver((entries) => {
+        entries.forEach(entry => {
+            if (entry.isIntersecting) {
+                entry.target.style.opacity = "1";
+                entry.target.style.transform = "translateY(0)";
+            }
         });
-    });
-});
+    }, { threshold: 0.2 });
 
+    cards.forEach(card => observer.observe(card));
+});
 
 document.addEventListener("DOMContentLoaded", () => {
     const wesonderLastSection = document.getElementById("wesonder-last-section");

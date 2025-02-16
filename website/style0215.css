@@ -22,18 +22,42 @@ html, body {
     opacity: 0;
 }
 
-/* Logo Background Setup */
-#background-logo {
+/* Container for background images */
+#background-images {
     position: fixed;
-    top: 20%;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    z-index: -1; /* Ensure it's behind all content */
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+/* First background image (Bauhaus logo) */
+.background-logo.first-bg {
+    position: absolute;
+    top: 10%;  /* Adjust height as needed */
     left: 50%;
-    transform: translate(-50%, 0);
+    transform: translateX(-50%);
     width: 75vw;
     opacity: 0.07;
     pointer-events: none;
-    transition: transform 0.1s ease-out;
-    z-index: -1;
 }
+
+/* Second background image (Perhaps Another) */
+.background-logo.second-bg {
+    position: absolute;
+    top: 45%;  /* Move it further down */
+    left: 50%;
+    transform: translateX(-50%);
+    width: 75vw;
+    opacity: 0.07;
+    pointer-events: none;
+}
+
+
 
 main {
     display: block;
@@ -212,127 +236,64 @@ main {
 
 
 #new_section {
-    margin: 12% auto;               /* Center horizontally with margin at the top */
-    display: flex;                  /* Enables side-by-side layout */
-    flex-wrap: wrap;                /* Ensures responsiveness on small screens */
-    background-color: #F8FAFC;
-    padding: 40px 20px;
-    align-items: center;            /* Vertically centers content */
-    justify-content: center;        /* Horizontally centers content */
-    gap: 20px;                      /* Space between video and text */
-    width: 90%;                     /* Slightly narrower for the border effect */
-
-    /* New Styles for Rounded Border */
-    box-shadow: 0 0 20px rgba(0, 0, 0, 0.4);      /* Black border acting as the margin */
-    border-radius: 20px;            /* Rounded corners */
-    overflow: hidden;               /* Ensures content stays within rounded corners */
-
-    /* Existing Animation */
-    opacity: 1;                     /* Hidden initially */
-    transform: translateY(50px);    /* Slight downward offset */
-    transition: opacity 1.5s ease-out, transform 1.5s ease-out; /* Smooth transition */
+    width: 90%;
+    margin: 5% auto;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding: 40px 0;
 }
 
-
-
-#new_section:hover {
-    box-shadow: 0 12px 18px rgba(0, 0, 0, 0.3); /* Deeper shadow on hover */
-    transform: translateY(-5px);              /* Slight lift effect */
-    transition: all 0.5s ease-in-out;
+.stacked-cards {
+    display: flex;
+    flex-direction: column;
+    gap: 120px;
+    width: 100%;
+    align-items: center;
 }
 
+.card {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    background: white;
+    padding: 20px;
+    border-radius: 15px;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
+    max-width: 1000px;
+    width: 100%;
+    opacity: 0;
+    transform: translateY(50px);
+    transition: opacity 0.8s ease-out, transform 0.8s ease-out;
+}
 
-/* Video Styling */
 .video-wrapper {
-    flex: 1;                      /* Takes equal space with text */
-    max-width: 55%;               /* Limits width to half the section */
+    width: 100%;
+    max-width: 800px;
 }
 
 .video-wrapper video {
     width: 100%;
-    height: auto;
-    border-radius: 8px;           /* Adds rounded corners */
+    border-radius: 8px;
     box-shadow: 0 2px 8px rgba(0, 0, 0, 1);
 }
 
 .text-wrapper {
-    flex: 1;
-    max-width: 45%;
-    padding: 20px;
-    display: flex;
-    flex-direction: column;   /* Stack children vertically */
-    align-items: center;      /* Center content horizontally */
-    justify-content: center;  /* Center content vertically */
     text-align: center;
+    padding: 20px;
 }
 
-/* Title Styling */
 .text-wrapper h4 {
-    font-size: 2.2vw;         /* Responsive font size */
+    font-size: 1.8rem;
     color: #222;
-    margin-bottom: 15px;      /* Adds space below the heading */
-    font-weight: 600;         /* Makes the title bolder */
-    cursor: default;
+    font-weight: bold;
+    margin-bottom: 10px;
 }
 
-/* Paragraph Styling */
 .text-wrapper p {
-    font-size: 1.6vw;         /* Responsive font size */
-    line-height: 1.6;         /* Increases readability */
+    font-size: 1.2rem;
     color: #444;
-    max-width: 90%;           /* Limits paragraph width for better readability */
-    cursor: default;
-}
-
-
-.content-slider {
-    position: relative;
-    overflow: hidden;
-}
-
-.slide {
-    opacity: 0;
-    transform: translateX(100%);
-    transition: transform 0.8s ease-in-out, opacity 0.8s ease-in-out;
-    display: none;
-}
-
-.slide.active {
-    display: flex;
-    opacity: 1;
-    transform: translateX(0);
-}
-
-.slide.slide-out-left {
-    transform: translateX(-100%);
-    opacity: 0;
-}
-
-.slide.slide-out-right {
-    transform: translateX(100%);
-    opacity: 0;
-}
-
-
-.nav-button {
-    position: absolute;
-    top: 50%;
-    transform: translateY(-50%);
-    background-color: rgba(0, 0, 0, 0.2);
-    color: white;
-    border: none;
-    padding: 5px;
-    cursor: pointer;
-    font-size: 2em;
-    border-radius: 5px;
-}
-
-.nav-button.left {
-    left: 10px;
-}
-
-.nav-button.right {
-    right: 10px;
+    line-height: 1.5;
 }
 
 

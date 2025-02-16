@@ -16,7 +16,13 @@
 <body>
 
 
-    <img src="media/bauhaus_logo_circle_black.png" id="background-logo" alt="Background Logo">
+    <!-- Background Images Container -->
+    <div id="background-images">
+        <img src="media/bauhaus_logo_circle_black.png" class="background-logo first-bg" alt="Background Logo">
+        <img src="media/perhapsanother.png" class="background-logo second-bg" alt="Background Logo">
+        
+
+    </div>
 
 
     <main>
@@ -76,7 +82,6 @@
             });
         </script>
 
-
         
 
         <div id="video_container">
@@ -92,10 +97,9 @@
             </div>
         </div>
 
-
         <section id="new_section">
-            <div class="content-slider">
-                <div class="slide active">
+            <div class="stacked-cards">
+                <div class="card">
                     <div class="video-wrapper">
                         <video autoplay loop muted playsinline preload="auto">
                             <source src="media/contractors_illustration_r1.mp4" type="video/mp4">
@@ -107,7 +111,8 @@
                         leading to new initiatives tailored to your interests and goals.</p>
                     </div>
                 </div>
-                <div class="slide">
+                
+                <div class="card">
                     <div class="video-wrapper">
                         <video autoplay loop muted playsinline>
                             <source src="media/awarding_body_illustration_r1.mp4" type="video/mp4">
@@ -115,11 +120,11 @@
                     </div>
                     <div class="text-wrapper">
                         <h4>Find Awarding Bodies</h4>
-                        <p>Also known as "Owners". Each marker includes the name, address, email address, and most importantly: the direct website
-                        to each owner. Owners issue new work on a daily basis.</p>
+                        <p>Each marker includes the name, address, email address, and website of each owner. Owners issue new work daily.</p>
                     </div>
                 </div>
-                <div class="slide">
+
+                <div class="card">
                     <div class="video-wrapper">
                         <video autoplay loop muted playsinline>
                             <source src="media/active_bids_sam_r1.mp4" type="video/mp4">
@@ -127,10 +132,11 @@
                     </div>
                     <div class="text-wrapper">
                         <h4>Locate Active Bids</h4>
-                        <p>Bids are a crucial source of work, here we map all Federal and Public Works active bids from the top 4 construction bidding platforms in California: SAM.gov, Planetbids, Bidnet Direct, and PIEE. </p>
+                        <p>Mapping all Federal and Public Works active bids from the top 4 construction bidding platforms in California.</p>
                     </div>
                 </div>
-                <div class="slide">
+
+                <div class="card">
                     <div class="video-wrapper">
                         <video autoplay loop muted playsinline>
                             <source src="media/contractors_tabulation.mp4" type="video/mp4">
@@ -138,25 +144,21 @@
                     </div>
                     <div class="text-wrapper">
                         <h4>Tabulate Contractors</h4>
-                        <p>You can also search for Contractors using specific parameters, such as County, License Number, License Type, 
-                        Name, Address, among others.</p>
+                        <p>Search for Contractors using specific parameters, such as County, License Number, and Name.</p>
                     </div>
                 </div>
-                <div class="slide">
+
+                <div class="card">
                     <div class="video-wrapper">
                         <video autoplay loop muted playsinline>
                             <source src="media/planetbids_tabulation.mp4" type="video/mp4">
                         </video>
                     </div>
                     <div class="text-wrapper">
-                        <h4>Classify Active Bids </h4>
-                        <p>Active Bids are available via tabulation as well, which can be classified by County, Awarding Body, Date, 
-                        NAICS Code, among others. </p>
+                        <h4>Classify Active Bids</h4>
+                        <p>Active Bids are available via tabulation, which can be classified by County, Awarding Body, Date, NAICS Code, and more.</p>
                     </div>
                 </div>
-
-                <button class="nav-button left" onclick="changeSlide(-1)">&#10094;</button>
-                <button class="nav-button right" onclick="changeSlide(1)">&#10095;</button>
             </div>
         </section>
 
