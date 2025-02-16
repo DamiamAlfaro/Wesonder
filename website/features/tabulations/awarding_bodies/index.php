@@ -96,7 +96,9 @@
         body {
             font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
             margin: 20px;
-            background-color: #f9fafb;
+            background: linear-gradient(rgba(255, 255, 255, 0.9), rgba(255, 255, 255, 0.9)), 
+                        url('../../images/bauhaus_logo_circle_black.png') no-repeat center center fixed;
+            background-size: cover;
             color: #333;
         }
         .header {
@@ -193,9 +195,30 @@
             border: 1px solid #d1d5db;
             border-radius: 4px;
         }
+        #back-button {
+            position: absolute;
+            top: 20px;
+            left: 20px;
+            background: #007acc;
+            color: white;
+            padding: 10px 15px;
+            font-size: 16px;
+            font-weight: bold;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            z-index: 1000; /* Ensure it's above other elements */
+        }
+
+        #back-button:hover {
+            background: #005f99;
+        }
     </style>
 </head>
 <body>
+    <button id="back-button" onclick="window.location.href='../../';">⬅ Go Back</button>
+    
+
     <div class="header">
         <img src="../../../../media/bauhaus_logo_circle_black.png" alt="Logo">
         <h1>Awarding Bodies</h1>
