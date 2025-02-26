@@ -207,7 +207,7 @@
                 <div class="last-section-image">
                     <figure>
                         <img src="media/habitat_57.jpg" alt="Habitat 57, Quebec">
-                        <figcaption>Habitat 67, Cité du Havre, Quebec, Canada</figcaption>
+                        <figcaption>Habitat 67, Cité du Havre</figcaption>
                     </figure>
                 </div>
 
@@ -222,16 +222,13 @@
             <div class="footer-logo">
                 <img src="media/bauhaus_logo_circle_black.png" alt="Wesonder Logo">
             </div>
-            <div class="footer-links">
-                <a href="payments/public/signup.php">Sign Up</a>
-            </div>
-            <div class="footer-info">
-                <p><a href="mailto:support@wesonder.com">support@wesonder.com</a></p>
-            </div>
+
+            
             <div class="damiam-alfaro">
                 A piece by <a href="https://damiamalfaro.com/" target="_blank">Damiam Alfaro</a>
                 <p>Copyright &copy; 2025 Damiam Alfaro</p>
                 <p><a href="tos/">Terms of Service</a></p>
+                <p><a href="mailto:damiamalfaro@wesonder.com">damiamalfaro@wesonder.com</a></p>
             </div>
         </div>
     </footer>
