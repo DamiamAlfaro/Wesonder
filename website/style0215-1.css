@@ -103,7 +103,7 @@ main {
     display: flex;
     justify-content: space-between;
     align-items: center;
-    padding: 1rem;
+    padding: 0.1rem;
     background-color: #FBFBFB;
     box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
     cursor: default;
@@ -111,9 +111,9 @@ main {
 
 #first_section h1 {
     margin: 0 auto 0 4.5vw;
-    font-size: 3rem;
+    font-size: 2.6rem;
     flex: 1;
-    font-weight: 450;
+    font-weight: 400;
 }
 
 #first_section #nav_links {
@@ -125,10 +125,19 @@ main {
 
 #first_section #nav_links a {
     text-decoration: none;
-    font-size: 40px;
+    font-size: 34px;
     color: black;
-    font-weight: 400;
+    font-weight: 380;
     cursor: pointer;
+    transition: color 0.3s ease;
+    padding: 10px;
+}
+
+#first_section #nav_links a:hover {
+    color: #6A9C89;
+    background-color: rgba(0, 0, 0, 0.1);
+    border-radius: 10px;
+    transition: 1s;
 }
 
 #first_section #section_logo {
@@ -139,7 +148,7 @@ main {
 }
 
 #first_section #section_logo img {
-    width: 150px;
+    width: 135px;
     height: auto;
 }
 
@@ -215,8 +224,8 @@ main {
     display: flex;
     justify-content: center;
     align-items: center;
-    width: 72vw;
-    height: 75vh;
+    width: 70vw;
+    height: 72vh;
     margin: 70px auto;
     overflow: hidden;
     position: relative;
@@ -606,7 +615,7 @@ main {
 /* Footer Links */
 .footer-links {
     display: flex;
-    gap: 20px;
+    gap: 45px;
 }
 
 .footer-links a {
