@@ -231,6 +231,7 @@
             <div class="damiam-alfaro">
                 A piece by <a href="https://damiamalfaro.com/" target="_blank">Damiam Alfaro</a>
                 <p>Copyright &copy; 2025 Damiam Alfaro</p>
+                <p><a href="tos/">Terms of Service</a></p>
             </div>
         </div>
     </footer>
