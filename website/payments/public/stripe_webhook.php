@@ -70,6 +70,35 @@ if ($event->type == 'checkout.session.completed') {
             $delete_stmt->bind_param("s", $email);
             $delete_stmt->execute();
             $delete_stmt->close();
+            
+            // Send confirmation email
+            $to = $email;
+            $subject = "Wesonder - Confirmation of Sign-Up";
+            $message = "
+            <html>
+            <head>
+                <title>Wesonder - Welcome!</title>
+            </head>
+            <body>
+                <h2>Welcome to Wesonder, $first_name!</h2>
+                <p>Thank you for signing up. Your account has been successfully activated.</p>
+                <p>You now have access to premium features.</p>
+                <p>Login here: <a href='https://wesonder.com/'>Wesonder Login</a></p>
+                <p>If you have any questions, feel free to reach out to me <a href='mailto:damiamalfaro@wesonder.com'>damiamalfaro@wesonder.com</a></p>
+                <br>
+                <p>Best regards,</p>
+                <p>Damiam Alfaro</p>
+            </body>
+            </html>
+            ";
+            $headers = "MIME-Version: 1.0" . "\r\n";
+            $headers .= "Content-type:text/html;charset=UTF-8" . "\r\n";
+            $headers .= "From: no-reply@wesonder.com" . "\r\n";
+
+            // Send email
+            if (!mail($to, $subject, $message, $headers)) {
+                error_log("Failed to send confirmation email to " . $email);
+            }
 
             http_response_code(200);
             echo "User moved to users table after successful payment.";

@@ -70,6 +70,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
             'cancel_url' => 'https://wesonder.com/',
             'metadata' => ['email' => $email]
         ]);
+        
 
         // Redirect user to Stripe Checkout page
         header("Location: " . $checkout_session->url);
