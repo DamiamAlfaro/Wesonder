@@ -18,7 +18,7 @@
 
     <!-- Background Images Container -->
     <div id="background-images">
-        <img src="media/bauhaus_logo_circle_black.png" class="background-logo first-bg" alt="Background Logo">
+        <img src="media/wesonder_logo_just_black.png" class="background-logo first-bg" alt="Background Logo">
         <img src="media/perhapsanother.jpg" class="background-logo second-bg" alt="Background Logo">
         <img src="media/anotheroneexample.jpg" class="background-logo third-bg" alt="Background Logo">
         <img src="media/josef_albers_art1.jpg" class="background-logo fourth-bg" alt="Background Logo">
