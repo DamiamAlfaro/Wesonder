@@ -5,7 +5,7 @@
     <meta name="author" content="Wesonder"/>
     <meta name="description" content="WESONDER Map Display"/>
     <link rel="icon" href="pictures/" type="image/x-icon"/>
-    <link rel="icon" type="image/png" href="media/bauhaus_logo_transparent.png"/>
+    <link rel="icon" type="image/png" href="media/wesonder_logo_just_black.png"/>
     <link href="style0215-1.css" rel="stylesheet" type="text/css">
 
 
@@ -90,7 +90,7 @@
                 Mapping<br>
                 the next<br>
                 opportunity.
-                <img id="presentation_image" src="media/wesonder_logo.png" alt="Wesonder Logo">
+                <img id="presentation_image" src="media/wesonder_logo_alternate.png" alt="Wesonder Logo">
             </div>
             <div id="video_container">
                 <section id="california_video">
