@@ -14,7 +14,7 @@
         echo "<div style='color: red; font-weight: bold; margin: 20px;'>
                 An error occurred: <br>
                 <strong>$errstr</strong> <br>
-                Please contact <a href='mailto:support@wesonder.com'>support@wesonder.com</a> with this message.
+                Please contact <a href='mailto:damiamalfaro@wesonder.com'>damiamalfaro@wesonder.com</a> with this message.
               </div>";
         
         // Logout option
@@ -89,7 +89,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link rel="icon" type="image/png" href="../../../../media/bauhaus_logo_transparent.png"/>
+    <link rel="icon" type="image/png" href="../../../../media/wesonder_logo_just_black.png"/>
     <title>PIEE Bids</title>
     <style>
         body {
@@ -236,7 +236,7 @@
 
     
     <div class="header">
-        <img src="../../../media/bauhaus_logo_circle_black.png" alt="Logo">
+        <img src="../../../media/wesonder_logo_alternate.png" alt="Logo">
         <h1>PIEE Bids</h1>
     </div>
     
