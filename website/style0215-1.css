@@ -231,11 +231,18 @@ main {
 
 #presentation_text {
     flex: 1; /* Takes up remaining space */
-    font-size: 4rem; /* Adjust text size */
+    flex-direction: column;
+    align-items: flex-start; /* Keeps both text and image left-aligned */
+    font-size: 4.6rem; /* Adjust text size */
     font-weight: 380;
     text-align: left;
     padding: 20px;
 
+}
+
+#presentation_image {
+    width: 24vw; /* Adjust image size */
+    margin-top: 20px; /* Adds space between text and image */
 }
 
 #video_container {

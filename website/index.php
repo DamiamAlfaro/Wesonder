@@ -90,6 +90,7 @@
                 Mapping<br>
                 the next<br>
                 opportunity.
+                <img id="presentation_image" src="media/wesonder_logo.png" alt="Wesonder Logo">
             </div>
             <div id="video_container">
                 <section id="california_video">
