@@ -219,32 +219,54 @@ main {
     background-color: #333;
 }
 
+#presentation {
+    display: flex; /* Enables flexbox layout */
+    align-items: center; /* Vertically aligns items */
+    justify-content: space-between; /* Ensures space between text and video */
+    width: 100vw;
+    height: 100vh;
+    padding: 50px; /* Adjust as needed */
+    box-sizing: border-box;
+}
+
+#presentation_text {
+    flex: 1; /* Takes up remaining space */
+    font-size: 4rem; /* Adjust text size */
+    font-weight: 380;
+    text-align: left;
+    padding: 20px;
+
+}
 
 #video_container {
+    flex: 3; /* Makes video take more space */
     display: flex;
     justify-content: center;
     align-items: center;
     width: 70vw;
-    height: 72vh;
-    margin: 70px auto;
+    height: 82vh;
+    margin: 0;
     overflow: hidden;
     position: relative;
     box-shadow: 0 4px 15px rgba(0, 0, 0, 0.4);
     border-radius: 10px;
 }
 
+
 #california_video {
     position: relative;
-    width: 100%;
-    height: 100%;
+    width: 100vw;
+    height: 100vh;
     overflow: hidden;
+
 }
 
 #california_video video {
     width: 100%;
     height: 100%;
-    object-fit: cover;
 }
+
+
 
 #overlay_logo {
     position: absolute;
@@ -262,7 +284,7 @@ main {
 #overlay_text {
     position: absolute;
     top: 18vh;
-    right: 3vw;
+    left: 3vw;
     color: white;
     font-size: 4vw;
     line-height: 1.2;

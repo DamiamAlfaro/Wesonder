@@ -36,7 +36,7 @@
                 <a href="payments/public/signup.php">Sign Up</a>
             </div>
             <div id="section_logo">
-                <img src="media/bauhaus_logo_circle_black.png" alt="Section Logo">
+                <img src="media/wesonder_logo_just_black.png" alt="Section Logo">
             </div>
         </div>
 
@@ -85,22 +85,25 @@
 
         
 
-        <div id="video_container">
-            <section id="california_video">
-                <video autoplay loop muted playsinline>
-                    <source src="media/wesonder_reduced_r1.mp4" type="video/mp4">
-                </video>
-            </section>
-            <div id="overlay_text">
+        <div id="presentation">
+            <div id="presentation_text">
                 Mapping<br>
                 the next<br>
                 opportunity.
             </div>
+            <div id="video_container">
+                <section id="california_video">
+                    <video autoplay loop muted playsinline>
+                        <source src="media/contractors_illustration_r1.mp4" type="video/mp4">
+                    </video>
+                </section>
+            </div> 
         </div>
+
 
         <section id="new_section">
             <div class="stacked-cards">
-                <div class="card">
+                <!-- <div class="card">
                     <div class="video-wrapper">
                         <video autoplay loop muted playsinline preload="auto">
                             <source src="media/contractors_illustration_r1.mp4" type="video/mp4">
@@ -111,7 +114,7 @@
                         <p>Discover new potential partners, suppliers, and subcontractors, 
                         leading to new initiatives tailored to your interests and goals.</p>
                     </div>
-                </div>
+                </div> -->
                 
                 <div class="card">
                     <div class="video-wrapper">
