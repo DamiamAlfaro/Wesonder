@@ -1,0 +1,13 @@
+{
+  "type": "service_account",
+  "project_id": "wesonder",
+  "private_key_id": "10f91a94bed3ea73219b109c05facccb680e0d32",
+  "private_key": "-----BEGIN PRIVATE KEY-----\nMIIEvQIBADANBgkqhkiG9w0BAQEFAASCBKcwggSjAgEAAoIBAQDFtSAAwZWaS6QI\ngEyxuIHRkOQT/cI6hmKE2s9mwfBaQdGtLYh86tydzLRG+AQCo/AuHFAdOdGc4BvS\nfBmOJO+Tn7JB4eJJKVr4KJoW/6E89Iud5aEfIGfhDiWKPf/4PP0E1EdAFl10EO+V\ndatVW6elaC4fjBjYpdWPZwxUMOVRgH5deLhvcjOgXvFnTkk/J/fty4wB8uLJvx1B\nQ0mzFQ7DWCo+RcVEREEHjrNYogKnnTtG67KjVuqVoyc4NRWlDARL/prOf8HQUhCY\nnY9y3O7Jr+Sj7Yl/CKARLnqOIIcbtOW59+PUapC/+QWSf9CxQmxVgBMnB8V+Xc61\nm1v/DtatAgMBAAECggEALXg9Hn9nKT/JP31GZj9BeBGjKufbIjui79wlBASJgzCN\nCQ+mSth3GcGpGoNS5MqQZAJ1+GrCRxqRu4R4GiVrhh+dzyIkuV/OALHR0oVDL3Is\npAlaV37L9UocHyGoO47HQDOUGWyrXJTCjTStTWnRciy2IuJFGpp1NdBk2P4P14DW\nyQbbcoqojA2SVkar0z2EtR9PPbVGOB2hdWWhdfyYA5SiopsssFHVNGsVwZnNDga5\nbNy56boG1H1IiBjB8vDV6TqVN3nKI9BYYiSYCYNPVvU0TwuR224f/blMdsvB9aUi\nrWVRkmkvg5Faze4oQkXBB92dXs3lQM2KSXqwgVUHfwKBgQDnbjHTW47cg53BSrhZ\n1VrWvdVDf6pKShFS1XVZlNO0sz1QT9id7bcClmXVRAoRsvgUc2Sz5Is0ZqUp+Fci\n37ds8fy6AtiRfseeDB3h7+WonzBeNxPJRvf81oqqkJs1Fwr0TBeTl/1hMzc7IYmf\n499EyiyikXw/tqbk2xti0nWkKwKBgQDasmkIxcHYXq2hzxoXKKAp8vHV6ef9Ganf\n30XGaRr5o3XkuJAjCoUZcgMvK45B49wQSUmMeVAY0jqdhsXN0Uhhv0cou5GOkpm4\nw2StgFPRKci3MTG/5XPLflo7aohSgy4pmutcyKNm2xVmR0PkUD6ocCpGDmCTe7qh\nr4vatBnMhwKBgQC65M2ODyl+wTdbyni360mxk5ovKWEfH1OAHmvnTP3utrT0L5cS\nas9ZYpWYNZsgEfSvp0SS1iToy1/kVe4gdqRNcdqTaQr17HlOFCDpve8sTmokG7x5\n1jscTzGqbp84r4QkJ3L+uUZhAZg/w2S936sFhXOoUW8SkPGUbbFfC/D/AwKBgGcR\nCdsuh+qWxDGrztn3NXRPoJV1xPVNMPfm25VkV2grFxaRvKwm+w9A4itK1aJL5pxu\nTZE8Yvkvqpwute4HoZsfcEPMEg8lG/ktbLcv8VBz5rofHxkW4/mVNKUn0dNBK3JE\nJoP1srx4p58qGt7wynbLVcDqaa1X9F7awohxtG7lAoGAFLGa4qm2bHxZ/ianG56g\namn9f0w0lSIWNuyYqoPlIi+fbDzWASzeD6lHmAbfgcrchr9xPBGNymaHBO1R5AtX\nGimD5IcHjYBxiYnb2+/XZbivjawJGyOigadBpT6GmqEj2pw9FAzj7Xl4V8LX4Frb\ny4JNmhNx+SeShF/5NkN1pmY=\n-----END PRIVATE KEY-----\n",
+  "client_email": "planetbids-active-bids@wesonder.iam.gserviceaccount.com",
+  "client_id": "109608571531664483349",
+  "auth_uri": "https://accounts.google.com/o/oauth2/auth",
+  "token_uri": "https://oauth2.googleapis.com/token",
+  "auth_provider_x509_cert_url": "https://www.googleapis.com/oauth2/v1/certs",
+  "client_x509_cert_url": "https://www.googleapis.com/robot/v1/metadata/x509/planetbids-active-bids%40wesonder.iam.gserviceaccount.com",
+  "universe_domain": "googleapis.com"
+}
