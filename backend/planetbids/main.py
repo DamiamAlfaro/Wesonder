@@ -301,7 +301,7 @@ def planetbids_sites_google_sheets():
 
     # Google Sheet ID and range
     SPREADSHEET_ID = '1Wu3WiKnYlJ_tp-TdfKxA9OjWqrQK0BZfVlXDNe2Ikik'
-    RANGE = 'RefinedSites!A:H' 
+    RANGE = 'Sheet1!A:M' 
 
     # Show bids
     sheet = service.spreadsheets()
@@ -381,7 +381,7 @@ Function Inputs: These shall always remain active (non-commented)
 #active_bids_read = active_bids_reading()
 
 # Planetbids Sites - Read
-#planetbids_sites_read = planetbids_sites_google_sheets()
+planetbids_sites_read = planetbids_sites_google_sheets()
 
 planetbids_sites = 'https://storage.googleapis.com/wesonder_databases/Planetbids/absolute_planetbids_sites.csv'
 date_today = str(date.today().strftime("%m/%d/%Y"))
@@ -393,29 +393,8 @@ yesterday_date = str((datetime.now()-timedelta(days=1)).strftime("%m/%d/%Y"))
 Where such inputs are used
 '''
 # Initial and Main Planetbids Webscraping
-planetbids_iterations(planetbids_sites, date_today)
+#planetbids_iterations(planetbids_sites, date_today)
 
-
-# Planetbids Webscraping Schedule - Zero Active Bids Scenario
-#active_bids_arrangement_no_bids(planetbids_sites_read, date_today, four_days_after)
-
-
-# Planetbids Webscraping Schedule - Other Bids
-#active_bids_arrangement_other_bids(planetbids_sites_read, active_bids_read)
-
-
-
-
-
-# Cleaning Planetbids Repated Sites - Obsolote
-#remove_repeating_sites(planetbids_sites_read)
-
-# Cleaning Original Planetbids Sites CSV
-#csv_file = "refined_planetbids_sites.csv"
-#removing_repeating_sites_csv(csv_file)
-
-
-#https://vendors.planetbids.com/portal/{unique_pb_id}/bo/bo-search
 
 
 
