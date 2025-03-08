@@ -12,7 +12,7 @@ from selenium.webdriver.common.by import By
 from selenium.webdriver.support.ui import WebDriverWait
 from selenium.webdriver.support import expected_conditions as EC
 
-
+# Memento Mori
 start_time = time.time()
 
 
@@ -282,7 +282,7 @@ def naics_segregation(list_of_active_bids):
     # Once we collect the urls that worked, we need
     # to do something about the ones that did not work.
     # This is the reason why the use of the code below.
-    while len(faulty_bids) != 0:
+    while len(faulty_bids[:]) != 0:
 
         # Repeat the same process from [2.1] and [2.2]
         # in order to apply the same functionality to
@@ -327,27 +327,25 @@ active_bids_with_categories = naics_segregation(active_bids)
 # Step [3]: Allocate the final result into
 # a csv file.
 df = pd.DataFrame(active_bids_with_categories)
-columns = [
-    "URL",
-    "AwardingBody",
-    "PostedDate",
-    "Title",
-    "SolicitationNumber",
-    "DueDate",
-    "DueTime",
-    "Status",
-    "SubmissionMethod",
-    "County",
-    "X_Coordinates",
-    "Y_Coordinates",
-    "Categories",
-    "CategoryNumbers",
-    "CategoryLabels"
+fields = [
+    "bid_url",
+    "awarding_body",
+    "posted_date",
+    "bid_title",
+    "solicitation_number",
+    "bid_due_date",
+    "bid_due_time",
+    "bid_status",
+    "submission_method",
+    "county",
+    "x_coordinates",
+    "y_coordinates",
+    "naics_codes",
+    "naics_numeric_codes",
+    "naics_written_codes"
 ]
-df.columns = columns
+df.columns = fields
 df.to_csv('finalized_planetbids_bids.csv', mode="w",index=False)
-
-
 
 
 
