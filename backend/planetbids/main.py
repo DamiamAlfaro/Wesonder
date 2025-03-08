@@ -2,8 +2,9 @@ import pandas as pd
 import time
 import sys
 import re
+import os
 from bs4 import BeautifulSoup
-from google.oauth2.service_account import Credentials  
+from google.oauth2.service_account import Credentials # type: ignore
 from googleapiclient.discovery import build  # type: ignore
 from datetime import date, datetime, timedelta
 from selenium import webdriver
@@ -15,7 +16,9 @@ from selenium.webdriver.support import expected_conditions as EC
 start_time = time.time()
 
 
-# Accessing Planetbids Urls
+# [1.1] Expropriation of active bids and putting
+# together the attributes of each of the
+# active bids expropriated.
 def opening_webdriver(url, alleged_ab, county, x_coord, y_coord):
 
     driver = webdriver.Chrome()
@@ -76,7 +79,6 @@ def opening_webdriver(url, alleged_ab, county, x_coord, y_coord):
                     submission_method = all_td[6].text
 
                     other_attributes = [
-                        alleged_ab,
                         county,
                         x_coord,
                         y_coord
@@ -119,66 +121,18 @@ def opening_webdriver(url, alleged_ab, county, x_coord, y_coord):
 
 
 
-def google_sheets_allocation(list_of_attributes):
 
-    SERVICE_ACCOUNT_FILE = "wesonder-10f91a94bed3.json"
-    SCOPES = ['https://www.googleapis.com/auth/spreadsheets']
-
-    credentials = Credentials.from_service_account_file(SERVICE_ACCOUNT_FILE, scopes=SCOPES)
-    service = build('sheets', 'v4', credentials=credentials)
-
-    # Google Sheet ID and range
-    SPREADSHEET_ID = '197FCnOxTIa_rnXTc_0oapI53jkrPNrP7JA_n94fjUxI'
-    RANGE = 'Sheet1!A:M' 
-
-    # Prepare the data to append 
-    body = {
-        'values': list_of_attributes
-    }
-
-    # Append the data to the Google Sheet
-    sheet = service.spreadsheets()
-    response = sheet.values().append(
-        spreadsheetId=SPREADSHEET_ID,
-        range=RANGE,
-        valueInputOption="RAW",
-        body=body
-    ).execute()
-
-
-def planetbid_site_summary(list_of_attributes):
-    
-    SERVICE_ACCOUNT_FILE = "wesonder-10f91a94bed3.json"
-    SCOPES = ['https://www.googleapis.com/auth/spreadsheets']
-
-    credentials = Credentials.from_service_account_file(SERVICE_ACCOUNT_FILE, scopes=SCOPES)
-    service = build('sheets', 'v4', credentials=credentials)
-
-    # Google Sheet ID and range
-    SPREADSHEET_ID = '1Wu3WiKnYlJ_tp-TdfKxA9OjWqrQK0BZfVlXDNe2Ikik'
-    RANGE = 'Sheet1!A:M' 
-
-    # Prepare the data to append 
-    body = {
-        'values': [list_of_attributes]
-    }
-
-    # Append the data to the Google Sheet
-    sheet = service.spreadsheets()
-    response = sheet.values().append(
-        spreadsheetId=SPREADSHEET_ID,
-        range=RANGE,
-        valueInputOption="RAW",
-        body=body
-    ).execute()
-
-
-# Begins webscraping
+# [1.0] Begins webscraping
 def planetbids_iterations(csv_file, todays_date):
     df_pb = pd.read_csv(csv_file)
-    i = 0
+    i = 1
 
-    for index, row in enumerate(df_pb.iloc[i:].itertuples(index=False), start=i):
+    # Progressively append the bids
+    # to a list in order to turn them
+    # into a DataFrame at the end.
+    bids = []
+
+    for index, row in enumerate(df_pb.iloc[i:3].itertuples(index=False), start=i):
 
         if index % 5 == 0 and index != 0:
             time.sleep(28)
@@ -189,7 +143,8 @@ def planetbids_iterations(csv_file, todays_date):
         x_coord = row.X_Coordinates
         y_coord = row.Y_Coordinates
 
-        # Acquire the bid attributes
+        # [1.1] Acquire the bid attributes, and stratify them 
+        # by the desired headers of the csv resulting file.
         active_bids, total_bids, yes_or_no = opening_webdriver(
             url,
             awarding_body,
@@ -198,211 +153,199 @@ def planetbids_iterations(csv_file, todays_date):
             y_coord
         )
 
+        # If there are any active bids, append their attributes to the csv file
         if active_bids:
 
-            # Allocate them into Google Sheets
-            google_sheets_allocation(active_bids)
+            # [1.2] Allocating the expropriated attributes
+            # into an organized csv file
+            bids.extend(active_bids)
 
-        # Record an account of this planetbids site webscrap
-        planetbids_site_record = [
-            url,
-            awarding_body,
-            county,
-            x_coord,
-            y_coord,
-            total_bids,
-            todays_date
-        ]
-        planetbid_site_summary(planetbids_site_record)
-            
-
+        # Keep a progress record
         print(f"Bid {index}\nActive Bids: {active_bids}\nTotal Bids: {total_bids}\nWorked? {yes_or_no}\n")
 
+    # We will only create a file once the procedure
+    # is completed, before that we will only use 
+    # DataFrames
+    return bids
 
-def active_bids_reading():
 
-    SERVICE_ACCOUNT_FILE = "wesonder-10f91a94bed3.json"
-    SCOPES = ['https://www.googleapis.com/auth/spreadsheets']
+# [2.2] Cleaning the categories strings
+# derived from each one of the url
+def cleansing_categories(naics_codes, bids, index):
 
-    credentials = Credentials.from_service_account_file(SERVICE_ACCOUNT_FILE, scopes=SCOPES)
-    service = build('sheets', 'v4', credentials=credentials)
+    # The first new column is a string containing all of 
+    # the categories with complete names and codes
+    naics_categories_complete = ";".join(naics_codes)
 
-    # Google Sheet ID and range
-    SPREADSHEET_ID = '197FCnOxTIa_rnXTc_0oapI53jkrPNrP7JA_n94fjUxI'
-    RANGE = 'Sheet1!A:M' 
+    # The second new column is a string containing solely the naics codes
+    naics_codes_only_list = [thing.split(' - ')[0] for thing in naics_codes]
+    naics_codes_only_string = ";".join(naics_codes_only_list)
 
-    # Show bids
-    sheet = service.spreadsheets()
-    result = sheet.values().get(
-        spreadsheetId=SPREADSHEET_ID,
-        range=RANGE
-    ).execute()
+    # The third and final column is a string containing solely the naics names
+    naics_names_only_list = [thing.split(' - ')[1] for thing in naics_codes]
+    naics_names_only_string = ";".join(naics_names_only_list)
 
-    rows = result.get('values', [])
+    bids[index].append(naics_categories_complete)
+    bids[index].append(naics_codes_only_string)
+    bids[index].append(naics_names_only_string)
+
+    return [bids[index]]
+
+
+
+# [2.1] - Actually webscraping the site to 
+# obtain all the attributes of it
+def actually_webscraping_individual_bid(url):
+
+    driver = webdriver.Chrome()
+    driver.get(url)
+    time.sleep(1)
+
+    try:
+        
+        # Wait until the body of bids appears before acquiring the page source
+        WebDriverWait(driver, 10).until(
+            EC.presence_of_element_located((By.TAG_NAME,'h3'))
+        )
+        page_source = driver.page_source
+        soup = BeautifulSoup(page_source, "html.parser")
+        
+        detail_wrapper = soup.find('div',class_="bid-detail-wrapper")
+        div_within = detail_wrapper.find('div',class_="ember-view")
+        titles = div_within.find_all('div',class_="bid-detail-item-title")
+        definitions = div_within.find_all('div',class_="bid-detail-item-value")
+
+        naics_codes_involved = []
+
+        for title, definition in zip(titles, definitions):
+            title_string = re.sub(r'\s+', ' ', title.text.strip())
+            if title_string == "Categories":
+                lines = [text.strip() for text in definition.stripped_strings]
+                naics_codes_involved.extend(lines)
+            else:
+                pass
+
+        driver.quit()
+
+        return naics_codes_involved
+
+    except Exception as exe:
+        driver.quit()
+        return []
+
+
+
+# [2.0] - Webscraping each individual bid to 
+# segregate them based on NAICS.
+def naics_segregation(list_of_active_bids):
+
+    list_of_active_bids = list_of_active_bids[:]
+    bids = [bid for bid in list_of_active_bids]
+    urls_to_webscrap = [bid[0] for bid in list_of_active_bids]
+
+    new_bids = []
+    faulty_bids = []
     
-    return rows
+    # Iterate through each url in order to obtain
+    # the respective categories for each of the active
+    # bids.
+    for index, url in enumerate(urls_to_webscrap[:]):
 
+        if index % 4 == 0 and index != 0:
+            time.sleep(30)
 
-# For when the Planetbids site had 0 active bids
-def zero_bids_attach(data):
-    
-    SERVICE_ACCOUNT_FILE = "wesonder-10f91a94bed3.json"
-    SCOPES = ['https://www.googleapis.com/auth/spreadsheets']
+        # [2.1] Acquiring the Categories from each individual
+        # active bid expropriated from Step 1
+        naics_codes = actually_webscraping_individual_bid(url)
 
-    credentials = Credentials.from_service_account_file(SERVICE_ACCOUNT_FILE, scopes=SCOPES)
-    service = build('sheets', 'v4', credentials=credentials)
+        # If there are Categories available (sometimes there are not
+        # for some weird reason)
+        if naics_codes:
+            
+            # [2.2] Cleaning the categories strings
+            list_of_attributes = cleansing_categories(naics_codes, bids, index)
 
-    # Google Sheet ID and range
-    SPREADSHEET_ID = '1Wu3WiKnYlJ_tp-TdfKxA9OjWqrQK0BZfVlXDNe2Ikik'
-    range_to_update = 'Sheet2!A1'
-    body = {
-        "values":data
-    } 
+            # A dataframe that will be concatenated with 
+            # the dataframe above. This in order to increasingly
+            # append new bids with their respective naics categories
+            # in every single iteration
+            new_bids.extend(list_of_attributes)
 
-    service.spreadsheets().values().update(
-        spreadsheetId=SPREADSHEET_ID,
-        range=range_to_update,
-        valueInputOption="RAW",  # Input data as-is without formatting
-        body=body
-    ).execute()
-    
-
-
-
-
-def active_bids_arrangement_no_bids(planetbids_sites, date_today, two_days_after):
-
-    # Assign the date for the empty planetbids site
-
-    data_transfer = []
-
-    for index, bid in enumerate(planetbids_sites, start=1):
-        if bid[6] == date_today and bid[5] == "0":
-            bid.append(two_days_after)
-            data_transfer.append(bid)
-            print(index)
-
+        # Some urls will not work
         else:
-            bid.append("")
-            data_transfer.append(bid)
+            faulty_bids.append(url)
 
-    zero_bids_attach(data_transfer)
-    
-
+        # Keeping a record
+        print(f"Iteration {index}\nNAICS Codes: {naics_codes}")
 
 
-def planetbids_sites_google_sheets():
+    # Once we collect the urls that worked, we need
+    # to do something about the ones that did not work.
+    # This is the reason why the use of the code below.
+    while len(faulty_bids) != 0:
 
-    SERVICE_ACCOUNT_FILE = "wesonder-10f91a94bed3.json"
-    SCOPES = ['https://www.googleapis.com/auth/spreadsheets']
+        # Repeat the same process from [2.1] and [2.2]
+        # in order to apply the same functionality to
+        # each of the faulty urls.
+        for index, url in enumerate(faulty_bids[:]):
 
-    credentials = Credentials.from_service_account_file(SERVICE_ACCOUNT_FILE, scopes=SCOPES)
-    service = build('sheets', 'v4', credentials=credentials)
+            naics_codes = actually_webscraping_individual_bid(url)
+            
+            if naics_codes:
+                list_of_attributes = cleansing_categories(naics_codes, bids, index)
+                new_bids.extend(list_of_attributes)
+                faulty_bids.remove(url)
 
-    # Google Sheet ID and range
-    SPREADSHEET_ID = '1Wu3WiKnYlJ_tp-TdfKxA9OjWqrQK0BZfVlXDNe2Ikik'
-    RANGE = 'Sheet1!A:M' 
-
-    # Show bids
-    sheet = service.spreadsheets()
-    result = sheet.values().get(
-        spreadsheetId=SPREADSHEET_ID,
-        range=RANGE
-    ).execute()
-
-    rows = result.get('values', [])
-    
-    return rows
-
-
-
-
-def active_bids_arrangement_other_bids(planetbids_sites, active_bids):
-    pass
-
-
-
-def refining_planetbids_sites(data):
-    SERVICE_ACCOUNT_FILE = "wesonder-10f91a94bed3.json"
-    SCOPES = ['https://www.googleapis.com/auth/spreadsheets']
-
-    credentials = Credentials.from_service_account_file(SERVICE_ACCOUNT_FILE, scopes=SCOPES)
-    service = build('sheets', 'v4', credentials=credentials)
-
-    # Google Sheet ID and range
-    SPREADSHEET_ID = '1Wu3WiKnYlJ_tp-TdfKxA9OjWqrQK0BZfVlXDNe2Ikik'
-    range_to_update = 'Sheet3!A1'
-    body = {
-        "values":data
-    } 
-
-    service.spreadsheets().values().update(
-        spreadsheetId=SPREADSHEET_ID,
-        range=range_to_update,
-        valueInputOption="RAW",  # Input data as-is without formatting
-        body=body
-    ).execute()
-
-
-
-def remove_repeating_sites(planetbids_sites_list):
-        
-    new_list = []
-    unique_urls = []
-    
-    for index, bid in enumerate(planetbids_sites_list, start=0):
-        
-        if bid[0] not in unique_urls:
-            unique_urls.append(bid[0])
-            new_list.append(bid)
-
-
-    refining_planetbids_sites(new_list)
-
-
-
-def removing_repeating_sites_csv(csv_file):
-
-    df = pd.read_csv(csv_file)
-    df_unique = df.drop_duplicates(subset="WebLink",keep="first")
-    df_unique.to_csv('absolute_planetbids_sites.csv', index=False)
-    
-
-
-
+    # Once all of them are retrieved, return
+    # them onto the next step
+    return new_bids
 
 
 
 
 '''
-Function Inputs: These shall always remain active (non-commented)
+Functional Approaches: We are aiming towards a single action that will
+be taking care of the entire program. We want to run the program once
+without intervension and acquire the neat result within that single
+instance. 
 '''
-# Active bids - Read
-#active_bids_read = active_bids_reading()
-
-# Planetbids Sites - Read
-planetbids_sites_read = planetbids_sites_google_sheets()
-
-planetbids_sites = 'https://storage.googleapis.com/wesonder_databases/Planetbids/absolute_planetbids_sites.csv'
+planetbids_sites_original = 'https://storage.googleapis.com/wesonder_databases/Planetbids/absolute_planetbids_sites.csv'
 date_today = str(date.today().strftime("%m/%d/%Y"))
-four_days_after = str((datetime.now()+timedelta(days=4)).strftime("%m/%d/%Y"))
-yesterday_date = str((datetime.now()-timedelta(days=1)).strftime("%m/%d/%Y"))
+
+# Step [1]: Expropriating the active bids from
+# all planetbids sites, along with their attributes
+# and allocation into a csv file.
+active_bids = planetbids_iterations(planetbids_sites_original, date_today)
+
+# Step [2]: Expropriating the Categories for each
+# of the active bids in order to stratify them in
+# the future Wesonder display. We are going to use
+# the result of Step [1]
+active_bids_with_categories = naics_segregation(active_bids)
 
 
-'''
-Where such inputs are used
-'''
-# Initial and Main Planetbids Webscraping
-#planetbids_iterations(planetbids_sites, date_today)
-
-
-
-
-
-
-
-
-
+# Step [3]: Allocate the final result into
+# a csv file.
+df = pd.DataFrame(active_bids_with_categories)
+columns = [
+    "URL",
+    "AwardingBody",
+    "PostedDate",
+    "Title",
+    "SolicitationNumber",
+    "DueDate",
+    "DueTime",
+    "Status",
+    "SubmissionMethod",
+    "County",
+    "X_Coordinates",
+    "Y_Coordinates",
+    "Categories",
+    "CategoryNumbers",
+    "CategoryLabels"
+]
+df.columns = columns
+df.to_csv('finalized_planetbids_bids.csv', mode="w",index=False)
 
 
 
