@@ -164,27 +164,6 @@ def next_page(driver, current_page_id):
     next_page_button.click()
     time.sleep(2)
 
-def allocate_into_google_sheets(list_of_attributes):
-    
-    SERVICE_ACCOUNT_FILE = "wesonder-4e2319ab4c38.json"
-    SCOPES = ['https://www.googleapis.com/auth/spreadsheets']
-
-    credentials = Credentials.from_service_account_file(SERVICE_ACCOUNT_FILE, scopes=SCOPES)
-    service = build('sheets', 'v4', credentials=credentials)
-
-    # Google Sheet ID and range
-    SPREADSHEET_ID = '1k0Ga6AGMw3uTNXXeX34PUy7J1bBXOvQ_Q8pQ0LgV_rY'
-    range_to_update = 'Sheet1!A1'
-    body = {
-        "values":list_of_attributes
-    } 
-
-    service.spreadsheets().values().update(
-        spreadsheetId=SPREADSHEET_ID,
-        range=range_to_update,
-        valueInputOption="RAW",
-        body=body
-    ).execute()
 
 
 # [1.0] Scraping all the apparent
@@ -261,7 +240,7 @@ def piee_active_bids_webscraping(piee_active_bids):
     # PIEE active bids
     piee_bids = []
 
-    for solicitation_url in piee_active_bids[:2]:
+    for solicitation_url in piee_active_bids[:]:
         
         functional_url = f"{url_sample}{solicitation_url}"
 

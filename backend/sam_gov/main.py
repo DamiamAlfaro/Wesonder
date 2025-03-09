@@ -167,7 +167,7 @@ def entering_sam_gov(sam_url):
     failed_sessions = []
 
     # Once acquired, webscrap each of them
-    for index, sam_bid in enumerate(individual_links[:2]):
+    for index, sam_bid in enumerate(individual_links[:]):
 
         # [1.1] Webscrap the attributes of each
         # of the bids expropriated

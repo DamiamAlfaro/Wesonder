@@ -125,14 +125,14 @@ def opening_webdriver(url, alleged_ab, county, x_coord, y_coord):
 # [1.0] Begins webscraping
 def planetbids_iterations(csv_file, todays_date):
     df_pb = pd.read_csv(csv_file)
-    i = 1
+    i = 0
 
     # Progressively append the bids
     # to a list in order to turn them
     # into a DataFrame at the end.
     bids = []
 
-    for index, row in enumerate(df_pb.iloc[i:3].itertuples(index=False), start=i):
+    for index, row in enumerate(df_pb.iloc[i:].itertuples(index=False), start=i):
 
         if index % 5 == 0 and index != 0:
             time.sleep(28)
