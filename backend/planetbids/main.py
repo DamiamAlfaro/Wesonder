@@ -278,24 +278,6 @@ def naics_segregation(list_of_active_bids):
         # Keeping a record
         print(f"Iteration {index}\nNAICS Codes: {naics_codes}")
 
-
-    # Once we collect the urls that worked, we need
-    # to do something about the ones that did not work.
-    # This is the reason why the use of the code below.
-    while len(faulty_bids[:]) != 0:
-
-        # Repeat the same process from [2.1] and [2.2]
-        # in order to apply the same functionality to
-        # each of the faulty urls.
-        for index, url in enumerate(faulty_bids[:]):
-
-            naics_codes = actually_webscraping_individual_bid(url)
-            
-            if naics_codes:
-                list_of_attributes = cleansing_categories(naics_codes, bids, index)
-                new_bids.extend(list_of_attributes)
-                faulty_bids.remove(url)
-
     # Once all of them are retrieved, return
     # them onto the next step
     return new_bids
