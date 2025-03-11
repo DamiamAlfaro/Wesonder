@@ -365,7 +365,7 @@ fields = [
     "naics_written_codes"
 ]
 df.columns = fields
-df.to_csv('finalized_planetbids_bids.csv', mode="w",index=False)
+df.to_csv('planetbids_active_bids.csv', mode="w",index=False)
 
 
 
