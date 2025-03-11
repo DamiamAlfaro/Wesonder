@@ -4,8 +4,6 @@ import sys
 import re
 import os
 from bs4 import BeautifulSoup
-from google.oauth2.service_account import Credentials # type: ignore
-from googleapiclient.discovery import build  # type: ignore
 from datetime import date, datetime, timedelta
 from selenium import webdriver
 from selenium.webdriver.common.by import By
@@ -171,7 +169,7 @@ def planetbids_iterations(csv_file, todays_date):
 
 # [2.2] Cleaning the categories strings
 # derived from each one of the url
-def cleansing_categories(naics_codes, bids, index):
+def cleansing_categories(naics_codes):
 
     # The first new column is a string containing all of 
     # the categories with complete names and codes
@@ -185,11 +183,7 @@ def cleansing_categories(naics_codes, bids, index):
     naics_names_only_list = [thing.split(' - ')[1] for thing in naics_codes]
     naics_names_only_string = ";".join(naics_names_only_list)
 
-    bids[index].append(naics_categories_complete)
-    bids[index].append(naics_codes_only_string)
-    bids[index].append(naics_names_only_string)
-
-    return [bids[index]]
+    return naics_categories_complete, naics_codes_only_string, naics_names_only_string
 
 
 
@@ -235,6 +229,32 @@ def actually_webscraping_individual_bid(url):
 
 
 
+# [2.3] Trying something different for the faulty
+# bids urls
+def faulty_bids_regurgitation(lists_of_faulty_bids):
+
+    faulty_urls = [urling[0] for urling in lists_of_faulty_bids]
+    still_faulty = []
+    regurgitated_bids = []
+
+    for index, url in enumerate(faulty_urls):
+
+        naics_codes = actually_webscraping_individual_bid(url)
+        if naics_codes:
+            categories, categories_numbers, categories_strings  = cleansing_categories(naics_codes)
+            lists_of_faulty_bids[index].append(categories)
+            lists_of_faulty_bids[index].append(categories_numbers)
+            lists_of_faulty_bids[index].append(categories_strings)
+            list_of_new_attributes = [lists_of_faulty_bids[index]]
+            regurgitated_bids.extend(list_of_new_attributes)
+        else:
+            still_faulty.append(lists_of_faulty_bids[index])
+
+    print(f"Regurtitated Bids: {regurgitated_bids}")
+    return regurgitated_bids, still_faulty
+
+
+
 # [2.0] - Webscraping each individual bid to 
 # segregate them based on NAICS.
 def naics_segregation(list_of_active_bids):
@@ -251,9 +271,6 @@ def naics_segregation(list_of_active_bids):
     # bids.
     for index, url in enumerate(urls_to_webscrap[:]):
 
-        if index % 4 == 0 and index != 0:
-            time.sleep(30)
-
         # [2.1] Acquiring the Categories from each individual
         # active bid expropriated from Step 1
         naics_codes = actually_webscraping_individual_bid(url)
@@ -263,7 +280,12 @@ def naics_segregation(list_of_active_bids):
         if naics_codes:
             
             # [2.2] Cleaning the categories strings
-            list_of_attributes = cleansing_categories(naics_codes, bids, index)
+            categories, categories_numbers, categories_strings = cleansing_categories(naics_codes)
+            bids[index].append(categories)
+            bids[index].append(categories_numbers)
+            bids[index].append(categories_strings)
+            list_of_attributes = [bids[index]]
+
 
             # A dataframe that will be concatenated with 
             # the dataframe above. This in order to increasingly
@@ -273,10 +295,26 @@ def naics_segregation(list_of_active_bids):
 
         # Some urls will not work
         else:
-            faulty_bids.append(url)
+            print(f"Faulty: {bids[index]}")
+            faulty_bids.append(bids[index])
 
         # Keeping a record
-        print(f"Iteration {index}\nNAICS Codes: {naics_codes}")
+        print(f"Iteration {index}\nNAICS Codes: {len(naics_codes)}")
+
+    # [2.3] We need to do something with the faulty urls, 
+    # what can we do? The faulty_bids is a list containing
+    # the respective urls as a string. We need to iterate
+    # through each of them, and of course they will 
+    # continue to fail, but then what? Let's allow
+    # practical action to give us such answer, should we?
+    # This works amazingly brother.
+    while faulty_bids:
+        bids_regurgitated, still_faulty_bids = faulty_bids_regurgitation(faulty_bids)
+        new_bids.extend(bids_regurgitated)
+        faulty_bids = still_faulty_bids
+
+
+    
 
     # Once all of them are retrieved, return
     # them onto the next step
