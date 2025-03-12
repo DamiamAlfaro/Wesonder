@@ -184,16 +184,16 @@ def entering_sam_gov(sam_url):
             failed_sessions.append(sam_bid)  
 
     # Make sure we get them all
-    while len(failed_sessions[:]) != 0:
+    attempts = 0
+    while len(failed_sessions) != 0 and attempts < 5:
         for index, url in enumerate(failed_sessions[:]):
             attributes = bid_attributes(url)
 
             if attributes:
                 successful_sessions.append(attributes)
                 failed_sessions.remove(url)
-            
-    return successful_sessions
-
+        
+        attempts += 1
 
 
 
