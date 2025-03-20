@@ -121,7 +121,7 @@ def opening_webdriver(url, alleged_ab, county, x_coord, y_coord):
 
 def google_sheets_allocation(list_of_attributes):
 
-    SERVICE_ACCOUNT_FILE = "wesonder-4e2319ab4c38.json"
+    SERVICE_ACCOUNT_FILE = "wesonder-10f91a94bed3.json"
     SCOPES = ['https://www.googleapis.com/auth/spreadsheets']
 
     credentials = Credentials.from_service_account_file(SERVICE_ACCOUNT_FILE, scopes=SCOPES)
@@ -148,7 +148,7 @@ def google_sheets_allocation(list_of_attributes):
 
 def planetbid_site_summary(list_of_attributes):
     
-    SERVICE_ACCOUNT_FILE = "wesonder-4e2319ab4c38.json"
+    SERVICE_ACCOUNT_FILE = "wesonder-10f91a94bed3.json"
     SCOPES = ['https://www.googleapis.com/auth/spreadsheets']
 
     credentials = Credentials.from_service_account_file(SERVICE_ACCOUNT_FILE, scopes=SCOPES)
@@ -221,7 +221,7 @@ def planetbids_iterations(csv_file, todays_date):
 
 def active_bids_reading():
 
-    SERVICE_ACCOUNT_FILE = "wesonder-4e2319ab4c38.json"
+    SERVICE_ACCOUNT_FILE = "wesonder-10f91a94bed3.json"
     SCOPES = ['https://www.googleapis.com/auth/spreadsheets']
 
     credentials = Credentials.from_service_account_file(SERVICE_ACCOUNT_FILE, scopes=SCOPES)
@@ -249,7 +249,7 @@ def active_bids_reading():
 
 
 def refining_planetbids_sites(data):
-    SERVICE_ACCOUNT_FILE = "wesonder-4e2319ab4c38.json"
+    SERVICE_ACCOUNT_FILE = "wesonder-10f91a94bed3.json"
     SCOPES = ['https://www.googleapis.com/auth/spreadsheets']
 
     credentials = Credentials.from_service_account_file(SERVICE_ACCOUNT_FILE, scopes=SCOPES)
@@ -298,7 +298,7 @@ def removing_repeating_sites_csv(csv_file):
 # 2 - Allocation of NAICS Segregation into Google Sheets
 def naics_allocation(list_of_attributes):
     
-    SERVICE_ACCOUNT_FILE = "wesonder-4e2319ab4c38.json"
+    SERVICE_ACCOUNT_FILE = "wesonder-10f91a94bed3.json"
     SCOPES = ['https://www.googleapis.com/auth/spreadsheets']
 
     credentials = Credentials.from_service_account_file(SERVICE_ACCOUNT_FILE, scopes=SCOPES)
@@ -406,7 +406,7 @@ def naics_segregation(list_of_active_bids):
 # 3 - We need to acquire a list with the active bids segregated by NAICS for 3 (retrieve the missing ones)
 def naics_segregated_bids():
 
-    SERVICE_ACCOUNT_FILE = "wesonder-4e2319ab4c38.json"
+    SERVICE_ACCOUNT_FILE = "wesonder-10f91a94bed3.json"
     SCOPES = ['https://www.googleapis.com/auth/spreadsheets']
 
     credentials = Credentials.from_service_account_file(SERVICE_ACCOUNT_FILE, scopes=SCOPES)
@@ -432,7 +432,7 @@ def naics_segregated_bids():
 # 4 - A list containing all Planetbids Sites and their latest webscraping date
 def planetbids_sites_google_sheets():
 
-    SERVICE_ACCOUNT_FILE = "wesonder-4e2319ab4c38.json"
+    SERVICE_ACCOUNT_FILE = "wesonder-10f91a94bed3.json"
     SCOPES = ['https://www.googleapis.com/auth/spreadsheets']
 
     credentials = Credentials.from_service_account_file(SERVICE_ACCOUNT_FILE, scopes=SCOPES)
@@ -458,7 +458,7 @@ def planetbids_sites_google_sheets():
 # 4 - For when the Planetbids site had 0 active bids
 def zero_bids_attach(data):
     
-    SERVICE_ACCOUNT_FILE = "wesonder-4e2319ab4c38.json"
+    SERVICE_ACCOUNT_FILE = "wesonder-10f91a94bed3.json"
     SCOPES = ['https://www.googleapis.com/auth/spreadsheets']
 
     credentials = Credentials.from_service_account_file(SERVICE_ACCOUNT_FILE, scopes=SCOPES)
@@ -504,7 +504,7 @@ def active_bids_arrangement_no_bids(planetbids_sites, date_today, four_days_afte
 # 5 - The Planetbids sites with some dates
 def planetbids_sites_google_sheets_other():
 
-    SERVICE_ACCOUNT_FILE = "wesonder-4e2319ab4c38.json"
+    SERVICE_ACCOUNT_FILE = "wesonder-10f91a94bed3.json"
     SCOPES = ['https://www.googleapis.com/auth/spreadsheets']
 
     credentials = Credentials.from_service_account_file(SERVICE_ACCOUNT_FILE, scopes=SCOPES)
@@ -530,7 +530,7 @@ def planetbids_sites_google_sheets_other():
 # 5 - Allocation of new cleaned google sheets spreadsheet
 def it_worked_mate(list_of_attributes):
     
-    SERVICE_ACCOUNT_FILE = "wesonder-4e2319ab4c38.json"
+    SERVICE_ACCOUNT_FILE = "wesonder-10f91a94bed3.json"
     SCOPES = ['https://www.googleapis.com/auth/spreadsheets']
 
     credentials = Credentials.from_service_account_file(SERVICE_ACCOUNT_FILE, scopes=SCOPES)
@@ -610,7 +610,7 @@ def active_bids_arrangement_other_bids(list_of_planetbids_sites, active_bids):
 # Not really needed (yet), but just in case
 def planetbids_sites_google_sheets_with_dates():
 
-    SERVICE_ACCOUNT_FILE = "wesonder-4e2319ab4c38.json"
+    SERVICE_ACCOUNT_FILE = "wesonder-10f91a94bed3.json"
     SCOPES = ['https://www.googleapis.com/auth/spreadsheets']
 
     credentials = Credentials.from_service_account_file(SERVICE_ACCOUNT_FILE, scopes=SCOPES)
@@ -635,7 +635,7 @@ def planetbids_sites_google_sheets_with_dates():
 
 def active_bids_reading_naics():
 
-    SERVICE_ACCOUNT_FILE = "wesonder-4e2319ab4c38.json"
+    SERVICE_ACCOUNT_FILE = "wesonder-10f91a94bed3.json"
     SCOPES = ['https://www.googleapis.com/auth/spreadsheets']
 
     credentials = Credentials.from_service_account_file(SERVICE_ACCOUNT_FILE, scopes=SCOPES)
@@ -661,7 +661,7 @@ def active_bids_reading_naics():
 # 6 - Updating Sheet2 of Active Bids into Sheet4
 def up_to_date_active_bids(list_of_updated_bids):
 
-    SERVICE_ACCOUNT_FILE = "wesonder-4e2319ab4c38.json"
+    SERVICE_ACCOUNT_FILE = "wesonder-10f91a94bed3.json"
     SCOPES = ['https://www.googleapis.com/auth/spreadsheets']
 
     credentials = Credentials.from_service_account_file(SERVICE_ACCOUNT_FILE, scopes=SCOPES)
@@ -738,7 +738,7 @@ date_today = str(date.today().strftime("%m/%d/%Y"))
 Functional Approaches
 '''
 # Initial and Main Planetbids Webscraping - 1
-#planetbids_iterations(planetbids_sites_original, date_today)
+planetbids_iterations(planetbids_sites_original, date_today)
 
 
 # NAICS Webscraping - 2
