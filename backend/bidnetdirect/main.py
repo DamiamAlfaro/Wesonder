@@ -1,8 +1,6 @@
 import pandas as pd
 import time
 import requests
-from google.oauth2.service_account import Credentials # type: ignore
-from googleapiclient.discovery import build  # type: ignore
 from bs4 import BeautifulSoup
 
 
