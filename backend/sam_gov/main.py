@@ -9,8 +9,6 @@ from selenium.webdriver.support.ui import WebDriverWait
 from selenium.webdriver.support.ui import Select
 from selenium.webdriver.support import expected_conditions as EC
 from geopy.geocoders import Nominatim
-from google.oauth2.service_account import Credentials # type: ignore
-from googleapiclient.discovery import build  # type: ignore
 
 
 start_time = time.time()
