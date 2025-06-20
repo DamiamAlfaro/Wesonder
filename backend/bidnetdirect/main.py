@@ -1,7 +1,9 @@
 import pandas as pd
 import time
 import requests
+import pymysql
 from bs4 import BeautifulSoup
+from sqlalchemy import create_engine
 
 
 
@@ -11,8 +13,15 @@ start_time = time.time()
 '''
 Part of Step 4: A mere integration into a csv file, nothing more, nothing less...
 '''
-def bidnet_direct_bids_into_google_sheets(list_of_attributes):
-    
+def bidnet_direct_bids_into_sql(list_of_attributes):
+
+    # Set up Local MySQL stuff
+    db_host = "srv1102.hstgr.io"
+    db_user = "u978864605_wesonder"
+    db_password = "Elchapillo34?nmddam"
+    db_name = "u978864605_wesonder"
+    engine = create_engine(f"mysql+pymysql://{db_user}:{db_password}@{db_host}/{db_name}")
+
     df = pd.DataFrame(list_of_attributes)
     df.columns = [
         'AwardingBody',
@@ -27,8 +36,14 @@ def bidnet_direct_bids_into_google_sheets(list_of_attributes):
         'BidLink',
         'DueTime'
     ]
-    df.to_csv('finalized_bidnetdirect_bids.csv',index=False)
 
+    # Write to SQL table (it will create the table if it doesn't exist)
+    df.to_sql(
+        name='finalized_bidnetdirect_bids', 
+        con=engine, 
+        if_exists='replace',  # Use 'append' if you don't want to overwrite
+        index=False
+    )
 
 
 '''
@@ -181,7 +196,7 @@ def bidnet_direct_real_time_webscraping(csv_file):
         print(f'\nIteration #{index} - Percentage Completed: {round((index/total_rows)*100,2)}%\n\n\n')
         
     
-    bidnet_direct_bids_into_google_sheets(all_bids_list)
+    bidnet_direct_bids_into_sql(all_bids_list)
     
 
 # The goal of this program is to acquire a database, similar to the one for planetbids, of all of the 
