@@ -1,34 +1,3 @@
-<?php
-    // Enable error reporting
-    error_reporting(E_ALL);
-    ini_set('display_errors', 1);
-    ini_set('log_errors', 1);
-    ini_set('error_log', __DIR__ . '/php-error.log'); // Log errors to a file
-
-    // Custom error handler
-    set_error_handler(function ($errno, $errstr, $errfile, $errline) {
-        $errorMessage = "Error: $errstr in $errfile on line $errline";
-        error_log($errorMessage);
-        
-        // Display a user-friendly error message
-        echo "<div style='color: red; font-weight: bold; margin: 20px;'>
-                An error occurred: <br>
-                <strong>$errstr</strong> <br>
-                Please contact <a href='mailto:support@wesonder.com'>support@wesonder.com</a> with this message.
-              </div>";
-        
-        // Logout option
-        echo "<div style='margin: 20px;'>
-                <a href='/logout.php' style='color: blue; text-decoration: underline;'>Click here to log out</a>
-              </div>";
-
-        exit;
-    });
-
-    // Ensure the user is logged in
-    require_once '../../auth_check.php';
-
-?>
 
 <!DOCTYPE html>
 <html>

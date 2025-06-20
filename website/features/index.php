@@ -1,6 +1,4 @@
-<?php 
-//require_once 'auth_check.php'; // Ensure only authorized users can access
-?>
+
 
 <!DOCTYPE html>
 <html>
@@ -53,7 +51,7 @@
                     <li><a href="tabulations/contractors"><span class="name">Contractors</span></a></li>
                     <li><a href="tabulations/awarding_bodies"><span class="name">Awarding Bodies</span></a></li>
                     <li><a href="tabulations/dvbe"><span class="name">DVBE</span></a></li>
-                    <li><a href="tabulations/slbe_elbe"><span class="name">ELBE/ELBE</span></a></li>
+                    <li><a href="tabulations/slbe_elbe"><span class="name">SLBE/ELBE</span></a></li>
                     <li><a href="tabulations/planetbids"><span class="name">Planetbids</span></a></li>
                     <li><a href="tabulations/bidnetdirect"><span class="name">Bidnet Direct</span></a></li>
                     <li><a href="tabulations/sam_gov"><span class="name">SAM.gov</span></a></li>
@@ -66,8 +64,8 @@
 
     <!-- Centered Logout and Cancel Subscription buttons -->
     <div class="button-container">
-        <form action="../logout.php" method="POST">
-            <button type="submit" class="logout-btn">Logout</button>
+        <form action="../" method="POST">
+            <button type="submit" class="logout-btn">Go Back</button>
         </form>
         
 <!--         <form action="../payments/public/cancel_subscription.php" method="POST">

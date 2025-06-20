@@ -6,7 +6,7 @@
     <meta name="description" content="WESONDER Map Display"/>
     <link rel="icon" href="pictures/" type="image/x-icon"/>
     <link rel="icon" type="image/png" href="media/wesonder_logo_just_black.png"/>
-    <link href="style0215-1.css" rel="stylesheet" type="text/css">
+    <link href="style0228-1.css" rel="stylesheet" type="text/css">
 
 
 
@@ -32,8 +32,7 @@
             <h1>Wesonder</h1>
             <div id="nav_links">
                 <!-- Login & Sign Up Links -->
-                <a href="#" id="login_btn">Login</a>
-                <a href="payments/public/signup.php">Sign Up</a>
+                <a href="features" id="login_btn">Enter</a>
             </div>
             <div id="section_logo">
                 <img src="media/wesonder_logo_just_black.png" alt="Section Logo">
@@ -42,46 +41,42 @@
 
 
         <!-- Hidden Login Modal -->
-        <div id="login_modal" class="modal">
-            <div class="modal_content">
-                <span class="close">&times;</span>
-                <h2>Login</h2>
-                <form action="login.php" method="POST" id="login_form">
-                    <input type="email" name="email" placeholder="Email" required>
-                    <input type="password" name="password" placeholder="Password" required>
-                    <button type="submit">Login</button>
-                </form>
-            </div>
-        </div>
+        <!--<div id="login_modal" class="modal">-->
+        <!--    <div class="modal_content">-->
+        <!--        <span class="close">&times;</span>-->
+        <!--        <h2>Login</h2>-->
+        <!--        <form action="login.php" method="POST" id="login_form">-->
+        <!--            <input type="email" name="email" placeholder="Email" required>-->
+        <!--            <input type="password" name="password" placeholder="Password" required>-->
+        <!--            <button type="submit">Login</button>-->
+        <!--        </form>-->
+        <!--    </div>-->
+        <!--</div>-->
 
-        <script>
-            document.addEventListener("DOMContentLoaded", function () {
-                const loginBtn = document.getElementById("login_btn");
-                const modal = document.getElementById("login_modal");
-                const closeBtn = document.querySelector(".close");
+        <!--<script>-->
+        <!--    document.addEventListener("DOMContentLoaded", function () {-->
+        <!--        const loginBtn = document.getElementById("login_btn");-->
+        <!--        const modal = document.getElementById("login_modal");-->
+        <!--        const closeBtn = document.querySelector(".close");-->
 
-                // Ensure the modal is hidden when the page loads
-                modal.style.display = "none";
+        <!--        modal.style.display = "none";-->
 
-                // Show modal when login link is clicked
-                loginBtn.addEventListener("click", function (e) {
-                    e.preventDefault();
-                    modal.style.display = "flex"; // Show modal
-                });
+        <!--        loginBtn.addEventListener("click", function (e) {-->
+        <!--            e.preventDefault();-->
+        <!--            modal.style.display = "flex";-->
+        <!--        });-->
 
-                // Close modal when close button is clicked
-                closeBtn.addEventListener("click", function () {
-                    modal.style.display = "none"; // Hide modal
-                });
+        <!--        closeBtn.addEventListener("click", function () {-->
+        <!--            modal.style.display = "none";-->
+        <!--        });-->
 
-                // Close modal when clicking outside the box
-                window.addEventListener("click", function (e) {
-                    if (e.target === modal) {
-                        modal.style.display = "none"; // Hide modal
-                    }
-                });
-            });
-        </script>
+        <!--        window.addEventListener("click", function (e) {-->
+        <!--            if (e.target === modal) {-->
+        <!--                modal.style.display = "none";-->
+        <!--            }-->
+        <!--        });-->
+        <!--    });-->
+        <!--</script>-->
 
         
 
@@ -238,7 +233,7 @@
     </footer>
 
 
-    <script type="text/javascript" src="script0215-1.js"></script>
+    <script type="text/javascript" src="script0619.js"></script>
 
 
 </body>

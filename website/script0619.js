@@ -97,23 +97,4 @@ function typeHeadings(headings) {
     typeHeading();  // Start typing the first heading
 }
 
-document.addEventListener("DOMContentLoaded", function () {
-    // Get elements
-    const loginLink = document.querySelector("#nav_links a"); // Select the login link
-    const loginOverlay = document.getElementById("login_overlay");
-    const loginContainer = document.getElementById("login_container");
-
-    // Open Login Box when clicking "Login"
-    loginLink.addEventListener("click", function (event) {
-        event.preventDefault(); // Prevent default link action
-        loginOverlay.style.display = "block";
-        loginContainer.style.display = "block";
-    });
-
-    // Close Login Box when clicking overlay
-    window.closeLoginBox = function () {
-        loginOverlay.style.display = "none";
-        loginContainer.style.display = "none";
-    };
-});
 
