@@ -150,11 +150,33 @@
     
     <style>
         /* Fullscreen Map */
+/* New container to control map margins */
+        #map-container {
+            margin: 20px auto; /* reduce top/bottom margin */
+            max-width: 95vw;
+            height: 90vh; /* smaller than full viewport */
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+            border-radius: 12px;
+            overflow: hidden;
+        }
+        
+        /* Adjust map to fill the container */
         #map {
-            height: 100vh;
+            height: 100%;
             width: 100%;
             position: relative;
         }
+        
+        /* Centered footer */
+        #footer-credit {
+            text-align: center;
+            font-family: 'Poppins', sans-serif;
+            font-size: 2em;
+            color: #666;
+            margin-top: 10px;
+            margin-bottom: 20px;
+        }
+
 
         /* Go Back Button */
         #back-button {
@@ -201,7 +223,11 @@
     <!-- Loading Message -->
     <div id="loading-message">Loading map data, please wait...</div>
 
-    <div id="map"></div>
+    <div id="map-container">
+        <div id="map"></div>
+    </div>
+    <div id="footer-credit">By Damiam Alfaro</div>
+
 
     <script>
         // Initialize Map
